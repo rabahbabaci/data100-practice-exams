@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DATA 100 SP26 — Practice Midterm 1 (OpenClaw Set 1)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#30363d;--text:#e6edf3;--dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--code-bg:#0d1117;--input-bg:#0d1117;--input-border:#30363d}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:880px;margin:0 auto;padding:20px 16px 80px}
+header{text-align:center;padding:32px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px}
+header h1{font-size:1.6em;font-weight:700;margin-bottom:4px}
+header h2{font-size:1.1em;font-weight:400;color:var(--dim)}
+.exam-meta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:.85em;color:var(--dim)}
+.exam-meta span{background:var(--surface);padding:4px 12px;border-radius:6px;border:1px solid var(--border)}
+.badge-claw{background:rgba(210,153,34,.12)!important;border-color:var(--yellow)!important;color:var(--yellow)}
+.timer-bar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;font-size:.9em}
+.timer-display{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:1.3em;font-weight:700;color:var(--green)}
+.timer-display.warning{color:var(--yellow)}
+.timer-display.danger{color:var(--red)}
+.timer-btn{background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:.85em;font-weight:600}
+.timer-btn:hover{opacity:.85}
+.timer-btn.paused{background:var(--yellow);color:#000}
+.question{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:20px}
+.q-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.q-title{font-size:1.15em;font-weight:700;color:var(--accent)}
+.q-pts{font-size:.85em;color:var(--dim);background:var(--surface2);padding:2px 10px;border-radius:12px}
+.q-body{margin-bottom:16px}
+.q-body p{margin-bottom:10px}
+.q-body ul{margin:8px 0 8px 20px;font-size:.9em}
+.subq{margin:16px 0;padding:16px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)}
+.subq-label{font-weight:600;color:var(--accent);font-size:.95em;margin-bottom:8px}
+.pts-badge{font-size:.75em;color:var(--dim);font-weight:400;margin-left:6px}
+code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:.88em;border:1px solid var(--border);color:#f0883e}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px;overflow-x:auto;margin:10px 0;font-size:.88em;line-height:1.5}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+.df-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.85em}
+.df-table th,.df-table td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.df-table th{background:var(--surface2);color:var(--accent);font-weight:600}
+.df-table td{background:var(--code-bg)}
+.df-table tr:hover td{background:var(--surface2)}
+input[type="text"],textarea{width:100%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);padding:10px 12px;border-radius:6px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.88em;margin:6px 0;resize:vertical}
+input[type="text"]:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.15)}
+textarea{min-height:48px}
+.radio-group,.check-group{margin:8px 0}
+.radio-group label,.check-group label{display:block;padding:8px 12px;margin:4px 0;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:.9em;transition:border-color .15s}
+.radio-group label:hover,.check-group label:hover{border-color:var(--accent)}
+.radio-group input,.check-group input{margin-right:8px;accent-color:var(--accent)}
+.tf-row{display:flex;gap:12px;align-items:center;padding:8px 0;flex-wrap:wrap}
+.tf-row .tf-options{display:flex;gap:8px;min-width:120px}
+.tf-row .tf-text{flex:1;font-size:.9em}
+.match-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px;align-items:center;font-size:.88em;margin:10px 0}
+.match-grid .hdr{font-weight:600;color:var(--accent);padding:4px 8px}
+details{margin-top:16px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+summary{padding:10px 16px;background:var(--surface2);cursor:pointer;font-weight:600;font-size:.9em;color:var(--green);user-select:none;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'▶ ';font-size:.75em}
+details[open] summary::before{content:'▼ '}
+summary:hover{background:var(--border)}
+.solution{padding:16px;font-size:.9em;line-height:1.7;border-top:1px solid var(--border)}
+.solution .correct{color:var(--green);font-weight:600}
+.solution .trap{color:var(--yellow);font-style:italic}
+.note{background:rgba(88,166,255,.08);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.88em}
+.warn{background:rgba(248,81,73,.08);border-left:3px solid var(--red);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.88em}
+.q-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.q-nav a{display:inline-block;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--accent);text-decoration:none;font-size:.85em;font-weight:600}
+.q-nav a:hover{background:var(--surface2);border-color:var(--accent)}
+.arrow-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88em}
+.arrow-table th,.arrow-table td{border:1px solid var(--border);padding:8px 12px;text-align:left}
+.arrow-table th{background:var(--surface2);color:var(--accent);font-weight:600}
+.arrow-table td{background:var(--code-bg)}
+.arrow-table select{background:var(--input-bg);color:var(--text);border:1px solid var(--input-border);padding:4px 8px;border-radius:4px;font-size:.88em}
+.ref-toggle{position:fixed;bottom:16px;right:16px;z-index:99;background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.ref-toggle:hover{opacity:.85}
+.ref-panel{display:none;position:fixed;top:50px;right:16px;bottom:60px;width:380px;background:var(--surface);border:1px solid var(--border);border-radius:10px;z-index:98;overflow-y:auto;padding:16px;font-size:.78em;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.ref-panel.open{display:block}
+.ref-panel h3{color:var(--accent);font-size:1em;margin:12px 0 6px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.ref-panel h3:first-child{margin-top:0}
+.ref-panel code{font-size:.82em}
+@media(max-width:600px){.container{padding:12px 10px 60px}.question{padding:16px}.ref-panel{width:calc(100vw - 32px);right:16px}.match-grid{grid-template-columns:auto 1fr;gap:4px}}
+</style>
+</head>
+<body>
+
+<div class="timer-bar">
+  <div>⏱️ <span class="timer-display" id="timer">50:00</span></div>
+  <div><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start Timer</button></div>
+</div>
+
+<div class="container">
+
+<header>
+  <h1>DATA 100 — Practice Midterm 1</h1>
+  <h2>OpenClaw Set 1 · Spring 2026 · UC Berkeley</h2>
+  <div class="exam-meta">
+    <span>⏱ 50 Minutes</span>
+    <span>📝 36 Points</span>
+    <span>📋 7 Questions</span>
+    <span class="badge-claw">🤖 Generated by OpenClaw</span>
+  </div>
+</header>
+
+<div class="note" style="margin-bottom:20px">
+  <strong>Instructions:</strong> No interpreter. Treat this like the real exam — text answers and multiple choice only. For all Python questions, assume Pandas is imported as <code>pd</code>, NumPy as <code>np</code>, the Python RegEx library as <code>re</code>, <code>matplotlib.pyplot</code> as <code>plt</code>, and <code>seaborn</code> as <code>sns</code>. Answer using reasoning only — no execution. Show work for conceptual items.
+</div>
+
+<div class="warn" style="margin-bottom:20px">
+  <strong>⚠️ Scope Note:</strong> This exam was generated by OpenClaw and includes Q6–Q7 on sampling probability/SE which may go slightly beyond the SP26 Midterm 1 scope (Lectures 1–9). Use those questions as bonus conceptual practice.
+</div>
+
+<nav class="q-nav">
+  <a href="#q1">Q1</a><a href="#q2">Q2</a><a href="#q3">Q3</a><a href="#q4">Q4</a><a href="#q5">Q5</a><a href="#q6">Q6</a><a href="#q7">Q7</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 1 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="question" id="q1">
+<div class="q-header">
+  <span class="q-title">Question 1: Pandas Indexing Calisthenics</span>
+  <span class="q-pts">7.5 Pts</span>
+</div>
+<div class="q-body">
+<p>DataFrame <code>rides</code> has a default RangeIndex (0–4):</p>
+<table class="df-table">
+<tr><th>idx</th><th>route</th><th>segment</th><th>eta_min</th><th>surge</th><th>driver_note</th></tr>
+<tr><td>0</td><td>"SFO"</td><td>"pickup"</td><td>14</td><td>1.0</td><td>"door 3"</td></tr>
+<tr><td>1</td><td>"SFO"</td><td>"dropoff"</td><td>39</td><td>1.4</td><td>"intl loop"</td></tr>
+<tr><td>2</td><td>"OAK"</td><td>"pickup"</td><td>9</td><td>1.2</td><td>"park B"</td></tr>
+<tr><td>3</td><td>"SJC"</td><td>"pickup"</td><td>18</td><td>0.9</td><td>"garage"</td></tr>
+<tr><td>4</td><td>"SJC"</td><td>"dropoff"</td><td>42</td><td>1.1</td><td>"lot 5"</td></tr>
+</table>
+<p>Evaluate each expression. Provide the <strong>exact value</strong> or describe the <strong>exception raised</strong>.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(1) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>rides.loc[2, 'driver_note']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: "park B"</p>
+    <p><code>.loc</code> uses label-based indexing. With a default RangeIndex, label <code>2</code> corresponds to the third row. Column <code>'driver_note'</code> at that row is <code>"park B"</code>.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(2) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>rides['eta_min'].iloc[0:3].mean()</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 20.67 (or equivalently, 62/3)</p>
+    <p><code>.iloc[0:3]</code> selects positions 0, 1, 2 → eta_min values 14, 39, 9. Mean = (14 + 39 + 9) / 3 = 62/3 ≈ 20.67.</p>
+    <p class="trap">🪤 Trap: <code>.iloc</code> slicing is exclusive of the end index, so <code>0:3</code> gives rows at positions 0, 1, 2 (not 3).</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(3) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>rides[rides['route'].str.startswith('S')]['segment'].iloc[-1]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: "dropoff"</p>
+    <p>Routes starting with 'S': SFO (rows 0,1) and SJC (rows 3,4). Filter keeps rows 0, 1, 3, 4. The <code>'segment'</code> column of these rows is: "pickup", "dropoff", "pickup", "dropoff". <code>.iloc[-1]</code> returns the last value: <code>"dropoff"</code> (from row 4).</p>
+    <p class="trap">🪤 Note: The original OpenClaw exam used walrus operator syntax <code>rides[routes := ...]</code> which would actually raise a <code>SyntaxError</code> in this context. This version uses the corrected boolean indexing form.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(4) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>rides.set_index('route').loc['SJC', 'surge']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: A Series containing [0.9, 1.1]</p>
+    <p>After <code>set_index('route')</code>, the index has duplicate labels. <code>.loc['SJC', 'surge']</code> matches both SJC rows and returns a <strong>Series</strong> with values 0.9 and 1.1 — not a single scalar.</p>
+    <p class="trap">🪤 Trap: When <code>.loc</code> matches multiple rows with the same label, it returns a Series (not a scalar). This is a key distinction students miss — duplicate index labels change the return type.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(5) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>rides.query("segment == 'pickup' and eta_min > 10")["route"].tolist()</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: ['SFO', 'SJC']</p>
+    <p>Filter to pickup rows with eta_min > 10:</p>
+    <p>• Row 0: pickup, eta_min=14 > 10 ✓ → "SFO"</p>
+    <p>• Row 2: pickup, eta_min=9 ≤ 10 ✗</p>
+    <p>• Row 3: pickup, eta_min=18 > 10 ✓ → "SJC"</p>
+    <p><code>.tolist()</code> converts the resulting Series to a Python list: <code>['SFO', 'SJC']</code>.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 2 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="question" id="q2">
+<div class="q-header">
+  <span class="q-title">Question 2: GroupBy ⇄ Filter</span>
+  <span class="q-pts">4.5 Pts</span>
+</div>
+<div class="q-body">
+<p>Using the same <code>rides</code> DataFrame from Q1, evaluate each expression. Write the <strong>exact output</strong>.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(1) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>rides.groupby('route')[['eta_min']].agg('max').shape[0]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 3</p>
+    <p>There are 3 unique routes: SFO, OAK, SJC. <code>groupby('route')</code> creates 3 groups. <code>.agg('max')</code> returns one row per group. <code>.shape[0]</code> = number of rows = <strong>3</strong>.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(2) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>rides.groupby('segment').filter(lambda df: df['eta_min'].mean() > 20).shape[0]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 2</p>
+    <p>Group by segment:</p>
+    <p>• <strong>pickup</strong>: rows 0, 2, 3 → eta_min = [14, 9, 18] → mean = 13.67. <strong>13.67 ≤ 20</strong> → filtered OUT.</p>
+    <p>• <strong>dropoff</strong>: rows 1, 4 → eta_min = [39, 42] → mean = 40.5. <strong>40.5 > 20</strong> → KEPT.</p>
+    <p><code>.filter()</code> returns the original rows from kept groups → rows 1 and 4 → shape[0] = <strong>2</strong>.</p>
+    <p class="trap">🪤 Trap: Remember that <code>.filter()</code> returns the ORIGINAL rows (not aggregated results). The 2 rows returned are the full dropoff rows with all columns intact.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(3) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>rides.groupby('route').head(1)['eta_min'].sum()</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 41</p>
+    <p><code>.head(1)</code> returns the first row of each group:</p>
+    <p>• SFO → row 0: eta_min = 14</p>
+    <p>• OAK → row 2: eta_min = 9</p>
+    <p>• SJC → row 3: eta_min = 18</p>
+    <p>Sum = 14 + 9 + 18 = <strong>41</strong>.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 3 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="question" id="q3">
+<div class="q-header">
+  <span class="q-title">Question 3: Regex Table</span>
+  <span class="q-pts">4 Pts</span>
+</div>
+<div class="q-body">
+<p>Consider the following string:</p>
+<pre><code>"Gate F12 boards in 27 minutes at SFO."</code></pre>
+<p>For each regex, write the matching substrings in order. If no match, write <strong>NA</strong>.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[1.5 pt]</span></div>
+  <p>Pattern: <code>\d+</code></p>
+  <div class="match-grid">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+    <span></span>
+  </div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Match 1: <code>12</code> &nbsp; Match 2: <code>27</code> &nbsp; Match 3: NA</p>
+    <p><code>\d+</code> matches one or more digits. "F<strong>12</strong>" contains "12", then "<strong>27</strong>" minutes. No other digit sequences exist in the string.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1 pt]</span></div>
+  <p>Pattern: <code>[A-Z]{2}\d{2}</code></p>
+  <div class="match-grid">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+    <span></span>
+  </div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Match 1: NA &nbsp; Match 2: NA &nbsp; Match 3: NA</p>
+    <p>This pattern requires exactly 2 uppercase letters followed by exactly 2 digits.</p>
+    <p>• "F12" — only 1 uppercase letter before the digits → no match.</p>
+    <p>• "SFO" — 3 uppercase letters, no digits after → no match.</p>
+    <p class="trap">🪤 Trap: Students might think "F12" matches, but <code>[A-Z]{2}</code> requires <strong>exactly two</strong> uppercase letters. "F" is only one.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1.5 pt]</span></div>
+  <p>Pattern: <code>[A-Za-z]{3}</code></p>
+  <div class="match-grid">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+    <span></span>
+  </div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Match 1: <code>Gat</code> &nbsp; Match 2: <code>boa</code> &nbsp; Match 3: <code>rds</code></p>
+    <p>(Also: <code>min</code>, <code>ute</code>, <code>SFO</code>)</p>
+    <p><code>[A-Za-z]{3}</code> matches exactly 3 consecutive letters. The regex engine scans left to right, consuming non-overlapping matches:</p>
+    <p>• "Gate" → "<strong>Gat</strong>" (3 letters consumed), "e" leftover (not enough for another match by itself but "e F" has a space)</p>
+    <p>• "boards" → "<strong>boa</strong>", "<strong>rds</strong>"</p>
+    <p>• "minutes" → "<strong>min</strong>", "<strong>ute</strong>", "s" leftover</p>
+    <p>• "at" → only 2 letters → no match</p>
+    <p>• "SFO" → "<strong>SFO</strong>"</p>
+    <p class="trap">🪤 Note: The OpenClaw solution listed only "SFO" — but <code>[A-Za-z]{3}</code> without anchors matches ANY 3-letter substring within longer words too. The full match list is: Gat, boa, rds, min, ute, SFO. This is a case where running through the regex engine carefully matters!</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 4 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="question" id="q4">
+<div class="q-header">
+  <span class="q-title">Question 4: Visualization Suitability</span>
+  <span class="q-pts">8 Pts</span>
+</div>
+<div class="q-body">
+<p>Dataset: 800 rows with variables <code>wait_min</code> (quantitative, continuous) and <code>dep_hour</code> (integer 0–23, representing hour of departure).</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) Distribution of <code>wait_min</code> <span class="pts-badge">[4 pts, 1 pt each]</span></div>
+  <p>Mark True if the plot type is appropriate for visualizing the <strong>distribution of <code>wait_min</code></strong>, False otherwise.</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a1" value="T"> True</label><label><input type="radio" name="q4a1" value="F"> False</label></div><span class="tf-text">Histogram</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a2" value="T"> True</label><label><input type="radio" name="q4a2" value="F"> False</label></div><span class="tf-text">KDE Plot</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a3" value="T"> True</label><label><input type="radio" name="q4a3" value="F"> False</label></div><span class="tf-text">Scatter Plot</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a4" value="T"> True</label><label><input type="radio" name="q4a4" value="F"> False</label></div><span class="tf-text">Box Plot</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Histogram: True ✓</p>
+    <p class="correct">KDE Plot: True ✓</p>
+    <p class="correct">Scatter Plot: False ✗</p>
+    <p class="correct">Box Plot: True ✓</p>
+    <p>We're visualizing the distribution of a <strong>single quantitative variable</strong>. Histograms, KDE plots, and box plots all show univariate distributions. Scatter plots require two variables.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <code>wait_min</code> vs <code>dep_hour</code> <span class="pts-badge">[4 pts, 1 pt each]</span></div>
+  <p>Mark True if appropriate for visualizing the <strong>relationship between <code>wait_min</code> and <code>dep_hour</code></strong>, False otherwise.</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b1" value="T"> True</label><label><input type="radio" name="q4b1" value="F"> False</label></div><span class="tf-text">Hexbin heatmap</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b2" value="T"> True</label><label><input type="radio" name="q4b2" value="F"> False</label></div><span class="tf-text">Side-by-side boxplots (by hour buckets)</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b3" value="T"> True</label><label><input type="radio" name="q4b3" value="F"> False</label></div><span class="tf-text">Overlaid histograms per hour</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b4" value="T"> True</label><label><input type="radio" name="q4b4" value="F"> False</label></div><span class="tf-text">Contour plot</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Hexbin heatmap: True ✓</p>
+    <p>Hex plots work well for showing relationships between two quantitative variables, especially with many data points.</p>
+    <p class="correct">Side-by-side boxplots: True ✓</p>
+    <p>Since <code>dep_hour</code> takes discrete integer values (0–23), it can naturally serve as a categorical grouping variable. Each hour bucket gets its own boxplot showing the distribution of <code>wait_min</code>.</p>
+    <p class="correct">Overlaid histograms per hour: False ✗</p>
+    <p>With 24 different hours, overlaying 24 histograms would be unreadable — too many overlapping distributions. This is impractical even if technically possible.</p>
+    <p class="correct">Contour plot: True ✓</p>
+    <p>Contour plots show density of two quantitative variables and work well here.</p>
+    <p class="trap">🪤 Trap: The side-by-side boxplots answer is True here because <code>dep_hour</code> is naturally discrete (24 values) and can be treated as categorical buckets. If <code>dep_hour</code> were truly continuous (e.g., 14.37), side-by-side boxplots would require explicit binning first.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 5 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="question" id="q5">
+<div class="q-header">
+  <span class="q-title">Question 5: Sampling + Bias</span>
+  <span class="q-pts">4 Pts</span>
+</div>
+<div class="q-body">
+<p>Researchers study rideshare usage at SFO airport.</p>
+<p><strong>Day 1:</strong> A researcher stands at the SFO curb from 6–8 AM and intercepts <strong>120 travelers</strong> to ask about their rideshare habits.</p>
+<p><strong>Day 2 (updated method):</strong> The researcher instead sends an <strong>email survey to 400 users</strong> drawn from the airport's mobile app user database.</p>
+<p>Indicate whether switching from Day 1 to Day 2 <strong>increases (↑)</strong>, <strong>decreases (↓)</strong>, or <strong>leaves unchanged (↔)</strong> each error source.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">Fill in each cell <span class="pts-badge">[1 pt each]</span></div>
+  <table class="arrow-table">
+    <tr><th>Error Source</th><th>Day 1 → Day 2 Change</th></tr>
+    <tr><td>Chance error</td><td><select name="q5a"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
+    <tr><td>Selection bias</td><td><select name="q5b"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
+    <tr><td>Non-response bias</td><td><select name="q5c"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
+    <tr><td>Response bias</td><td><select name="q5d"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
+  </table>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Chance error: ↓ Decreases</p>
+    <p>Sample size increased from 120 to 400. Larger samples → less random variability.</p>
+    <p class="correct">Selection bias: ↑ Increases</p>
+    <p>Day 1 sampled from physical travelers at the curb (at least physically at the airport). Day 2 samples from app users only — this is a biased frame that excludes non-tech-savvy travelers, elderly, international visitors without the app, etc. The sampling frame narrowed and became less representative.</p>
+    <p class="correct">Non-response bias: ↓ Decreases</p>
+    <p>Day 1 intercepts people rushing through an airport at 6–8 AM — many will refuse. Email surveys, while they have their own non-response issues, allow people to respond at their convenience. The Day 2 approach also includes a reminder mechanism. Overall non-response is likely lower.</p>
+    <p class="correct">Response bias: ↔ Unchanged</p>
+    <p>Response bias relates to whether respondents answer truthfully. Switching the survey delivery method doesn't inherently change whether people lie or misremember their rideshare habits.</p>
+    <p class="trap">🪤 Trap: Students often confuse "bigger sample = less bias." Increasing sample size reduces CHANCE ERROR only. It does nothing for systematic biases (selection, response). Here, the Day 2 method actually INCREASES selection bias despite having more respondents.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 6 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="question" id="q6">
+<div class="q-header">
+  <span class="q-title">Question 6: Sampling Logic</span>
+  <span class="q-pts">6 Pts</span>
+</div>
+<div class="q-body">
+<p>Suppose 40% of all travelers at SFO plan to take a rideshare. Let p̂ be the sample proportion from a survey.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
+  <p>For a <strong>simple random sample</strong> of n = 100 travelers, compute:</p>
+  <p>𝔼[p̂] = ?</p>
+  <input type="text" placeholder="E[p̂] = ...">
+  <p>SE(p̂) = ?</p>
+  <input type="text" placeholder="SE(p̂) = ...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">𝔼[p̂] = 0.40</p>
+    <p>For an SRS, the sample proportion is an unbiased estimator of the population proportion.</p>
+    <p class="correct">SE(p̂) = √(0.4 × 0.6 / 100) = √(0.0024) ≈ 0.049</p>
+    <p>The standard error of the sample proportion is √(p(1−p)/n).</p>
+    <p class="warn">⚠️ <strong>Scope Note:</strong> Computing SE of a sample proportion using √(p(1−p)/n) may be slightly beyond the SP26 Midterm 1 scope. Treat this as bonus practice — the core concept (larger n → smaller SE → less chance error) is definitely in scope.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[2 pts]</span></div>
+  <p>If you intercept only travelers <strong>already standing at the rideshare curb</strong>, is p̂ an unbiased estimate of the true proportion? Identify the type of bias.</p>
+  <textarea rows="3" placeholder="Your answer..."></textarea>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">No — p̂ is biased (it overestimates the true proportion).</p>
+    <p>This is <strong>selection bias</strong>. The sampling frame (people at the rideshare curb) is systematically different from the population (all travelers). People at the rideshare curb are disproportionately likely to be rideshare users, so p̂ will be much higher than the true 40%.</p>
+    <p>This is also a <strong>convenience sample</strong> — the researcher picked an easy-to-access location that doesn't represent the full population.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[2 pts]</span></div>
+  <p>Name <strong>two concrete ways</strong> to reduce <strong>chance error</strong> (not bias) for this estimate.</p>
+  <textarea rows="3" placeholder="Your answer..."></textarea>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Any two of the following:</p>
+    <p>1. <strong>Increase the sample size</strong> — larger n → smaller SE → less chance error.</p>
+    <p>2. <strong>Use stratified random sampling</strong> across different times of day and terminal locations — reduces variability within strata.</p>
+    <p>3. <strong>Repeat independent samples and average the results</strong> — averaging multiple independent estimates reduces random fluctuation.</p>
+    <p class="trap">🪤 Trap: "Use a better sampling frame" or "sample from the full terminal" reduces BIAS, not chance error. The question specifically asks about chance error. Students who confuse the two lose points here.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 7 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="question" id="q7">
+<div class="q-header">
+  <span class="q-title">Question 7: Quick Probability Check</span>
+  <span class="q-pts">2 Pts</span>
+</div>
+<div class="q-body">
+<p>Recall that 40% of all travelers plan to use rideshare. You sample <strong>two travelers with replacement</strong>.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
+  <p>What is the probability that <strong>both</strong> sampled travelers plan to use rideshare?</p>
+  <input type="text" placeholder="Your answer...">
+  <p>Show your work:</p>
+  <textarea rows="2" placeholder="Your work..."></textarea>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 0.16</p>
+    <p>Since we're sampling <strong>with replacement</strong>, the two draws are independent.</p>
+    <p>P(both rideshare) = P(first is rideshare) × P(second is rideshare) = 0.4 × 0.4 = <strong>0.16</strong></p>
+    <p class="trap">🪤 Trap: If sampling were <strong>without replacement</strong> from a finite population, the draws would NOT be independent and you'd need to adjust the second probability. The "with replacement" specification is key.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- End -->
+<div style="text-align:center;margin-top:40px;padding:32px;background:var(--surface);border-radius:10px;border:1px solid var(--border)">
+  <h2 style="color:var(--green);margin-bottom:8px">🎉 End of OpenClaw Practice Exam (Set 1)</h2>
+  <p style="color:var(--dim);font-size:.95em">Total: 36 Points · 7 Questions · 50 Minutes</p>
+  <p style="color:var(--yellow);font-size:.85em;margin-top:8px">⚠️ Q6 (SE computation) and Q7 (probability) may extend slightly beyond SP26 Midterm 1 scope. Use as bonus practice.</p>
+</div>
+
+</div>
+
+<button class="ref-toggle" onclick="toggleRef()">📖 Reference Sheet</button>
+<div class="ref-panel" id="refPanel">
+<h3>Pandas (import pandas as pd)</h3>
+<p><code>df[col]</code> — Returns column as Series</p>
+<p><code>df[[c1, c2]]</code> — Returns DataFrame with columns</p>
+<p><code>df.loc[row, col]</code> — Label-based indexing</p>
+<p><code>df.iloc[row, col]</code> — Position-based indexing</p>
+<p><code>df[bool_series]</code> — Boolean filtering</p>
+<p><code>df.sort_values(col, ascending=True)</code></p>
+<p><code>df.set_index(col)</code> — Set column as index</p>
+<p><code>df.query("expr")</code> — SQL-like filtering</p>
+<p><code>df.dropna()</code> / <code>df.fillna(val)</code> / <code>df.isna()</code></p>
+<p><code>df.merge(other, left_on=, right_on=, how=)</code></p>
+<p><code>df.pivot_table(values=, index=, columns=, aggfunc=, fill_value=)</code></p>
+<h3>Groupby</h3>
+<p><code>grouped = df.groupby(col)</code></p>
+<p><code>grouped.agg(func)</code> — Aggregate</p>
+<p><code>grouped.agg({"col": "func"})</code> — Dict form</p>
+<p><code>grouped.filter(lambda sf: ...)</code> — Keep groups where True</p>
+<p><code>grouped.head(n)</code> — First n rows per group</p>
+<p><code>grouped.size()</code> / <code>grouped.count()</code></p>
+<h3>String Methods (s.str.___)</h3>
+<p><code>.str[a:b]</code> — Slice · <code>.str.split(pat)</code></p>
+<p><code>.str.contains(pat)</code> · <code>.str.startswith(s)</code></p>
+<p><code>.str.extract(pat)</code> · <code>.str.replace(pat, repl)</code></p>
+<h3>Regex</h3>
+<p><code>[abc]</code> char class · <code>[^abc]</code> negated · <code>\d \w \s</code></p>
+<p><code>.</code> any char · <code>*</code> 0+ · <code>+</code> 1+ · <code>?</code> 0 or 1</p>
+<p><code>{n}</code> exactly n · <code>{n,m}</code> n to m · <code>^</code> start · <code>$</code> end</p>
+<p><code>(group)</code> capture · <code>a|b</code> alternation</p>
+<p><code>re.findall(pat, s)</code> — all matches (or groups if present)</p>
+<h3>Visualization</h3>
+<p><code>plt.hist(data, bins=)</code> · <code>plt.scatter(x, y)</code></p>
+<p><code>sns.boxplot(data=, x=, y=)</code></p>
+<p><code>sns.violinplot(data=, x=, y=, hue=)</code></p>
+<p><code>sns.kdeplot(data=, x=)</code></p>
+<p><code>sns.scatterplot(data=, x=, y=)</code></p>
+<h3>KDE</h3>
+<p>f̂(x) = (1/n) Σᵢ Kα(x, xᵢ)</p>
+<p>Boxcar: Kα = 1/α if |x−xᵢ| ≤ α/2, else 0</p>
+</div>
+
+<script>
+let t=3000,running=false,iv;
+function toggleTimer(){
+  const b=document.getElementById('timerBtn'),d=document.getElementById('timer');
+  if(!running){running=true;b.textContent='Pause';b.classList.remove('paused');
+    iv=setInterval(()=>{if(t<=0){clearInterval(iv);d.textContent='00:00';d.className='timer-display danger';return}
+    t--;let m=Math.floor(t/60),s=t%60;
+    d.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    if(t<=300)d.className='timer-display danger';
+    else if(t<=600)d.className='timer-display warning';
+    else d.className='timer-display';},1000)}
+  else{running=false;clearInterval(iv);b.textContent='Resume';b.classList.add('paused')}
+}
+function toggleRef(){document.getElementById('refPanel').classList.toggle('open')}
+</script>
+</body>
+</html>
