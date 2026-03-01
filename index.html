@@ -260,7 +260,7 @@
 <div class="viewer-overlay" id="examViewer">
   <div class="viewer">
     <div class="viewer-header">
-      <button class="viewer-back" id="viewerBack" aria-label="Back to exam list">← Back</button>
+      <button type="button" class="viewer-back" id="viewerBack" aria-label="Back to exam list">← Back</button>
       <div class="viewer-path">
         <span>Exam location</span>
         <strong id="viewerLabel">Select an exam</strong>
@@ -291,7 +291,7 @@
           <span>50 min</span>
         </div>
         <div class="actions">
-          <button class="open-link" data-src="midterm1/day1/claw-exam.html" data-label="Day 1 · OpenClaw Set 1">Take exam</button>
+          <button class="open-link" data-src="midterm1/day1/claw-exam.html" data-label="Day 1 · OpenClaw Set 1" data-slug="exam1">Take exam</button>
           <button class="coverage-btn" data-src="midterm1/day1/coverage.html" data-label="Day 1 · OpenClaw coverage">Coverage</button>
         </div>
       </article>
@@ -307,7 +307,7 @@
           <span>50 min</span>
         </div>
         <div class="actions">
-          <button class="open-link" data-src="midterm1/day1/claude-exam.html" data-label="Day 1 · Claude Set 1">Take exam</button>
+          <button class="open-link" data-src="midterm1/day1/claude-exam.html" data-label="Day 1 · Claude Set 1" data-slug="exam2">Take exam</button>
           <button class="coverage-btn" data-src="midterm1/day1/coverage.html" data-label="Day 1 · Claude coverage">Coverage</button>
         </div>
       </article>
@@ -328,7 +328,7 @@
           <span>50 min</span>
         </div>
         <div class="actions">
-          <button class="open-link" data-src="midterm1/day2/claw-exam.html" data-label="Day 2 · OpenClaw Set 2">Take exam</button>
+          <button class="open-link" data-src="midterm1/day2/claw-exam.html" data-label="Day 2 · OpenClaw Set 2" data-slug="exam3">Take exam</button>
           <button class="coverage-btn" data-src="midterm1/day2/coverage.html" data-label="Day 2 · OpenClaw coverage">Coverage</button>
         </div>
       </article>
@@ -344,7 +344,7 @@
           <span>50 min</span>
         </div>
         <div class="actions">
-          <button class="open-link" data-src="midterm1/day2/claude-exam.html" data-label="Day 2 · Claude Set 2">Take exam</button>
+          <button class="open-link" data-src="midterm1/day2/claude-exam.html" data-label="Day 2 · Claude Set 2" data-slug="exam4">Take exam</button>
           <button class="coverage-btn" data-src="midterm1/day2/coverage.html" data-label="Day 2 · Claude coverage">Coverage</button>
         </div>
       </article>
@@ -364,6 +364,8 @@
   const viewerFrame = document.getElementById('viewerFrame');
   const viewerLabel = document.getElementById('viewerLabel');
   const viewerBack = document.getElementById('viewerBack');
+  const coverageButtons = document.querySelectorAll('.coverage-btn');
+  const examButtons = document.querySelectorAll('.open-link');
 
   function toggleCoverage(show, src = '', label = 'Coverage') {
     if (show) {
@@ -387,19 +389,37 @@
     }
   }
 
-  const examButtons = document.querySelectorAll('.open-link');
-  const examLabelMap = {};
+  const slugMap = {};
+  const labelMap = {};
+  const rawPath = window.location.pathname;
+  const slugMatch = rawPath.match(/\/(exam[\w-]+)\/?$/);
+  let hubPath = rawPath;
+  if (slugMatch) {
+    hubPath = rawPath.slice(0, slugMatch.index + 1);
+  }
+  if (!hubPath.endsWith('/')) hubPath += '/';
+  if (hubPath === '') hubPath = '/';
+  const initialSlug = slugMatch ? slugMatch[1] : null;
 
-  function getExamLabel(src) {
-    return examLabelMap[src] || 'Exam';
+  function buildExamUrl(slug, src) {
+    if (slug) return `${hubPath}${slug}`;
+    const url = new URL(window.location.origin + hubPath);
+    url.searchParams.set('exam', src);
+    return `${url.pathname}${url.search}`;
   }
 
-  function openExam(src, label, skipPush = false) {
+  function ensureHubState() {
+    if (!history.state || typeof history.state.exam === 'undefined') {
+      history.replaceState({ exam: null, slug: null }, '', hubPath);
+    }
+  }
+
+  function openExam(src, label, slug, { skipPush = false } = {}) {
     toggleViewer(true, src, label);
     if (!skipPush) {
-      const url = new URL(window.location);
-      url.searchParams.set('exam', src);
-      history.pushState({ exam: src, label }, '', url);
+      ensureHubState();
+      const targetUrl = buildExamUrl(slug, src);
+      history.pushState({ exam: src, label, slug }, '', targetUrl);
     }
   }
 
@@ -409,42 +429,56 @@
       history.back();
     } else {
       toggleViewer(false);
-      const url = new URL(window.location);
-      url.searchParams.delete('exam');
-      history.replaceState(history.state || { exam: null }, '', url);
+      if (window.location.pathname !== hubPath) {
+        history.replaceState({ exam: null, slug: null }, '', hubPath);
+      }
     }
   }
 
   examButtons.forEach(btn => {
-    examLabelMap[btn.dataset.src] = btn.dataset.label;
+    const slug = btn.dataset.slug;
+    if (slug) {
+      slugMap[slug] = { src: btn.dataset.src, label: btn.dataset.label };
+    }
+    labelMap[btn.dataset.src] = btn.dataset.label;
     btn.addEventListener('click', () => {
-      openExam(btn.dataset.src, btn.dataset.label);
+      openExam(btn.dataset.src, btn.dataset.label, slug);
     });
   });
 
   const params = new URLSearchParams(window.location.search);
-  const initialExam = params.get('exam');
-  if (initialExam) {
-    const originalUrl = new URL(window.location);
-    const hubUrl = new URL(window.location);
-    hubUrl.searchParams.delete('exam');
-    history.replaceState({ exam: null }, '', hubUrl);
-    history.pushState({ exam: initialExam, label: getExamLabel(initialExam) }, '', originalUrl);
-    openExam(initialExam, getExamLabel(initialExam), true);
-  } else if (!history.state) {
-    history.replaceState({ exam: null }, '', window.location.href);
+  let initialExamSrc = null;
+  let initialLabel = null;
+  if (initialSlug && slugMap[initialSlug]) {
+    initialExamSrc = slugMap[initialSlug].src;
+    initialLabel = slugMap[initialSlug].label;
+  } else if (params.get('exam')) {
+    initialExamSrc = params.get('exam');
+    initialLabel = labelMap[initialExamSrc] || 'Practice exam';
+  }
+
+  if (initialExamSrc) {
+    const slug = initialSlug && slugMap[initialSlug] ? initialSlug : null;
+    const label = initialLabel || labelMap[initialExamSrc] || 'Practice exam';
+    history.replaceState({ exam: null, slug: null }, '', hubPath);
+    history.pushState({ exam: initialExamSrc, label, slug }, '', buildExamUrl(slug, initialExamSrc));
+    openExam(initialExamSrc, label, slug, { skipPush: true });
+  } else {
+    ensureHubState();
+    if (window.location.search.includes('exam=')) {
+      history.replaceState({ exam: null, slug: null }, '', hubPath);
+    }
   }
 
   window.addEventListener('popstate', (event) => {
     if (event.state && event.state.exam) {
-      const label = event.state.label || getExamLabel(event.state.exam);
-      toggleViewer(true, event.state.exam, label);
+      toggleViewer(true, event.state.exam, event.state.label || 'Exam');
     } else {
       toggleViewer(false);
     }
   });
 
-  document.querySelectorAll('.coverage-btn').forEach(btn => {
+  coverageButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       toggleCoverage(true, btn.dataset.src, btn.dataset.label);
     });
@@ -456,7 +490,10 @@
   viewer.addEventListener('click', (e) => {
     if (e.target === viewer) requestCloseExam();
   });
-  viewerBack.addEventListener('click', () => requestCloseExam());
+  viewerBack.addEventListener('click', (e) => {
+    e.stopPropagation();
+    requestCloseExam();
+  });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {

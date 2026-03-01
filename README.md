@@ -11,8 +11,9 @@ Curated exam-style practice sets for UC Berkeley Data 100. Each HTML exam mirror
 
 ## Web Hub
 Static landing page lives in `index.html` and can be deployed as-is (e.g., GitHub Pages/Netlify). Features:
-- Day-by-day cards (two exams per day) with "Open exam" buttons launching each HTML file in a new tab
+- Day-by-day cards (two exams per day) with **Take exam** buttons that open a full-window inline viewer
 - Coverage modal buttons that pop open the corresponding `coverage.html` inside the site (no tab switching)
+- Shareable short URLs (`/exam1`, `/exam2`, …) so each viewer state is deep-linkable and the browser back button mirrors the in-site arrow
 - Instructions for duplicating cards when new days/exams are added
 
 ## Exam Constraints
