@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 1 Coverage — Practice Midterm 1</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --dim: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+  }
+  body {
+    margin: 0;
+    padding: 32px 16px 80px;
+    font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  h1 {
+    margin-bottom: 8px;
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
+  }
+  .subtitle {
+    color: var(--dim);
+    margin-bottom: 28px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  }
+  th, td {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: rgba(88,166,255,0.15);
+    color: var(--accent);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+  td strong {
+    color: var(--accent);
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(63,185,80,0.15);
+    color: var(--green);
+    margin-left: 8px;
+  }
+  @media(max-width: 640px) {
+    table, thead, tbody, th, td, tr { display: block; }
+    th { position: sticky; top: 0; }
+    tr { border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Day 1 Coverage</h1>
+  <p class="subtitle">Practice Midterm 1 · Fall '25 structure · Released Feb 27</p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">#</th>
+        <th style="width:220px">Topic / Skill</th>
+        <th style="width:160px">Question(s)</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Pandas indexing & slicing</strong><br><span class="dim">Series vs DataFrame, RangeIndex</span></td>
+        <td>claw Q1, claude Q1</td>
+        <td>Label vs positional lookups, chained boolean filters, scalar vs non-scalar returns when duplicate index labels appear.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>GroupBy + aggregation</strong><br><span class="dim">head/filter, pivot mimic</span></td>
+        <td>claw Q2, claude Q2 (parts d/e)</td>
+        <td>Counting groups, `.filter` returning original rows, `.head(1)` per group, grouped aggregation plus pivot-table reasoning.</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Regex + text extraction</strong></td>
+        <td>claw Q3, claude Q3</td>
+        <td>`\d+`, capturing groups, overlapping substring reasoning.</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>EDA / Visualization</strong></td>
+        <td>claw Q4, claude Q4</td>
+        <td>True/False on histogram vs scatter/box/KDE; two-variable plot choices (hexbin, contour, box-by-category).</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Sampling error & bias</strong></td>
+        <td>claw Q5, claude Q6</td>
+        <td>Compare survey designs (intercept vs email) to identify chance error vs response/non-response/selection biases.</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>Sampling proportion SE + probability</strong></td>
+        <td>claw Q6</td>
+        <td>Compute \(E[\hat p]\), \(SE(\hat p)\) for SRS, convenience bias discussion, chance-error control levers.</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>Basic probability</strong></td>
+        <td>claw Q7</td>
+        <td>Independent draws with replacement (0.4² style quick calc).</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Pivot / reshaping</strong></td>
+        <td>claude Q2 (c–e)</td>
+        <td>Granularity, variable types, `groupby().sum().idxmax()`, `filter`, `pivot_table(values/index/columns/aggfunc/fill_value)`.</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>KDE intuition</strong></td>
+        <td>claude Q5</td>
+        <td>Manual KDE evaluation + bandwidth interpretation.</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><strong>Survey design scenario</strong></td>
+        <td>claude Q6</td>
+        <td>Bear Transit case: frame issues, non-response, weighting ideas.</td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td><strong>Loss & derivatives</strong></td>
+        <td>claude Q7</td>
+        <td>Compare MAE vs MSE penalties, interpret partial derivative signs, log-transform reasoning.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
