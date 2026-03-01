@@ -1,19 +1,28 @@
 # Data 100 Practice Exams
 
-Curated exam-style practice sets for UC Berkeley Data 100. Each folder mirrors the real course assessment structure so you can drill one exam per day without interpreter access.
+Curated exam-style practice sets for UC Berkeley Data 100. Each HTML exam mirrors the Fall '25 50-minute paper format so you can drill one practice midterm per day without interpreter access.
 
 ## Structure
-- `midterm1/` — Weeks 1–5 topics (Pandas, EDA, regex, viz, sampling, intro modeling)
-- `midterm2/` — (placeholder) Weeks 6–10 once the course progresses
-- `midterm3/` — (placeholder) For semesters that include a third midterm
-- `final/` — (placeholder) Comprehensive cumulative practice
+- `midterm1/dayN` — Daily folders (Day 1, Day 2, …). Each contains:
+  - `claw-exam.html` — OpenClaw-authored exam (timer, reference sheet, collapsible solutions)
+  - `claude-exam.html` — Claude-authored partner exam (uploaded manually)
+  - `coverage.html` — Styled topic map highlighting which skills that day hits
+- `midterm2/`, `midterm3/`, `final/` — Placeholders for future waves once the course reaches those topics.
 
-Every notebook follows the official constraints:
-- Text/MC answers only (no Jupyter execution)
-- Collapsible solutions for self-grading
-- Coverage log per folder to track topic balance
+## Web Hub
+Static landing page lives in `site/index.html` and can be deployed as-is (e.g., GitHub Pages/Netlify). Features:
+- Day-by-day cards (two exams per day) with "Open exam" buttons launching each HTML file in a new tab
+- Coverage modal buttons that pop open the corresponding `coverage.html` inside the site (no tab switching)
+- Instructions for duplicating cards when new days/exams are added
 
-## Usage
-1. Pick the latest notebook in the relevant exam folder.
-2. Work through it offline or in a notebook viewer—no interpreter needed.
-3. Record what felt rough; the next day’s set will include targeted drills plus a fresh full exam.
+## Exam Constraints
+- Text / MC answers only (no notebook execution)
+- 7 questions, 36 points, 50 minutes, built-in timer + reference sheet
+- Solutions hidden behind `<details>` blocks for self-grading
+
+## Workflow
+1. Generate/upload the Claude set for a given day (`midterm1/dayN/claude-exam.html`).
+2. Create the OpenClaw set (`claw-exam.html`) + `coverage.html` and commit.
+3. Update `site/index.html` with the new day’s cards (pointing to both exams + coverage modal).
+4. Push to GitHub; redeploy the static site if hosting elsewhere.
+5. Keep a trap journal outside the repo to inform the next day’s question mix.
