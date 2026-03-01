@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Lines & Survey Revisions – Coverage</title>
+<style>
+  :root {
+    --bg: #020508;
+    --surface: #0b1425;
+    --border: #1d2840;
+    --text: #f3f7ff;
+    --dim: #92a0c4;
+    --accent: #58d1ff;
+  }
+  body { margin: 0; padding: 32px 16px 80px; font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { margin: 0 0 6px; font-size: clamp(2rem, 4vw, 2.4rem); }
+  .subtitle { color: var(--dim); margin-bottom: 28px; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); background: rgba(88,209,255,0.12); margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.45); }
+  th, td { border-bottom: 1px solid var(--border); padding: 14px 16px; text-align: left; vertical-align: top; }
+  th { background: rgba(88,209,255,0.18); color: var(--accent); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Security Lines & Survey Revisions</h1>
+  <p class="subtitle">Day 2 · OpenClaw Set 2 · 36 pts · 7 questions · 50 min</p>
+  <div class="tag">Focus: gate throughput, turnstile logs, snack surveys, MAE/MSE traps</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:62px">Q#</th>
+        <th style="width:220px">Topic</th>
+        <th>What you drill</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Q1</td>
+        <td><strong>Multi-index indexing</strong><br><span class="dim">Terminal/checkpoint data</span></td>
+        <td>Use `.set_index`, `.loc`, `.xs`, `.swaplevel`, `.nunique`, and chained masks to answer questions about runway checkpoint throughput.</td>
+      </tr>
+      <tr>
+        <td>Q2</td>
+        <td><strong>GroupBy counts</strong><br><span class="dim">Turnstile time series</span></td>
+        <td>Combine `groupby().size()`, `.agg`, `.head`, and boolean filters to isolate the busiest hour blocks and compare weekday vs weekend flows.</td>
+      </tr>
+      <tr>
+        <td>Q3</td>
+        <td><strong>Regex drills</strong><br><span class="dim">Concourse texts</span></td>
+        <td>Pattern-match gate IDs (letter+digits), concourse prefixes, and 24h timestamps, picking the right regex for each extraction.</td>
+      </tr>
+      <tr>
+        <td>Q4</td>
+        <td><strong>Snack study viz</strong></td>
+        <td>Decide when scatter/hexbin vs stacked bars or violin plots are appropriate for snack preference vs battery-life experiments.</td>
+      </tr>
+      <tr>
+        <td>Q5</td>
+        <td><strong>AirBART sampling</strong></td>
+        <td>Compare intercept-on-the-platform to random texting of contract holders and mark how chance error, selection, response, and non-response shift.</td>
+      </tr>
+      <tr>
+        <td>Q6</td>
+        <td><strong>Loss landscape</strong></td>
+        <td>Always/Never/Sometimes prompts about MAE medians, outlier sensitivity of MSE, plus an explicit 4-row MAE computation.</td>
+      </tr>
+      <tr>
+        <td>Q7</td>
+        <td><strong>Partial derivative pick</strong></td>
+        <td>Identify \(\partial R / \partial θ_2\) for a log/quad feature mix, reinforcing chain rule and sign keeping.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

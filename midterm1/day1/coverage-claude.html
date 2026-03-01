@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Café Playlist Alt – Coverage</title>
+<style>
+  :root {
+    --bg: #050308;
+    --surface: #160f23;
+    --border: #2d1c3f;
+    --text: #fef7ff;
+    --dim: #c8b7dd;
+    --accent: #ff9ac7;
+    --accent2: #8be9ff;
+  }
+  body { margin: 0; padding: 32px 16px 80px; font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { margin: 0 0 6px; font-size: clamp(2rem, 4vw, 2.4rem); }
+  .subtitle { color: var(--dim); margin-bottom: 28px; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,154,199,0.12); margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.5); }
+  th, td { border-bottom: 1px solid var(--border); padding: 14px 16px; text-align: left; vertical-align: top; }
+  th { background: rgba(255,154,199,0.18); color: var(--accent); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Café Playlist Alt</h1>
+  <p class="subtitle">Day 1 · Claude Set 1 · 37 pts · 7 questions · 50 min</p>
+  <div class="tag">Focus: coffee bar receipts, Oski’s 2,000-song playlist, Cal Day + gym viz, Bear Transit surveys</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:62px">Q#</th>
+        <th style="width:220px">Topic</th>
+        <th>What you drill</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Q1</td>
+        <td><strong>Coffee orders</strong></td>
+        <td>Series slicing with string indices (x–v), `.loc` vs `.iloc`, boolean masks, and `groupby('drink')['price'].max()` using café POS data.</td>
+      </tr>
+      <tr>
+        <td>Q2</td>
+        <td><strong>Oski’s playlist</strong></td>
+        <td>Identify granularity + variable types, aggregate plays per artist with `idxmax`, filter genres by average duration via `groupby.filter`, pivot liked vs duration medians, merge TA experience data, and split section labels into weekday tags.</td>
+      </tr>
+      <tr>
+        <td>Q3</td>
+        <td><strong>Cal Day regex</strong></td>
+        <td>Extract attendance (2026, 15000, 340), capitalized words, and comma-terminated nouns using capture groups vs no-group `re.findall` behavior.</td>
+      </tr>
+      <tr>
+        <td>Q4</td>
+        <td><strong>Gym viz</strong></td>
+        <td>Distinguish which plots show duration distributions or duration↔calories relationships; fill blanks for `plt.hist(evals["hours"], bins=15); plt.title(...)` plus violin syntax.</td>
+      </tr>
+      <tr>
+        <td>Q5</td>
+        <td><strong>Library KDE</strong></td>
+        <td>Manual KDE for {2,5,6} with α=2, reason about total area = 1, note densities can exceed 1, and explain how increasing α smooths the estimate.</td>
+      </tr>
+      <tr>
+        <td>Q6</td>
+        <td><strong>Bear Transit survey</strong></td>
+        <td>Population vs sampling frame, classify biases (selection, non-response), label sampling type (stratified), and compute proportional sample counts (e.g., 2,250 total, 200 Engineers).</td>
+      </tr>
+      <tr>
+        <td>Q7</td>
+        <td><strong>EDA transformation</strong></td>
+        <td>Recognize exponential pattern ⇒ log-transform y for linearization, and critique blanket “replace 0 with NaN” cleaning rules to avoid bias.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

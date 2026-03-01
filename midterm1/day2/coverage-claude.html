@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farmers Market & Transit Alt – Coverage</title>
+<style>
+  :root {
+    --bg: #060309;
+    --surface: #1a0d1f;
+    --border: #301836;
+    --text: #fff6ff;
+    --dim: #d4bfe1;
+    --accent: #ffa7d7;
+  }
+  body { margin: 0; padding: 32px 16px 80px; font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { margin: 0 0 6px; font-size: clamp(2rem, 4vw, 2.4rem); }
+  .subtitle { color: var(--dim); margin-bottom: 28px; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,167,215,0.15); margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.5); }
+  th, td { border-bottom: 1px solid var(--border); padding: 14px 16px; text-align: left; vertical-align: top; }
+  th { background: rgba(255,167,215,0.2); color: var(--accent); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Farmers Market & Transit Alt</h1>
+  <p class="subtitle">Day 2 · Claude Set 2 · 37 pts · 7 questions · 50 min</p>
+  <div class="tag">Focus: Berkeley market stalls, Data 100 evals, Oski’s diner menu, Bear Transit sampling</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:62px">Q#</th>
+        <th style="width:220px">Topic</th>
+        <th>What you drill</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Q1</td>
+        <td><strong>Farmers market indexing</strong></td>
+        <td>Series lookups with string labels A–E, `.iloc`, `.loc` slicing, `.str.contains`, sorting before `.iloc`, and `.min` on labelled ranges.</td>
+      </tr>
+      <tr>
+        <td>Q2</td>
+        <td><strong>Course evals</strong></td>
+        <td>State granularity, classify columns, build TA stats with `groupby().agg`, filter TAs by mean rating, merge TA experience, count comments, split discussion slot into weekday column.</td>
+      </tr>
+      <tr>
+        <td>Q3</td>
+        <td><strong>Oski’s diner regex</strong></td>
+        <td>Match price strings, uppercase menu names, and capture dishes that immediately precede `$`; emphasizes `re.findall` capture semantics.</td>
+      </tr>
+      <tr>
+        <td>Q4</td>
+        <td><strong>Study viz</strong></td>
+        <td>Pick valid plots (hist, violin) for hours distribution and cross-TA comparisons; fill blanks for histogram call and `plt.title` invocation.</td>
+      </tr>
+      <tr>
+        <td>Q5</td>
+        <td><strong>Bookstore KDE</strong></td>
+        <td>Manual boxcar evaluation for {20,30,30,50} with α=20, confirm area=1, allow densities >1, discuss why smaller α isn’t always better.</td>
+      </tr>
+      <tr>
+        <td>Q6</td>
+        <td><strong>Bear Transit sampling</strong></td>
+        <td>Population vs frame, name multiple biases, identify probability vs convenience sampling, compute counts for stratified draw (e.g., 200 Engineering).</td>
+      </tr>
+      <tr>
+        <td>Q7</td>
+        <td><strong>EDA thinking</strong></td>
+        <td>Reason about zero-encoded missing hours, how zeros pull the mean down, and why dropping those rows can introduce bias if the missingness isn’t random.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
