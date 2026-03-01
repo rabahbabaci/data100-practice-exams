@@ -393,19 +393,14 @@
   const labelMap = {};
   const rawPath = window.location.pathname;
   const slugMatch = rawPath.match(/\/(exam[\w-]+)\/?$/);
-  let hubPath = rawPath;
-  if (slugMatch) {
-    hubPath = rawPath.slice(0, slugMatch.index + 1);
-  }
+  let hubPath = slugMatch ? rawPath.slice(0, slugMatch.index + 1) : rawPath;
   if (!hubPath.endsWith('/')) hubPath += '/';
   if (hubPath === '') hubPath = '/';
   const initialSlug = slugMatch ? slugMatch[1] : null;
 
   function buildExamUrl(slug, src) {
     if (slug) return `${hubPath}${slug}`;
-    const url = new URL(window.location.origin + hubPath);
-    url.searchParams.set('exam', src);
-    return `${url.pathname}${url.search}`;
+    return `${hubPath}?exam=${encodeURIComponent(src)}`;
   }
 
   function ensureHubState() {
@@ -418,20 +413,15 @@
     toggleViewer(true, src, label);
     if (!skipPush) {
       ensureHubState();
-      const targetUrl = buildExamUrl(slug, src);
-      history.pushState({ exam: src, label, slug }, '', targetUrl);
+      history.pushState({ exam: src, label, slug }, '', buildExamUrl(slug, src));
     }
   }
 
-  function requestCloseExam() {
+  function closeExam({ updateHistory = true } = {}) {
     if (!viewer.classList.contains('active')) return;
-    if (history.state && history.state.exam) {
-      history.back();
-    } else {
-      toggleViewer(false);
-      if (window.location.pathname !== hubPath) {
-        history.replaceState({ exam: null, slug: null }, '', hubPath);
-      }
+    toggleViewer(false);
+    if (updateHistory && window.location.pathname !== hubPath) {
+      history.replaceState({ exam: null, slug: null }, '', hubPath);
     }
   }
 
@@ -448,19 +438,19 @@
 
   const params = new URLSearchParams(window.location.search);
   let initialExamSrc = null;
-  let initialLabel = null;
+  let initialExamLabel = null;
   if (initialSlug && slugMap[initialSlug]) {
     initialExamSrc = slugMap[initialSlug].src;
-    initialLabel = slugMap[initialSlug].label;
+    initialExamLabel = slugMap[initialSlug].label;
   } else if (params.get('exam')) {
     initialExamSrc = params.get('exam');
-    initialLabel = labelMap[initialExamSrc] || 'Practice exam';
+    initialExamLabel = labelMap[initialExamSrc] || 'Practice exam';
   }
 
   if (initialExamSrc) {
     const slug = initialSlug && slugMap[initialSlug] ? initialSlug : null;
-    const label = initialLabel || labelMap[initialExamSrc] || 'Practice exam';
-    history.replaceState({ exam: null, slug: null }, '', hubPath);
+    const label = initialExamLabel || labelMap[initialExamSrc] || 'Practice exam';
+    ensureHubState();
     history.pushState({ exam: initialExamSrc, label, slug }, '', buildExamUrl(slug, initialExamSrc));
     openExam(initialExamSrc, label, slug, { skipPush: true });
   } else {
@@ -474,7 +464,7 @@
     if (event.state && event.state.exam) {
       toggleViewer(true, event.state.exam, event.state.label || 'Exam');
     } else {
-      toggleViewer(false);
+      closeExam({ updateHistory: false });
     }
   });
 
@@ -488,17 +478,17 @@
     if (e.target === overlay) toggleCoverage(false);
   });
   viewer.addEventListener('click', (e) => {
-    if (e.target === viewer) requestCloseExam();
+    if (e.target === viewer) closeExam();
   });
   viewerBack.addEventListener('click', (e) => {
     e.stopPropagation();
-    requestCloseExam();
+    closeExam();
   });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (overlay.classList.contains('active')) toggleCoverage(false);
-      if (viewer.classList.contains('active')) requestCloseExam();
+      if (viewer.classList.contains('active')) closeExam();
     }
   });
 </script>
