@@ -106,23 +106,29 @@
     gap: 10px;
     flex-wrap: wrap;
   }
-  .actions a {
+  .actions a,
+  .actions button {
     border: 1px solid var(--border);
     padding: 10px 16px;
     border-radius: 10px;
     font-weight: 600;
     text-decoration: none;
+    background: var(--surface2);
+    color: var(--dim);
     transition: transform 0.15s ease;
+    cursor: pointer;
   }
   .actions a.open-link {
     background: var(--accent);
     color: #05060b;
   }
-  .actions a:not(.open-link) {
-    background: var(--surface2);
-    color: var(--dim);
+  .actions button.coverage-btn {
+    background: transparent;
+    color: var(--accent);
+    border-color: var(--accent);
   }
-  .actions a:hover {
+  .actions a:hover,
+  .actions button.coverage-btn:hover {
     transform: translateY(-2px);
   }
   footer {
@@ -134,9 +140,61 @@
   footer a {
     color: var(--accent);
   }
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    width: min(900px, 100%);
+    max-height: 90vh;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-header h3 { margin: 0; font-size: 1rem; }
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--dim);
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+  .modal iframe {
+    border: none;
+    width: 100%;
+    height: 70vh;
+    background: #000;
+  }
 </style>
 </head>
 <body>
+<div class="modal-overlay" id="coverageModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="coverageTitle">Coverage</h3>
+      <button class="modal-close" aria-label="Close" onclick="toggleCoverage(false)">×</button>
+    </div>
+    <iframe id="coverageFrame" title="Coverage"></iframe>
+  </div>
+</div>
 <header>
   <p class="tagline">DATA 100 · SPRING 2026</p>
   <h1>Practice Midterm Hub</h1>
@@ -160,7 +218,7 @@
         </div>
         <div class="actions">
           <a class="open-link" href="../midterm1/day1/claw-exam.html" target="_blank" rel="noopener">Open exam</a>
-          <a href="../midterm1/day1/coverage.html" target="_blank" rel="noopener">Coverage</a>
+          <button class="coverage-btn" data-src="../midterm1/day1/coverage.html" data-label="Day 1 · OpenClaw coverage">Coverage</button>
         </div>
       </article>
 
@@ -174,7 +232,7 @@
         </div>
         <div class="actions">
           <a class="open-link" href="../midterm1/day1/claude-exam.html" target="_blank" rel="noopener">Open exam</a>
-          <a href="../midterm1/day1/coverage.html" target="_blank" rel="noopener">Coverage</a>
+          <button class="coverage-btn" data-src="../midterm1/day1/coverage.html" data-label="Day 1 · Claude coverage">Coverage</button>
         </div>
       </article>
     </div>
@@ -195,7 +253,7 @@
         </div>
         <div class="actions">
           <a class="open-link" href="../midterm1/day2/claw-exam.html" target="_blank" rel="noopener">Open exam</a>
-          <a href="../midterm1/day2/coverage.html" target="_blank" rel="noopener">Coverage</a>
+          <button class="coverage-btn" data-src="../midterm1/day2/coverage.html" data-label="Day 2 · OpenClaw coverage">Coverage</button>
         </div>
       </article>
 
@@ -209,7 +267,7 @@
         </div>
         <div class="actions">
           <a class="open-link" href="../midterm1/day2/claude-exam.html" target="_blank" rel="noopener">Open exam</a>
-          <a href="../midterm1/day2/coverage.html" target="_blank" rel="noopener">Coverage</a>
+          <button class="coverage-btn" data-src="../midterm1/day2/coverage.html" data-label="Day 2 · Claude coverage">Coverage</button>
         </div>
       </article>
     </div>
@@ -220,5 +278,34 @@
     <p>Repo: <a href="https://github.com/rabahbabaci/data100-practice-exams" target="_blank" rel="noopener">data100-practice-exams</a></p>
   </footer>
 </main>
+<script>
+  const overlay = document.getElementById('coverageModal');
+  const frame = document.getElementById('coverageFrame');
+  const title = document.getElementById('coverageTitle');
+
+  function toggleCoverage(show, src = '', label = 'Coverage') {
+    if (show) {
+      frame.src = src;
+      title.textContent = label;
+      overlay.classList.add('active');
+    } else {
+      frame.src = '';
+      overlay.classList.remove('active');
+    }
+  }
+
+  document.querySelectorAll('.coverage-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggleCoverage(true, btn.dataset.src, btn.dataset.label);
+    });
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) toggleCoverage(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) toggleCoverage(false);
+  });
+</script>
 </body>
 </html>
