@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DATA 100 SP26 — Practice Midterm 1 (OpenClaw Set 2)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#30363d;--text:#e6edf3;--dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--code-bg:#0d1117;--input-bg:#0d1117;--input-border:#30363d}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:880px;margin:0 auto;padding:20px 16px 80px}
+header{text-align:center;padding:32px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px}
+header h1{font-size:1.6em;font-weight:700;margin-bottom:4px}
+header h2{font-size:1.1em;font-weight:400;color:var(--dim)}
+.exam-meta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:.85em;color:var(--dim)}
+.exam-meta span{background:var(--surface);padding:4px 12px;border-radius:6px;border:1px solid var(--border)}
+.badge-claw{background:rgba(210,153,34,.12)!important;border-color:var(--yellow)!important;color:var(--yellow)}
+.timer-bar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;font-size:.9em}
+.timer-display{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:1.3em;font-weight:700;color:var(--green)}
+.timer-display.warning{color:var(--yellow)}
+.timer-display.danger{color:var(--red)}
+.timer-btn{background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:.85em;font-weight:600}
+.timer-btn:hover{opacity:.85}
+.timer-btn.paused{background:var(--yellow);color:#000}
+.question{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:20px}
+.q-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.q-title{font-size:1.15em;font-weight:700;color:var(--accent)}
+.q-pts{font-size:.85em;color:var(--dim);background:var(--surface2);padding:2px 10px;border-radius:12px}
+.q-body{margin-bottom:16px}
+.q-body p{margin-bottom:10px}
+.q-body ul{margin:8px 0 8px 20px;font-size:.9em}
+.subq{margin:16px 0;padding:16px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)}
+.subq-label{font-weight:600;color:var(--accent);font-size:.95em;margin-bottom:8px}
+.pts-badge{font-size:.75em;color:var(--dim);font-weight:400;margin-left:6px}
+code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:.88em;border:1px solid var(--border);color:#f0883e}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px;overflow-x:auto;margin:10px 0;font-size:.88em;line-height:1.5}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+.df-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.85em}
+.df-table th,.df-table td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.df-table th{background:var(--surface2);color:var(--accent);font-weight:600}
+.df-table td{background:var(--code-bg)}
+.df-table tr:hover td{background:var(--surface2)}
+input[type="text"],textarea{width:100%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);padding:10px 12px;border-radius:6px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.88em;margin:6px 0;resize:vertical}
+input[type="text"]:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.15)}
+textarea{min-height:48px}
+.radio-group,.check-group{margin:8px 0}
+.radio-group label,.check-group label{display:block;padding:8px 12px;margin:4px 0;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:.9em;transition:border-color .15s}
+.radio-group label:hover,.check-group label:hover{border-color:var(--accent)}
+.radio-group input,.check-group input{margin-right:8px;accent-color:var(--accent)}
+.tf-row{display:flex;gap:12px;align-items:center;padding:8px 0;flex-wrap:wrap}
+.tf-row .tf-options{display:flex;gap:8px;min-width:120px}
+.tf-row .tf-text{flex:1;font-size:.9em}
+.match-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px;align-items:center;font-size:.88em;margin:10px 0}
+.match-grid .hdr{font-weight:600;color:var(--accent);padding:4px 8px}
+details{margin-top:16px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+summary{padding:10px 16px;background:var(--surface2);cursor:pointer;font-weight:600;font-size:.9em;color:var(--green);user-select:none;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'▶ ';font-size:.75em}
+details[open] summary::before{content:'▼ '}
+summary:hover{background:var(--border)}
+.solution{padding:16px;font-size:.9em;line-height:1.7;border-top:1px solid var(--border)}
+.solution .correct{color:var(--green);font-weight:600}
+.solution .trap{color:var(--yellow);font-style:italic}
+.note{background:rgba(88,166,255,.08);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.88em}
+.warn{background:rgba(248,81,73,.08);border-left:3px solid var(--red);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.88em}
+.q-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.q-nav a{display:inline-block;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--accent);text-decoration:none;font-size:.85em;font-weight:600}
+.q-nav a:hover{background:var(--surface2);border-color:var(--accent)}
+.ref-toggle{position:fixed;bottom:16px;right:16px;z-index:99;background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.ref-toggle:hover{opacity:.85}
+.ref-panel{display:none;position:fixed;top:50px;right:16px;bottom:60px;width:380px;background:var(--surface);border:1px solid var(--border);border-radius:10px;z-index:98;overflow-y:auto;padding:16px;font-size:.78em;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.ref-panel.open{display:block}
+.ref-panel h3{color:var(--accent);font-size:1em;margin:12px 0 6px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.ref-panel h3:first-child{margin-top:0}
+.ref-panel code{font-size:.82em}
+@media(max-width:600px){.container{padding:12px 10px 60px}.question{padding:16px}.ref-panel{width:calc(100vw - 32px);right:16px}.match-grid{grid-template-columns:auto 1fr;gap:4px}}
+</style>
+</head>
+<body>
+
+<div class="timer-bar">
+  <div>⏱️ <span class="timer-display" id="timer">50:00</span></div>
+  <div><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start Timer</button></div>
+</div>
+
+<div class="container">
+
+<header>
+  <h1>DATA 100 — Practice Midterm 1</h1>
+  <h2>OpenClaw Set 2 · Spring 2026 · UC Berkeley</h2>
+  <div class="exam-meta">
+    <span>⏱ 50 Minutes</span>
+    <span>📝 36 Points</span>
+    <span>📋 7 Questions</span>
+    <span class="badge-claw">🤖 Generated by OpenClaw</span>
+  </div>
+</header>
+
+<div class="note" style="margin-bottom:20px">
+  <strong>Instructions:</strong> No interpreter. Treat this like the real exam — text answers and multiple choice only. Assume <code>pd</code>, <code>np</code>, <code>re</code>, <code>plt</code>, and <code>sns</code> are imported. Give exact values where possible and show reasoning for conceptual prompts.
+</div>
+
+<nav class="q-nav">
+  <a href="#q1">Q1</a><a href="#q2">Q2</a><a href="#q3">Q3</a><a href="#q4">Q4</a><a href="#q5">Q5</a><a href="#q6">Q6</a><a href="#q7">Q7</a>
+</nav>
+
+<!-- Q1 -->
+<div class="question" id="q1">
+<div class="q-header">
+  <span class="q-title">Question 1: Security Line Index Gymnastics</span>
+  <span class="q-pts">7.5 Pts</span>
+</div>
+<div class="q-body">
+<p>DataFrame <code>security</code> (RangeIndex 0–4) tracks checkpoint lanes:</p>
+<table class="df-table">
+<tr><th>idx</th><th>gate</th><th>lane</th><th>wait_min</th><th>precheck</th><th>lane_code</th></tr>
+<tr><td>0</td><td>"A"</td><td>1</td><td>12</td><td>True</td><td>"A1"</td></tr>
+<tr><td>1</td><td>"A"</td><td>2</td><td>19</td><td>False</td><td>"A2"</td></tr>
+<tr><td>2</td><td>"B"</td><td>1</td><td>8</td><td>True</td><td>"B1"</td></tr>
+<tr><td>3</td><td>"C"</td><td>3</td><td>27</td><td>False</td><td>"C3"</td></tr>
+<tr><td>4</td><td>"B"</td><td>2</td><td>15</td><td>False</td><td>"B2"</td></tr>
+</table>
+<p>Evaluate each expression. Write the exact value or describe the exception raised.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>security.loc[4, 'gate']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: "B"</p>
+    <p>Row label 4 corresponds to the last entry whose <code>gate</code> is <code>"B"</code>.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>security.set_index('lane_code').loc['B1', 'wait_min']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 8</p>
+    <p>After setting <code>lane_code</code> as the index, label <code>'B1'</code> maps to row 2, whose wait is 8 minutes.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>security[security['gate'] == 'B']['lane'].iloc[-1]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 2</p>
+    <p>Filtering to <code>gate == 'B'</code> keeps rows 2 and 4 (lanes 1 and 2). <code>.iloc[-1]</code> grabs the last value → 2.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(d) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>security.query("precheck and wait_min &lt;= 12")['lane_code'].tolist()</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: ['A1', 'B1']</p>
+    <p>Only rows 0 and 2 satisfy both conditions, so the resulting list retains their codes in order.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(e) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>security.set_index(['gate','lane']).loc[('A', 2), 'wait_min']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 19</p>
+    <p>Multi-index lookup at label (<code>'A'</code>, <code>2</code>) references row 1, whose wait time is 19 minutes.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- Q2 -->
+<div class="question" id="q2">
+<div class="q-header">
+  <span class="q-title">Question 2: Turnstile GroupBy Counts</span>
+  <span class="q-pts">4.5 Pts</span>
+</div>
+<div class="q-body">
+<p><code>turnstiles</code> has the following rows (times are 24h clock hours):</p>
+<table class="df-table">
+<tr><th>idx</th><th>station</th><th>direction</th><th>hour</th><th>riders</th></tr>
+<tr><td>0</td><td>"Powell"</td><td>"inbound"</td><td>8</td><td>612</td></tr>
+<tr><td>1</td><td>"Powell"</td><td>"outbound"</td><td>8</td><td>431</td></tr>
+<tr><td>2</td><td>"Powell"</td><td>"inbound"</td><td>9</td><td>540</td></tr>
+<tr><td>3</td><td>"Downtown"</td><td>"inbound"</td><td>9</td><td>508</td></tr>
+<tr><td>4</td><td>"Downtown"</td><td>"outbound"</td><td>9</td><td>390</td></tr>
+<tr><td>5</td><td>"Berkeley"</td><td>"inbound"</td><td>8</td><td>355</td></tr>
+<tr><td>6</td><td>"Berkeley"</td><td>"outbound"</td><td>8</td><td>280</td></tr>
+</table>
+<p>Each snippet below returns a <strong>DataFrame</strong>. Enter the number of rows it returns; if there is insufficient information, write NA.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>turnstiles.groupby('station')[['riders']].agg('max')</code>
+  <input type="text" placeholder="Row count">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 3</p>
+    <p>Aggregation collapses to one row per station (Powell, Downtown, Berkeley).</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>turnstiles.sort_values('riders', ascending=False).groupby('station').head(1)</code>
+  <input type="text" placeholder="Row count">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 3</p>
+    <p><code>groupby(...).head(1)</code> keeps the top rider row inside each station grouping → three rows total.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>turnstiles.groupby(['station','direction']).filter(lambda sf: sf['riders'].mean() &gt;= 400)</code>
+  <input type="text" placeholder="Row count">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 4</p>
+    <p>Eligible groups: Powell-inbound (rows 0,2), Powell-outbound (row 1), Downtown-inbound (row 3). These four rows survive the filter.</p>
+    <p class="trap">Berkeley groups average below 400 and are dropped entirely.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- Q3 -->
+<div class="question" id="q3">
+<div class="q-header">
+  <span class="q-title">Question 3: Concourse Regex Drills</span>
+  <span class="q-pts">4 Pts</span>
+</div>
+<div class="q-body">
+<p>Sentence: “<em>Gate A12 closes in 18 minutes while Gate B7 boards Zone 3 passengers.</em>” For each regex, list matches in order; write <code>NA</code> if none.</p>
+<div class="match-grid">
+  <div class="hdr">Regex</div><div class="hdr">Match 1</div><div class="hdr">Match 2</div><div class="hdr">Match 3</div>
+  <div><code>A\d+</code></div><input type="text" placeholder="Match 1"><input type="text" placeholder="Match 2"><input type="text" placeholder="Match 3">
+  <div><code>Gate\s\w+</code></div><input type="text" placeholder="Match 1"><input type="text" placeholder="Match 2"><input type="text" placeholder="Match 3">
+  <div><code>\d+\sminutes</code></div><input type="text" placeholder="Match 1"><input type="text" placeholder="Match 2"><input type="text" placeholder="Match 3">
+  <div><code>Zone\s\d</code></div><input type="text" placeholder="Match 1"><input type="text" placeholder="Match 2"><input type="text" placeholder="Match 3">
+</div>
+</div>
+<details><summary>Show Solution</summary><div class="solution">
+  <ul>
+    <li><code>A\d+</code> → <span class="correct">A12</span></li>
+    <li><code>Gate\s\w+</code> → <span class="correct">Gate A12</span>, <span class="correct">Gate B7</span></li>
+    <li><code>\d+\sminutes</code> → <span class="correct">18 minutes</span></li>
+    <li><code>Zone\s\d</code> → <span class="correct">Zone 3</span></li>
+  </ul>
+  <p class="trap">Remember <code>\w+</code> stops before punctuation, so “Gate B7” is captured even though a space follows the 7.</p>
+</div></details>
+</div>
+
+<!-- Q4 -->
+<div class="question" id="q4">
+<div class="q-header">
+  <span class="q-title">Question 4: Snack Study Visualization Calls</span>
+  <span class="q-pts">8 Pts</span>
+</div>
+<div class="q-body">
+<p>A nutrition lab tracked <code>study_hours</code> (numeric), <code>snack_calories</code> (numeric), and <code>snack_type</code> (categorical: “chips”, “fruit”, “protein bar”). Decide whether each plot is appropriate for the stated task.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) Visualizing the distribution of <code>study_hours</code> alone.<span class="pts-badge">[4 pts]</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a1">True</label><label><input type="radio" name="q4a1">False</label></div><div class="tf-text">Histogram</div></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a2">True</label><label><input type="radio" name="q4a2">False</label></div><div class="tf-text">KDE plot</div></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a3">True</label><label><input type="radio" name="q4a3">False</label></div><div class="tf-text">Scatter plot</div></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a4">True</label><label><input type="radio" name="q4a4">False</label></div><div class="tf-text">Pie chart</div></div>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) Comparing <code>snack_type</code> (categorical) vs <code>study_hours</code> (numeric).<span class="pts-badge">[4 pts]</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b1">True</label><label><input type="radio" name="q4b1">False</label></div><div class="tf-text">Side-by-side boxplots (hours on y-axis, snack type on x-axis)</div></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b2">True</label><label><input type="radio" name="q4b2">False</label></div><div class="tf-text">Stacked bar chart of snack counts colored by binned hours</div></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b3">True</label><label><input type="radio" name="q4b3">False</label></div><div class="tf-text">Hexbin plot (snack_type vs hours)</div></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b4">True</label><label><input type="radio" name="q4b4">False</label></div><div class="tf-text">Violin plot of hours grouped by snack_type</div></div>
+</div>
+<details><summary>Show Solution</summary><div class="solution">
+  <p><strong>Part (a):</strong> Histogram ✔️, KDE ✔️, Scatter ✖️ (needs two variables), Pie ✖️ (categorical share only).</p>
+  <p><strong>Part (b):</strong> Boxplots ✔️, Stacked bar ✖️ (turns numeric outcome into bins, losing granularity), Hexbin ✖️ (requires two numeric axes), Violin ✔️ (quantitative distribution per category).</p>
+</div></details>
+</div>
+
+<!-- Q5 -->
+<div class="question" id="q5">
+<div class="q-header">
+  <span class="q-title">Question 5: Sampling Bias — AirBART Survey</span>
+  <span class="q-pts">4 Pts</span>
+</div>
+<div class="q-body">
+<p>Kai wants the proportion of campus residents who used AirBART last week. Original survey: intercept 80 students waiting outside the library between 5–6pm, 50 respond. Proposed update: draw an SRS of 200 university housing contracts, text them the poll, and send a reminder to non-responders after 2 days. Assume truthful answers if a person responds. Compare the updated survey with the original.</p>
+</div>
+
+<div class="subq">
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5a">Larger</label><label><input type="radio" name="q5a">Smaller</label><label><input type="radio" name="q5a">Same</label></div><div class="tf-text">Chance error</div></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5b">Larger</label><label><input type="radio" name="q5b">Smaller</label><label><input type="radio" name="q5b">Same</label></div><div class="tf-text">Response bias</div></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5c">Larger</label><label><input type="radio" name="q5c">Smaller</label><label><input type="radio" name="q5c">Same</label></div><div class="tf-text">Non-response bias</div></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5d">Larger</label><label><input type="radio" name="q5d">Smaller</label><label><input type="radio" name="q5d">Same</label></div><div class="tf-text">Selection bias</div></div>
+<details><summary>Show Solution</summary><div class="solution">
+  <ul>
+    <li><strong>Chance error:</strong> <span class="correct">Smaller</span> — sample size jumps from 80 to 200.</li>
+    <li><strong>Response bias:</strong> <span class="correct">Same</span> — question wording/mode is unchanged; only who is contacted differs.</li>
+    <li><strong>Non-response bias:</strong> <span class="correct">Smaller</span> — reminder texts typically lift response rates in an SRS frame.</li>
+    <li><strong>Selection bias:</strong> <span class="correct">Smaller</span> — moving from a convenience intercept to an SRS of housing contracts improves coverage of campus residents.</li>
+  </ul>
+</div></details>
+</div>
+
+<!-- Q6 -->
+<div class="question" id="q6">
+<div class="q-header">
+  <span class="q-title">Question 6: Loss Landscape & Outliers</span>
+  <span class="q-pts">6 Pts</span>
+</div>
+<div class="q-body">
+<p>Consider constant and linear models fit on small datasets.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
+  For any dataset with numeric responses, the constant that minimizes MAE is always a (possibly non-unique) median of the responses.
+  <div class="radio-group">
+    <label><input type="radio" name="q6a">Always</label>
+    <label><input type="radio" name="q6a">Never</label>
+    <label><input type="radio" name="q6a">Sometimes, but not always</label>
+  </div>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[2 pts]</span></div>
+  Adding one extreme outlier (very large response) will have a larger impact on the optimal constant under MSE than under MAE.
+  <div class="radio-group">
+    <label><input type="radio" name="q6b">Always</label>
+    <label><input type="radio" name="q6b">Never</label>
+    <label><input type="radio" name="q6b">Sometimes, but not always</label>
+  </div>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[2 pts]</span></div>
+  A fitted SLR model produced the predictions below. Compute the MAE (show work, final answer must be an integer).
+  <table class="df-table">
+    <tr><th>i</th><th>y<sub>i</sub></th><th>ŷ<sub>i</sub></th></tr>
+    <tr><td>1</td><td>12</td><td>8</td></tr>
+    <tr><td>2</td><td>24</td><td>22</td></tr>
+    <tr><td>3</td><td>18</td><td>24</td></tr>
+    <tr><td>4</td><td>30</td><td>34</td></tr>
+  </table>
+  <textarea placeholder="Work + boxed answer"></textarea>
+</div>
+<details><summary>Show Solution</summary><div class="solution">
+  <p>(a) <span class="correct">Always</span> — MAE for a constant model is minimized by any median (Data 100 theorem).</p>
+  <p>(b) <span class="correct">Sometimes, but not always</span>. Outliers influence squared loss more, but the degree depends on sample size and location; statement isn’t universally guaranteed.</p>
+  <p>(c) Absolute errors: |12-8|=4, |24-22|=2, |18-24|=6, |30-34|=4 → sum=16, MAE=16/4 = <span class="correct">4</span>.</p>
+</div></details>
+</div>
+
+<!-- Q7 -->
+<div class="question" id="q7">
+<div class="q-header">
+  <span class="q-title">Question 7: Partial Derivative Pick</span>
+  <span class="q-pts">2 Pts</span>
+</div>
+<div class="q-body">
+<p>Given
+<code>R(θ) = \frac{1}{n}\sum_{i=1}^n (y_i - θ_0 - θ_1 \log x_i - θ_2 x_i^2)^2</code>, pick \(\frac{\partial R}{\partial θ_2}\).</p>
+<div class="radio-group">
+  <label><input type="radio" name="q7">\(\frac{1}{n}\sum 2 x_i^2\)</label>
+  <label><input type="radio" name="q7">\(\frac{-2}{n}\sum x_i^2 (y_i - θ_0 - θ_1 \log x_i - θ_2 x_i^2)\)</label>
+  <label><input type="radio" name="q7">\(\frac{1}{n}\sum 2 (y_i - θ_0 - θ_1 \log x_i - θ_2 x_i^2)\)</label>
+  <label><input type="radio" name="q7">None of the above</label>
+</div>
+</div>
+<details><summary>Show Solution</summary><div class="solution">
+  <p class="correct">Derivative: \(\frac{-2}{n}\sum x_i^2 (y_i - θ_0 - θ_1 \log x_i - θ_2 x_i^2)\).</p>
+  <p class="trap">Chain rule brings down <code>-2 x_i^2</code> from the inner term.</p>
+</div></details>
+</div>
+
+</div>
+
+<button class="ref-toggle" onclick="document.querySelector('.ref-panel').classList.toggle('open')">Reference Sheet</button>
+<div class="ref-panel">
+  <style>
+    .ref-table{width:100%;border-collapse:collapse;font-size:.78em;margin-bottom:18px}
+    .ref-table th,.ref-table td{border:1px solid var(--border);padding:6px 8px;text-align:left}
+    .ref-table th{background:rgba(88,166,255,.12);color:var(--accent);font-weight:600}
+    .ref-table td:first-child{width:45%;font-family:'SF Mono',monospace;color:#f9c97a}
+    .ref-section{margin-bottom:20px}
+    .ref-section h3{margin:10px 0;color:var(--accent);font-size:.95em}
+  </style>
+
+  <div class="ref-section">
+    <h3>Pandas Essentials</h3>
+    <table class="ref-table">
+      <tr><th>Function</th><th>Description</th></tr>
+      <tr><td><code>df.shape</code>, <code>df.index</code></td><td>Dimensions and index labels</td></tr>
+      <tr><td><code>df['col']</code>, <code>df[['c1','c2']]</code></td><td>Select single or multiple columns</td></tr>
+      <tr><td><code>df.index[i]</code>, <code>s.idxmax()</code></td><td>Access ith index label, locate max index</td></tr>
+      <tr><td><code>s.astype(dtype)</code>, <code>df.dtypes</code></td><td>Cast Series and inspect types</td></tr>
+      <tr><td><code>s.isnull()</code>, <code>df.isnull()</code></td><td>Boolean mask of missing values (Series/DataFrame)</td></tr>
+      <tr><td><code>s.fillna(val)</code>, <code>df.fillna(val)</code></td><td>Fill NA/NaN with a value</td></tr>
+      <tr><td><code>s.isin(vals)</code>, <code>df.isin(vals)</code></td><td>Membership test per element</td></tr>
+      <tr><td><code>df.drop(labels, axis)</code></td><td>Drop rows/columns (axis 0/1)</td></tr>
+      <tr><td><code>df.rename(index=..., columns=...)</code></td><td>Rename labels</td></tr>
+      <tr><td><code>df.sort_values(by, ascending=True)</code></td><td>Sort DataFrame by column list</td></tr>
+      <tr><td><code>s.sort_values()</code>, <code>s.unique()</code>, <code>s.value_counts()</code></td><td>Sort Series, unique values, counts</td></tr>
+      <tr><td><code>df.merge(df2, how, left_on, right_on)</code></td><td>SQL-style merges/join keys</td></tr>
+      <tr><td><code>df.pivot_table(values, index, columns, aggfunc, fill_value)</code></td><td>Aggregate pivot with fill option</td></tr>
+      <tr><td><code>df.set_index(col)</code>, <code>df.reset_index()</code></td><td>Move columns to/from index</td></tr>
+      <tr><td><code>df.groupby(by)</code></td><td>Create GroupBy object</td></tr>
+      <tr><td><code>grouped.count()</code>, <code>.size()</code>, <code>.mean()</code>, <code>.min()</code>, <code>.max()</code></td><td>Group aggregations</td></tr>
+      <tr><td><code>grouped.head(n)</code>, <code>.tail(n)</code></td><td>Top/bottom rows per group</td></tr>
+      <tr><td><code>grouped.filter(func)</code>, <code>grouped.agg(func)</code></td><td>Keep groups meeting condition / custom agg</td></tr>
+    </table>
+  </div>
+
+  <div class="ref-section">
+    <h3>String Accessors</h3>
+    <table class="ref-table">
+      <tr><th>Function</th><th>Description</th></tr>
+      <tr><td><code>s.str.len()</code>, <code>s.str[a:b]</code></td><td>Lengths and slice substrings</td></tr>
+      <tr><td><code>s.str.lower()</code>, <code>s.str.upper()</code></td><td>Case conversion</td></tr>
+      <tr><td><code>s.str.replace(pat, repl, regex=False)</code></td><td>Replace substrings with optional regex</td></tr>
+      <tr><td><code>s.str.contains(pat)</code>, <code>s.str.extract(pat)</code></td><td>Boolean contain check / capture groups</td></tr>
+      <tr><td><code>s.str.split(pat=" ")</code></td><td>Split strings into lists</td></tr>
+    </table>
+  </div>
+
+  <div class="ref-section">
+    <h3>Seaborn & Matplotlib</h3>
+    <table class="ref-table">
+      <tr><th>Function</th><th>Description</th></tr>
+      <tr><td><code>sns.countplot(data, x)</code></td><td>Category counts</td></tr>
+      <tr><td><code>sns.histplot(data, x, stat, kde)</code></td><td>Histogram with stat ∈ {count, freq, prob, percent, density}</td></tr>
+      <tr><td><code>sns.displot(data, x, kind='hist', rug=False)</code></td><td>Figure-level histogram or KDE</td></tr>
+      <tr><td><code>sns.rugplot(data, x)</code></td><td>Marginal tick marks</td></tr>
+      <tr><td><code>sns.boxplot(data, x, y)</code>, <code>sns.violinplot(...)</code></td><td>Distribution per category</td></tr>
+      <tr><td><code>sns.scatterplot(data, x, y)</code></td><td>Numeric vs numeric</td></tr>
+      <tr><td><code>sns.lmplot(data, x, y, fit_reg=True)</code></td><td>Scatter with regression line</td></tr>
+      <tr><td><code>sns.jointplot(data, x, y, kind='scatter/kde/hist')</code></td><td>Joint + marginal plots</td></tr>
+      <tr><td><code>plt.plot(x, y)</code>, <code>plt.scatter(x, y)</code></td><td>Line/point plots</td></tr>
+      <tr><td><code>plt.hist(x, bins)</code>, <code>plt.bar(x, height)</code></td><td>Histogram / categorical bar</td></tr>
+    </table>
+  </div>
+
+  <div class="ref-section">
+    <h3>Regex Tokens</h3>
+    <table class="ref-table">
+      <tr><th>Token</th><th>Meaning</th></tr>
+      <tr><td><code>.</code>, <code>*</code>, <code>?</code>, <code>|</code>, <code>+</code></td><td>Any char / repetition / optional / OR / one-or-more</td></tr>
+      <tr><td><code>\d</code>, <code>\w</code>, <code>\s</code>, <code>^</code>, <code>$</code></td><td>Digit / word / whitespace / start / end</td></tr>
+      <tr><td><code>\D</code>, <code>\W</code>, <code>\S</code></td><td>Negations of digit/word/space</td></tr>
+      <tr><td><code>[a-z]</code>, <code>[^abc]</code></td><td>Character class / negated class</td></tr>
+      <tr><td><code>{m}</code>, <code>{m,n}</code></td><td>Exact / range repetitions</td></tr>
+      <tr><td><code>(...)</code></td><td>Capturing group</td></tr>
+    </table>
+  </div>
+
+  <div class="ref-section">
+    <h3>Python <code>re</code> Patterns</h3>
+    <table class="ref-table">
+      <tr><th>Function</th><th>Description</th></tr>
+      <tr><td><code>re.findall(pattern, string)</code></td><td>All non-overlapping matches as list</td></tr>
+      <tr><td><code>re.match(pattern, string)</code></td><td>Match only at start of string</td></tr>
+      <tr><td><code>re.search(pattern, string)</code></td><td>First match anywhere</td></tr>
+      <tr><td><code>re.sub(pattern, repl, string)</code></td><td>Replace matches with repl</td></tr>
+      <tr><td><code>re.findall(r"\[\d+/(\w+)/...\]", line)</code></td><td>Example: capture month from log timestamp → <code>['Jan']</code></td></tr>
+    </table>
+  </div>
+</div>
+
+<script>
+let remaining=3000; // 50 minutes
+let timerId=null;
+const display=document.getElementById('timer');
+const btn=document.getElementById('timerBtn');
+function format(t){const m=Math.floor(t/60);const s=t%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+function tick(){if(remaining<=0){clearInterval(timerId);display.textContent='00:00';display.classList.add('danger');return;}remaining--;display.textContent=format(remaining);if(remaining<=300)display.classList.add('danger');else if(remaining<=600)display.classList.add('warning');}
+function toggleTimer(){if(timerId){clearInterval(timerId);timerId=null;btn.textContent='Resume';btn.classList.add('paused');}else{timerId=setInterval(tick,1000);btn.textContent='Pause';btn.classList.remove('paused');}}
+</script>
+
+</body>
+</html>

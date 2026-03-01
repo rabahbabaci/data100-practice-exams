@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DATA 100 SP26 — Practice Midterm 1, Exam #2</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#30363d;--text:#e6edf3;--dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--code-bg:#0d1117;--input-bg:#0d1117;--input-border:#30363d}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:880px;margin:0 auto;padding:20px 16px 80px}
+header{text-align:center;padding:32px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px}
+header h1{font-size:1.6em;font-weight:700;margin-bottom:4px}
+header h2{font-size:1.1em;font-weight:400;color:var(--dim)}
+.exam-meta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:.85em;color:var(--dim)}
+.exam-meta span{background:var(--surface);padding:4px 12px;border-radius:6px;border:1px solid var(--border)}
+.timer-bar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;font-size:.9em}
+.timer-display{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:1.3em;font-weight:700;color:var(--green)}
+.timer-display.warning{color:var(--yellow)}
+.timer-display.danger{color:var(--red)}
+.timer-btn{background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:.85em;font-weight:600}
+.timer-btn:hover{opacity:.85}
+.timer-btn.paused{background:var(--yellow);color:#000}
+.question{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:20px}
+.q-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.q-title{font-size:1.15em;font-weight:700;color:var(--accent)}
+.q-pts{font-size:.85em;color:var(--dim);background:var(--surface2);padding:2px 10px;border-radius:12px}
+.q-body{margin-bottom:16px}
+.q-body p{margin-bottom:10px}
+.subq{margin:16px 0;padding:16px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)}
+.subq-label{font-weight:600;color:var(--accent);font-size:.95em;margin-bottom:8px}
+.pts-badge{font-size:.75em;color:var(--dim);font-weight:400;margin-left:6px}
+code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:.88em;border:1px solid var(--border);color:#f0883e}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px;overflow-x:auto;margin:10px 0;font-size:.88em;line-height:1.5}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+.df-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.85em}
+.df-table th,.df-table td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.df-table th{background:var(--surface2);color:var(--accent);font-weight:600}
+.df-table td{background:var(--code-bg)}
+.df-table tr:hover td{background:var(--surface2)}
+input[type="text"],textarea{width:100%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);padding:10px 12px;border-radius:6px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.88em;margin:6px 0;resize:vertical}
+input[type="text"]:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.15)}
+textarea{min-height:48px}
+.radio-group,.check-group{margin:8px 0}
+.radio-group label,.check-group label{display:block;padding:8px 12px;margin:4px 0;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:.9em;transition:border-color .15s}
+.radio-group label:hover,.check-group label:hover{border-color:var(--accent)}
+.radio-group input,.check-group input{margin-right:8px;accent-color:var(--accent)}
+.tf-row{display:flex;gap:12px;align-items:center;padding:8px 0;flex-wrap:wrap}
+.tf-row .tf-options{display:flex;gap:8px;min-width:120px}
+.tf-row .tf-text{flex:1;font-size:.9em}
+.match-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px;align-items:center;font-size:.88em;margin:10px 0}
+.match-grid .hdr{font-weight:600;color:var(--accent);padding:4px 8px}
+details{margin-top:16px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+summary{padding:10px 16px;background:var(--surface2);cursor:pointer;font-weight:600;font-size:.9em;color:var(--green);user-select:none;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'▶ ';font-size:.75em}
+details[open] summary::before{content:'▼ '}
+summary:hover{background:var(--border)}
+.solution{padding:16px;font-size:.9em;line-height:1.7;border-top:1px solid var(--border)}
+.solution .correct{color:var(--green);font-weight:600}
+.solution .trap{color:var(--yellow);font-style:italic}
+.note{background:rgba(88,166,255,.08);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.88em}
+.warn{background:rgba(248,81,73,.08);border-left:3px solid var(--red);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:.88em}
+.q-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.q-nav a{display:inline-block;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--accent);text-decoration:none;font-size:.85em;font-weight:600}
+.q-nav a:hover{background:var(--surface2);border-color:var(--accent)}
+.ref-toggle{position:fixed;bottom:16px;right:16px;z-index:99;background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.ref-toggle:hover{opacity:.85}
+.ref-panel{display:none;position:fixed;top:50px;right:16px;bottom:60px;width:380px;background:var(--surface);border:1px solid var(--border);border-radius:10px;z-index:98;overflow-y:auto;padding:16px;font-size:.78em;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.ref-panel.open{display:block}
+.ref-panel h3{color:var(--accent);font-size:1em;margin:12px 0 6px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.ref-panel h3:first-child{margin-top:0}
+.ref-panel code{font-size:.82em}
+@media(max-width:600px){.container{padding:12px 10px 60px}.question{padding:16px}.ref-panel{width:calc(100vw - 32px);right:16px}}
+</style>
+</head>
+<body>
+
+<div class="timer-bar">
+  <div>⏱️ <span class="timer-display" id="timer">50:00</span></div>
+  <div><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start Timer</button></div>
+</div>
+
+<div class="container">
+
+<header>
+  <h1>DATA 100 — Practice Midterm 1, Exam #2</h1>
+  <h2>Spring 2026 · UC Berkeley</h2>
+  <div class="exam-meta">
+    <span>⏱ 50 Minutes</span>
+    <span>📝 37 Points</span>
+    <span>📋 7 Questions</span>
+    <span>📖 Reference Sheet Provided</span>
+  </div>
+</header>
+
+<div class="note" style="margin-bottom:20px">
+  <strong>Instructions:</strong> This exam consists of 37 points spread out over 7 questions. You have 50 minutes. For all Python questions, assume Pandas is imported as <code>pd</code>, NumPy as <code>np</code>, the Python RegEx library as <code>re</code>, <code>matplotlib.pyplot</code> as <code>plt</code>, and <code>seaborn</code> as <code>sns</code>. Blank and incorrect answers are graded identically — answer every question.
+</div>
+
+<nav class="q-nav">
+  <a href="#q1">Q1</a><a href="#q2">Q2</a><a href="#q3">Q3</a><a href="#q4">Q4</a><a href="#q5">Q5</a><a href="#q6">Q6</a><a href="#q7">Q7</a>
+</nav>
+
+<!-- ═══════════════════════════════ Q1 ═══════════════════════════════ -->
+<div class="question" id="q1">
+<div class="q-header">
+  <span class="q-title">Question 1: Pandas at the Farmers Market</span>
+  <span class="q-pts">7.5 Pts</span>
+</div>
+<div class="q-body">
+<p>The DataFrame <code>vendors</code> records stalls at the Berkeley Farmers Market. The index labels are single uppercase letters.</p>
+<table class="df-table">
+<tr><th></th><th>name</th><th>category</th><th>revenue</th></tr>
+<tr><td><strong>A</strong></td><td>"Chez Oski"</td><td>"bakery"</td><td>420</td></tr>
+<tr><td><strong>B</strong></td><td>"Green Bear"</td><td>"produce"</td><td>310</td></tr>
+<tr><td><strong>C</strong></td><td>"Honey Hive"</td><td>"bakery"</td><td>275</td></tr>
+<tr><td><strong>D</strong></td><td>"Farm Fresh"</td><td>"produce"</td><td>580</td></tr>
+<tr><td><strong>E</strong></td><td>"Cal Jams"</td><td>"preserves"</td><td>190</td></tr>
+</table>
+<p class="note">Note: The index labels are <code>'A','B','C','D','E'</code> (strings). If a snippet returns a <strong>single integer</strong>, write that integer. If it returns something else or raises an error, write <strong>NA</strong>.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>vendors['revenue'][2]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: NA (KeyError)</p>
+    <p><code>vendors['revenue']</code> returns a Series with string index labels A–E. Indexing with <code>[2]</code> attempts label-based lookup for the label <code>2</code> (integer). Since no label <code>2</code> exists, this raises a <code>KeyError</code>.</p>
+    <p class="trap">🪤 Trap: Identical pattern to FA25 Q1. With a default RangeIndex, <code>[2]</code> would work — but with custom string labels, integer indexing via <code>[]</code> on a Series looks for a label, not a position.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>vendors.iloc[3, 2]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 580</p>
+    <p><code>.iloc</code> is position-based. Row position 3 = row 'D', column position 2 = <code>revenue</code>. The value is <code>580</code>, which is a single integer. ✓</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>vendors.loc['B':'D', 'revenue'].min()</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 275</p>
+    <p><code>.loc['B':'D']</code> is <strong>inclusive on both ends</strong> (unlike <code>.iloc</code>). This selects rows B, C, D with revenues 310, 275, 580. The minimum is <code>275</code>.</p>
+    <p class="trap">🪤 Trap: <code>.loc</code> slicing is inclusive of the endpoint, but <code>.iloc</code> slicing is exclusive. Students who forget this might think only B and C are selected.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(d) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>vendors[vendors['name'].str.contains(' ')].shape[0]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 4</p>
+    <p><code>str.contains(' ')</code> checks which names contain a space. "Chez Oski" ✓, "Green Bear" ✓, "Honey Hive" ✓, "Farm Fresh" ✓, "Cal Jams" ✓ — wait, that's 5. But look carefully: the question asks for <code>.shape[0]</code>, the number of rows. Actually ALL 5 names contain a space... Let me recheck: "Chez Oski" (space ✓), "Green Bear" (space ✓), "Honey Hive" (space ✓), "Farm Fresh" (space ✓), "Cal Jams" (space ✓). So the answer is <strong>5</strong>.</p>
+    <p>Wait — I need to correct myself. All five vendor names contain a space, so <code>.shape[0]</code> = <strong>5</strong>.</p>
+    <p class="correct">Corrected answer: 5</p>
+    <p class="trap">🪤 Lesson: Always trace through every row carefully. On the real exam, rushing leads to miscounts.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(e) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>vendors.sort_values('revenue').iloc[0]['name']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: NA</p>
+    <p>After sorting by revenue in ascending order (default), the first row has the lowest revenue: "Cal Jams" (190). <code>.iloc[0]['name']</code> returns <code>"Cal Jams"</code>. Since this is a <strong>string, not a single integer</strong>, the answer is <strong>NA</strong>.</p>
+    <p class="trap">🪤 Trap: The expression runs perfectly fine — no error. But the question asks for "a single integer." The result is a string, so write NA. Always re-read what output type the question specifies.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q2 ═══════════════════════════════ -->
+<div class="question" id="q2">
+<div class="q-header">
+  <span class="q-title">Question 2: Data 100 Course Evals</span>
+  <span class="q-pts">9 Pts</span>
+</div>
+<div class="q-body">
+<p>Course staff analyze student evaluations in a DataFrame called <code>evals</code>:</p>
+<ul style="margin:8px 0 8px 20px;font-size:.9em">
+  <li><code>student_id</code>: Unique student identifier (type = <code>str</code>)</li>
+  <li><code>section</code>: Discussion section, e.g. "W-2pm", "Th-10am" (type = <code>str</code>)</li>
+  <li><code>ta</code>: Name of the TA for that section (type = <code>str</code>). Each section has exactly one TA; one TA may lead multiple sections.</li>
+  <li><code>rating</code>: Student's overall course rating, 1–5 (type = <code>np.int64</code>)</li>
+  <li><code>hours</code>: Hours per week the student reports studying (type = <code>np.float64</code>)</li>
+  <li><code>comment</code>: Free-text comment. May be <code>NaN</code> if the student left it blank (type = <code>str</code>)</li>
+</ul>
+<p>There are 1,200 rows (one per student). The first 5 rows:</p>
+<table class="df-table">
+<tr><th></th><th>student_id</th><th>section</th><th>ta</th><th>rating</th><th>hours</th><th>comment</th></tr>
+<tr><td>0</td><td>"stu_001"</td><td>"W-2pm"</td><td>"Anika"</td><td>5</td><td>8.0</td><td>"Great class!"</td></tr>
+<tr><td>1</td><td>"stu_002"</td><td>"W-2pm"</td><td>"Anika"</td><td>4</td><td>12.5</td><td>NaN</td></tr>
+<tr><td>2</td><td>"stu_003"</td><td>"Th-10am"</td><td>"Ben"</td><td>3</td><td>6.0</td><td>"Too fast"</td></tr>
+<tr><td>3</td><td>"stu_004"</td><td>"W-4pm"</td><td>"Anika"</td><td>5</td><td>10.0</td><td>"Loved it"</td></tr>
+<tr><td>4</td><td>"stu_005"</td><td>"Th-10am"</td><td>"Ben"</td><td>2</td><td>15.0</td><td>"Needs more examples"</td></tr>
+</table>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[0.5 pt]</span></div>
+  <p>What is the granularity of <code>evals</code>?</p>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: Each row represents one student's evaluation response.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1 pt]</span></div>
+  <p>For each column, choose the best variable type.</p>
+  <div class="tf-row">
+    <span class="tf-text"><code>section</code>:</span>
+    <div class="tf-options">
+      <label><input type="radio" name="q2b1" value="nom"> Qual. Nominal</label>
+      <label><input type="radio" name="q2b1" value="ord"> Qual. Ordinal</label>
+      <label><input type="radio" name="q2b1" value="quant"> Quantitative</label>
+    </div>
+  </div>
+  <div class="tf-row">
+    <span class="tf-text"><code>rating</code>:</span>
+    <div class="tf-options">
+      <label><input type="radio" name="q2b2" value="nom"> Qual. Nominal</label>
+      <label><input type="radio" name="q2b2" value="ord"> Qual. Ordinal</label>
+      <label><input type="radio" name="q2b2" value="quant"> Quantitative</label>
+    </div>
+  </div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct"><code>section</code>: Qualitative Nominal</p>
+    <p>Section names are categories with no inherent ordering ("W-2pm" is not "more" than "Th-10am").</p>
+    <p class="correct"><code>rating</code>: Qualitative Ordinal</p>
+    <p>Ratings 1–5 have a meaningful order (5 > 4 > 3 > ...) but the gaps between values aren't necessarily equal (the difference between a 1 and 2 may not mean the same as between 4 and 5). This makes it ordinal.</p>
+    <p class="trap">🪤 Trap: Students often mark <code>rating</code> as quantitative because it's stored as <code>np.int64</code>. But the <em>data type</em> isn't the same as the <em>variable type</em>. A 1–5 Likert scale is ordinal. The professors tested this exact distinction in SU25 Q1b with the "ranking" column.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[2 pts]</span></div>
+  <p>Fill in the blanks to create <code>ta_stats</code>: a DataFrame with one row per TA, containing the <strong>mean rating</strong> and <strong>maximum hours</strong>.</p>
+  <pre><code>ta_stats = evals.groupby(__(i)__).agg({__(ii)__, __(iii)__})</code></pre>
+  <p>(i):</p><input type="text" placeholder="Blank (i)...">
+  <p>(ii):</p><input type="text" placeholder="Blank (ii)...">
+  <p>(iii):</p><input type="text" placeholder="Blank (iii)...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">(i): <code>"ta"</code></p>
+    <p class="correct">(ii): <code>"rating": "mean"</code> (or <code>"rating": np.mean</code>)</p>
+    <p class="correct">(iii): <code>"hours": "max"</code> (or <code>"hours": np.max</code>)</p>
+    <p>The dict-style <code>.agg()</code> lets you apply different aggregation functions to different columns. This pattern appears on SP25 Q1h (staff_stats with min oh_tickets and max ed_hours).</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(d) <span class="pts-badge">[2 pts]</span></div>
+  <p>Instructors want to keep only rows from TAs whose sections have an <strong>average rating of at least 4</strong>. Fill in the blanks:</p>
+  <pre><code>top_tas = evals.groupby(__(i)__).__(ii)__(lambda sf: __(iii)__)</code></pre>
+  <p>(i):</p><input type="text" placeholder="Blank (i)...">
+  <p>(ii):</p><input type="text" placeholder="Blank (ii)...">
+  <p>(iii):</p><input type="text" placeholder="Blank (iii)...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">(i): <code>"ta"</code></p>
+    <p class="correct">(ii): <code>filter</code></p>
+    <p class="correct">(iii): <code>sf["rating"].mean() >= 4</code></p>
+    <p><code>.filter()</code> returns the <strong>original rows</strong> from groups where the lambda returns True. This is NOT the same as <code>.agg()</code>, which returns a summary table.</p>
+    <p class="trap">🪤 Trap: Writing <code>.agg()</code> here would produce a summary DataFrame with one row per TA, not the original student-level rows. The question says "keep only rows" — that's the keyword for <code>.filter()</code>.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(e) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>Staff have a separate DataFrame <code>ta_info</code> with columns <code>ta</code> (str) and <code>experience</code> (int, years of TAing). Each TA appears exactly once in <code>ta_info</code>. Write <strong>one line</strong> to create <code>evals_exp</code>: identical to <code>evals</code> but with an additional column <code>experience</code> from <code>ta_info</code>.</p>
+  <textarea rows="2" placeholder="Your code..."></textarea>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: <code>evals_exp = evals.merge(ta_info, on="ta")</code></p>
+    <p>Also accepted: <code>evals.merge(ta_info, left_on="ta", right_on="ta")</code> or <code>evals.merge(ta_info[["ta","experience"]], on="ta")</code>.</p>
+    <p>Since each TA appears once in <code>ta_info</code> and possibly multiple times in <code>evals</code>, this is a many-to-one merge. The default <code>how="inner"</code> works fine assuming every TA in evals exists in ta_info.</p>
+    <p class="trap">🪤 Trap: Students sometimes write <code>pd.merge(evals, ta_info)</code> without specifying <code>on=</code>. This works if the only shared column name is <code>"ta"</code>, but it's risky — always specify the merge key explicitly.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(f) <span class="pts-badge">[2 pts]</span></div>
+  <p>How many students left a comment? Fill in the blank to assign <code>num_comments</code> to this count.</p>
+  <pre><code>num_comments = __(i)__</code></pre>
+  <p>Then, extract the <strong>day of the week</strong> (the part before the hyphen) from each <code>section</code> value into a new column called <code>day</code>. Fill in the blank:</p>
+  <pre><code>evals["day"] = evals["section"].str.__(ii)__</code></pre>
+  <p>(i):</p><input type="text" placeholder="Blank (i)...">
+  <p>(ii):</p><input type="text" placeholder="Blank (ii)...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">(i): <code>evals["comment"].notna().sum()</code> or <code>evals["comment"].count()</code> or <code>evals.shape[0] - evals["comment"].isna().sum()</code></p>
+    <p><code>.count()</code> on a Series excludes NaN by default. <code>.notna().sum()</code> counts the True values (non-null entries).</p>
+    <p class="correct">(ii): <code>split("-").str[0]</code></p>
+    <p>Split "W-2pm" by "-" → ["W", "2pm"], then <code>.str[0]</code> takes the first element "W". This is the same pattern as SP25 Q1l where they extracted the year from "2026-05-16" using <code>str[:4]</code> or <code>str.split("-").str[0]</code>.</p>
+    <p class="trap">🪤 Trap: Writing <code>.str.split("-")[0]</code> without the second <code>.str</code> accessor would try to index the entire resulting Series (not each list element). You need <code>.str.split("-").str[0]</code> with the chained <code>.str</code>.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q3 ═══════════════════════════════ -->
+<div class="question" id="q3">
+<div class="q-header">
+  <span class="q-title">Question 3: Regex at Oski's Diner</span>
+  <span class="q-pts">4.5 Pts</span>
+</div>
+<div class="q-body">
+<p>Oski keeps track of daily specials in a string:</p>
+<pre><code>"Special #7: Eggs_Benedict $14.50, Matcha Latte $6, ACAI Bowl $12.99"</code></pre>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
+  <p>For each regex, write the matching substrings in order. If no match, write <strong>NA</strong>.</p>
+
+  <p style="margin-top:12px;font-weight:600">Pattern: <code>\$\d+\.\d{2}</code></p>
+  <div class="match-grid">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+    <span></span>
+  </div>
+
+  <p style="margin-top:12px;font-weight:600">Pattern: <code>[A-Z]{2,}</code></p>
+  <div class="match-grid">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+    <span></span>
+  </div>
+
+  <details><summary>Show Solution</summary><div class="solution">
+    <p><strong>Pattern 1: <code>\$\d+\.\d{2}</code></strong></p>
+    <p class="correct">Match 1: <code>$14.50</code> &nbsp; Match 2: <code>$12.99</code> &nbsp; Match 3: NA</p>
+    <p><code>\$</code> matches a literal dollar sign (escaped). <code>\d+</code> matches one or more digits. <code>\.</code> matches a literal period. <code>\d{2}</code> matches exactly 2 digits. "$6" doesn't match because there's no decimal point after it. "$14.50" ✓ and "$12.99" ✓.</p>
+
+    <p style="margin-top:12px"><strong>Pattern 2: <code>[A-Z]{2,}</code></strong></p>
+    <p class="correct">Match 1: <code>ACAI</code> &nbsp; Match 2: NA &nbsp; Match 3: NA</p>
+    <p><code>[A-Z]{2,}</code> matches 2 or more consecutive uppercase letters. Scanning left to right: "Special" starts with one uppercase "S" then lowercase → no match within "Sp...". "Eggs_Benedict" → "E" alone, "B" alone. "Matcha" → "M" alone. "Latte" → "L" alone. "<strong>ACAI</strong>" → 4 consecutive uppercase letters ✓. "Bowl" → "B" alone.</p>
+    <p class="trap">🪤 Trap: Students might think "Special" matches because it starts with "S" — but <code>{2,}</code> requires at least 2 <em>consecutive</em> uppercase letters. Only "ACAI" qualifies.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[2.5 pts]</span></div>
+  <p>Oski wants to extract all food item names (the words before each price) from the string. He runs:</p>
+  <pre><code>menu = "Special #7: Eggs_Benedict $14.50, Matcha Latte $6, ACAI Bowl $12.99"
+re.findall(pattern, menu)</code></pre>
+  <p>Which patterns would produce <code>['Eggs_Benedict', 'Matcha Latte', 'ACAI Bowl']</code>? <strong>Select all that apply.</strong></p>
+  <div class="check-group">
+    <label><input type="checkbox" name="q3b" value="A"> A. <code>r"([\w ]+)\s\$"</code></label>
+    <label><input type="checkbox" name="q3b" value="B"> B. <code>r"[\w ]+\s\$"</code></label>
+    <label><input type="checkbox" name="q3b" value="C"> C. <code>r"([A-Za-z_][\w ]*)\s\$\d"</code></label>
+    <label><input type="checkbox" name="q3b" value="D"> D. <code>r"\w+\s\$\d+"</code></label>
+  </div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: A and C</p>
+    <p><strong>A</strong> ✓: <code>([\w ]+)</code> captures one or more word characters or spaces (greedily). Then <code>\s\$</code> matches the space before the dollar sign. <code>re.findall</code> returns the captured group only → <code>['Eggs_Benedict', 'Matcha Latte', 'ACAI Bowl']</code>.</p>
+    <p><strong>B</strong> ✗: No capture group, so <code>re.findall</code> returns the full match including the trailing space and dollar sign: <code>['Eggs_Benedict $', 'Matcha Latte $', 'ACAI Bowl $']</code>.</p>
+    <p><strong>C</strong> ✓: The capture group <code>([A-Za-z_][\w ]*)</code> starts with a letter or underscore then grabs word chars and spaces. Followed by <code>\s\$\d</code>. Returns group content only.</p>
+    <p><strong>D</strong> ✗: <code>\w+</code> matches only one word (no spaces). This would capture <code>['Benedict', 'Latte', 'Bowl']</code> — only the word immediately before the price, not multi-word names.</p>
+    <p class="trap">🪤 Trap: The capture group <code>()</code> behavior of <code>re.findall</code> is the #1 tested regex concept. With groups, only group content is returned. Without groups, the full match is returned.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q4 ═══════════════════════════════ -->
+<div class="question" id="q4">
+<div class="q-header">
+  <span class="q-title">Question 4: Visualizing Study Habits</span>
+  <span class="q-pts">5 Pts</span>
+</div>
+<div class="q-body">
+<p>Using the <code>evals</code> DataFrame from Q2 (columns: <code>section</code>, <code>ta</code>, <code>rating</code>, <code>hours</code>, <code>comment</code>).</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
+  <p>Staff want to visualize the <strong>distribution of <code>hours</code></strong>. True or False:</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a1" value="T"> True</label><label><input type="radio" name="q4a1" value="F"> False</label></div><span class="tf-text">Violin plot</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a2" value="T"> True</label><label><input type="radio" name="q4a2" value="F"> False</label></div><span class="tf-text">Contour plot</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a3" value="T"> True</label><label><input type="radio" name="q4a3" value="F"> False</label></div><span class="tf-text">Histogram</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a4" value="T"> True</label><label><input type="radio" name="q4a4" value="F"> False</label></div><span class="tf-text">Hex plot</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Violin plot: True ✓</p>
+    <p class="correct">Contour plot: False ✗</p>
+    <p class="correct">Histogram: True ✓</p>
+    <p class="correct">Hex plot: False ✗</p>
+    <p>Single variable distribution → violin ✓, histogram ✓, KDE ✓, box ✓. Contour and hex plots require two quantitative variables. This mirrors the SP25 Q1c solution: "contourplots visualize the joint distribution of two quantitative variables."</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>Staff interpret the following boxplot comparing <code>hours</code> for two TAs:</p>
+  <pre><code>  Anika:   |---[====|====]---|       (median ≈ 10)
+  Ben:         |--[==|====]------| (median ≈ 12)</code></pre>
+  <p>Select True or False:</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b1" value="T"> True</label><label><input type="radio" name="q4b1" value="F"> False</label></div><span class="tf-text">The median study hours is higher for Ben's students than Anika's.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b2" value="T"> True</label><label><input type="radio" name="q4b2" value="F"> False</label></div><span class="tf-text">Approximately 50% of Anika's students study between the Q1 and Q3 values shown in the box.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b3" value="T"> True</label><label><input type="radio" name="q4b3" value="F"> False</label></div><span class="tf-text">From the boxplot alone, we can determine the <strong>mean</strong> study hours for each TA.</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Ben higher median: True ✓</p>
+    <p>The line inside each box is the median. Ben's is at ≈12, Anika's at ≈10.</p>
+    <p class="correct">50% between Q1 and Q3: True ✓</p>
+    <p>By definition, the box spans Q1 to Q3, which contains the middle 50% of data (the interquartile range).</p>
+    <p class="correct">Can determine mean: False ✗</p>
+    <p>Boxplots show quartiles, median, and outliers — NOT the mean. The mean cannot be determined from a boxplot. This mirrors SP24 Q4c: "Mean" is incorrect because boxplots do not plot the mean.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>Fill in the blanks to create a histogram of <code>hours</code> with 15 bins and title "Study Hours Distribution".</p>
+  <pre><code>plt.__(i)__(evals["hours"], __(ii)__)
+plt.__(iii)__</code></pre>
+  <p>(i):</p><input type="text" placeholder="Blank (i)...">
+  <p>(ii):</p><input type="text" placeholder="Blank (ii)...">
+  <p>(iii):</p><input type="text" placeholder="Blank (iii)...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">(i): <code>hist</code></p>
+    <p class="correct">(ii): <code>bins=15</code></p>
+    <p class="correct">(iii): <code>title("Study Hours Distribution")</code></p>
+    <p>Same pattern as FA24 Q2c. Note: <code>plt.title()</code> takes a string argument with parentheses and quotes.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q5 ═══════════════════════════════ -->
+<div class="question" id="q5">
+<div class="q-header">
+  <span class="q-title">Question 5: KDE at the Bookstore</span>
+  <span class="q-pts">4 Pts</span>
+</div>
+<div class="q-body">
+<p>The campus bookstore records the prices (in dollars) of 4 textbooks purchased today: <strong>{20, 30, 30, 50}</strong>. A staff member uses a <strong>boxcar kernel</strong> with bandwidth <code>α = 20</code>.</p>
+<pre><code>K_α(x, x_i) = 1/α,  if |x - x_i| ≤ α/2
+              0,      otherwise</code></pre>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2.5 pts]</span></div>
+  <p>Compute the KDE density at <code>x = 35</code>. Show your work.</p>
+  <textarea rows="5" placeholder="Your work and answer..."></textarea>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p>For each data point, check if <code>|35 - x_i| ≤ α/2 = 10</code>:</p>
+    <p>• x₁ = 20: |35 − 20| = 15 > 10 → K = 0</p>
+    <p>• x₂ = 30: |35 − 30| = 5 ≤ 10 → K = 1/α = 1/20</p>
+    <p>• x₃ = 30: |35 − 30| = 5 ≤ 10 → K = 1/α = 1/20</p>
+    <p>• x₄ = 50: |35 − 50| = 15 > 10 → K = 0</p>
+    <p>KDE = (1/n) × Σ K = (1/4)(0 + 1/20 + 1/20 + 0) = (1/4)(2/20) = (1/4)(1/10) = <strong>1/40 = 0.025</strong></p>
+    <p class="correct">Answer: 1/40 = 0.025</p>
+    <p class="trap">🪤 Trap 1: Don't forget the (1/n) factor! The raw kernel sum is 2/20 = 1/10, but you must divide by n = 4.</p>
+    <p class="trap">🪤 Trap 2: Data point 30 appears TWICE. Each instance contributes its own kernel. Students who treat duplicates as one point get 1/80 instead of 1/40.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>A KDE curve is generated from the data. Select True or False:</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5b1" value="T"> True</label><label><input type="radio" name="q5b1" value="F"> False</label></div><span class="tf-text">The total area under a valid KDE curve is always 1.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5b2" value="T"> True</label><label><input type="radio" name="q5b2" value="F"> False</label></div><span class="tf-text">A KDE curve can have density values greater than 1 at some points.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5b3" value="T"> True</label><label><input type="radio" name="q5b3" value="F"> False</label></div><span class="tf-text">Decreasing the bandwidth α always improves the KDE estimate.</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Area = 1: True ✓</p>
+    <p>A valid KDE is a probability density function. Its total area must integrate to 1. This is what made the SU24 boba KDE invalid — its area was not 1.</p>
+    <p class="correct">Density > 1 possible: True ✓</p>
+    <p>Density values CAN exceed 1. What matters is that the <em>total area</em> is 1, not that individual density values are ≤ 1. Think of a very narrow, tall kernel — it can have high density at its peak.</p>
+    <p class="correct">Smaller α always better: False ✗</p>
+    <p>Too small α leads to under-smoothing (spiky, noisy curve that overfits to individual data points). There's a bandwidth tradeoff — too large = over-smoothing, too small = under-smoothing.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q6 ═══════════════════════════════ -->
+<div class="question" id="q6">
+<div class="q-header">
+  <span class="q-title">Question 6: Sampling the Bear Transit</span>
+  <span class="q-pts">5 Pts</span>
+</div>
+<div class="q-body">
+<p>UC Berkeley has 45,000 enrolled students. The transportation office wants to know what fraction of students ride Bear Transit at least once per week. They consider two survey approaches.</p>
+<p><strong>Approach 1:</strong> Post a survey link on the Data 100 Ed discussion board and collect all responses over one week. 320 students respond.</p>
+<p><strong>Approach 2:</strong> Obtain the full enrollment list, divide students into 5 strata by college (L&S, Engineering, etc.), and randomly sample 200 students from each college, proportional to college size.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[1 pt]</span></div>
+  <p>For <strong>Approach 1</strong>, identify the sampling frame and name <strong>two</strong> types of bias likely present.</p>
+  <textarea rows="3" placeholder="Your answer..."></textarea>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Sampling frame: Students enrolled in Data 100 who check Ed.</p>
+    <p class="correct">Biases: (1) Selection bias — only Data 100 students can see the survey; they may have different transit habits than the general student body. (2) Non-response bias — only students who choose to click and respond are included; those who ignore the post may differ systematically.</p>
+    <p>Also acceptable: Response bias is less likely here since it's an anonymous online survey, but could be argued.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[0.5 pt]</span></div>
+  <p>What type of sample is <strong>Approach 2</strong>?</p>
+  <div class="radio-group">
+    <label><input type="radio" name="q6b" value="A"> A. Convenience sample</label>
+    <label><input type="radio" name="q6b" value="B"> B. Simple random sample</label>
+    <label><input type="radio" name="q6b" value="C"> C. Stratified random sample</label>
+    <label><input type="radio" name="q6b" value="D"> D. Cluster sample</label>
+  </div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: C — Stratified random sample</p>
+    <p>The population is divided into non-overlapping strata (colleges) and a random sample is drawn from each stratum. This matches the exact definition from the DATA 100 course notes and SP25 Q3c.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[2 pts]</span></div>
+  <p>For each statement about switching from Approach 1 to Approach 2, select True or False:</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q6c1" value="T"> True</label><label><input type="radio" name="q6c1" value="F"> False</label></div><span class="tf-text">Approach 2 likely has <strong>less selection bias</strong> than Approach 1.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q6c2" value="T"> True</label><label><input type="radio" name="q6c2" value="F"> False</label></div><span class="tf-text">Approach 2 is guaranteed to have <strong>zero non-response bias</strong>.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q6c3" value="T"> True</label><label><input type="radio" name="q6c3" value="F"> False</label></div><span class="tf-text">Approach 2 is a <strong>probability sample</strong> because we can compute the chance of any given student being selected.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q6c4" value="T"> True</label><label><input type="radio" name="q6c4" value="F"> False</label></div><span class="tf-text">If we increased Approach 1's sample size from 320 to 3,000 (same method), selection bias would decrease.</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Less selection bias: True ✓</p>
+    <p>Approach 2 samples from the full enrollment list (the actual population), so the sampling frame matches the population much better than Approach 1's Ed-only frame.</p>
+    <p class="correct">Zero non-response bias: False ✗</p>
+    <p>Even with a well-designed stratified sample, some selected students may not respond. Non-response bias is never guaranteed to be zero unless 100% of sampled individuals respond.</p>
+    <p class="correct">Probability sample: True ✓</p>
+    <p>In a stratified random sample, we know the probability of each student being selected (size of sample from their stratum / size of their stratum). This fits the definition: "we provide the chance that any specified set of individuals will be in the sample."</p>
+    <p class="correct">Bigger sample fixes selection bias: False ✗</p>
+    <p>"A huge sample size does not fix a bad sampling method." This is directly from the DATA 100 course notes. Collecting 3,000 responses from Data 100 Ed still only reaches Data 100 students — the selection bias remains.</p>
+    <p class="trap">🪤 Trap: The last statement is the classic misconception. Increasing sample size reduces chance error, NOT systematic bias. This is tested on nearly every DATA 100 midterm.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(d) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>For Approach 2, the 5 colleges have the following enrollment:</p>
+  <table class="df-table">
+    <tr><th>College</th><th>Students</th></tr>
+    <tr><td>L&S</td><td>22,500</td></tr>
+    <tr><td>Engineering</td><td>9,000</td></tr>
+    <tr><td>Business</td><td>4,500</td></tr>
+    <tr><td>Natural Resources</td><td>4,500</td></tr>
+    <tr><td>Other</td><td>4,500</td></tr>
+  </table>
+  <p>If the total sample size is 1,000 students (proportional to college size), how many Engineering students are sampled?</p>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 200</p>
+    <p>Engineering proportion = 9,000 / 45,000 = 1/5 = 0.20. Sample from Engineering = 0.20 × 1,000 = <strong>200</strong>.</p>
+    <p>This is the same calculation style as SU25 Q1h(ii) (stratified sampling with 1,000 attendees and proportional strata).</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q7 ═══════════════════════════════ -->
+<div class="question" id="q7">
+<div class="q-header">
+  <span class="q-title">Question 7: EDA Thinking</span>
+  <span class="q-pts">1.5 Pts</span>
+</div>
+<div class="q-body">
+<p>Staff discover that 5% of <code>hours</code> values in the <code>evals</code> DataFrame are recorded as <code>0.0</code>. Upon investigation, they find the survey form defaulted to 0 when a student skipped the question (instead of leaving it as NaN).</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>Select True or False for each statement:</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q7a1" value="T"> True</label><label><input type="radio" name="q7a1" value="F"> False</label></div><span class="tf-text">Replacing all <code>0.0</code> values with <code>NaN</code> is always the correct approach, since 0 hours of studying is impossible.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q7a2" value="T"> True</label><label><input type="radio" name="q7a2" value="F"> False</label></div><span class="tf-text">Computing the mean of <code>hours</code> without addressing this issue would likely <strong>underestimate</strong> the true average study time.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q7a3" value="T"> True</label><label><input type="radio" name="q7a3" value="F"> False</label></div><span class="tf-text">Dropping the 0.0 rows could introduce bias if students who skip the question study a different number of hours than those who answer.</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Replace all 0.0 with NaN always correct: False ✗</p>
+    <p>Some students might genuinely study 0 hours. Blindly replacing all 0.0 values with NaN would remove valid data points. The correct approach is to investigate further — perhaps comparing against other survey responses or checking if 0.0 entries also have blank comments.</p>
+    <p class="correct">Mean underestimates: True ✓</p>
+    <p>The false 0.0 values pull the mean downward. If those entries should actually be NaN (or some positive number), including them as 0.0 drags the average below its true value.</p>
+    <p class="correct">Dropping could introduce bias: True ✓</p>
+    <p>If the students who skipped the hours question (recorded as 0.0) study a systematically different amount than those who answered, dropping them removes a non-random subset of the data. This is the same principle as FA24 Q3(d): dropping data that was removed non-randomly introduces selection bias.</p>
+    <p class="trap">🪤 Trap: Data cleaning requires judgment, not blind rules. "Always" and "never" statements about cleaning strategies are almost always False on DATA 100 exams.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- End of Exam -->
+<div style="text-align:center;margin-top:40px;padding:32px;background:var(--surface);border-radius:10px;border:1px solid var(--border)">
+  <h2 style="color:var(--green);margin-bottom:8px">🎉 End of Practice Exam #2</h2>
+  <p style="color:var(--dim);font-size:.95em">Total: 37 Points · 7 Questions · 50 Minutes</p>
+  <p style="color:var(--dim);font-size:.85em;margin-top:8px">Compare your answers to solutions. Focus on traps you fell for — those are your weak spots.</p>
+</div>
+
+</div>
+
+<button class="ref-toggle" onclick="toggleRef()">📖 Reference Sheet</button>
+<div class="ref-panel" id="refPanel">
+<h3>Pandas (import pandas as pd)</h3>
+<p><code>df[col]</code> — Column as Series</p>
+<p><code>df[[c1,c2]]</code> — DataFrame with columns</p>
+<p><code>df.loc[row,col]</code> — Label-based</p>
+<p><code>df.iloc[row,col]</code> — Position-based</p>
+<p><code>df.loc['a':'c']</code> — inclusive both ends</p>
+<p><code>df.iloc[0:3]</code> — exclusive end</p>
+<p><code>df[bool_series]</code> — Boolean filter</p>
+<p><code>df.sort_values(col)</code> · <code>df.value_counts()</code></p>
+<p><code>df.dropna()</code> · <code>df.fillna(v)</code> · <code>df.isna()</code> · <code>s.notna()</code></p>
+<p><code>df.merge(other, on=, how=)</code></p>
+<p><code>df.pivot_table(values=, index=, columns=, aggfunc=, fill_value=)</code></p>
+<h3>Groupby</h3>
+<p><code>df.groupby(col)</code></p>
+<p><code>.agg(func)</code> · <code>.agg({"c":"f"})</code></p>
+<p><code>.filter(lambda sf: ...)</code> — original rows where True</p>
+<p><code>.head(n)</code> · <code>.size()</code> · <code>.count()</code></p>
+<h3>String (s.str.___)</h3>
+<p><code>.str[a:b]</code> · <code>.str.split(pat).str[i]</code></p>
+<p><code>.str.contains(pat)</code> · <code>.str.startswith(s)</code></p>
+<p><code>.str.extract(pat)</code> · <code>.str.replace(pat,repl)</code></p>
+<p><code>.str.len()</code> · <code>.str.lower()</code> · <code>.str.upper()</code></p>
+<h3>Regex</h3>
+<p><code>[abc]</code> class · <code>[^abc]</code> negated · <code>\d \w \s</code></p>
+<p><code>.</code> any · <code>*</code> 0+ · <code>+</code> 1+ · <code>?</code> 0|1</p>
+<p><code>{n}</code> exact · <code>{n,m}</code> range · <code>^</code> start · <code>$</code> end</p>
+<p><code>(grp)</code> capture · <code>a|b</code> alternation · <code>\$</code> literal $</p>
+<p><code>re.findall(pat,s)</code> — list (groups if present)</p>
+<p><code>re.search(pat,s)</code> — first match object</p>
+<h3>Visualization</h3>
+<p><code>plt.hist(data, bins=)</code> · <code>plt.scatter(x,y)</code></p>
+<p><code>plt.title(s)</code> · <code>plt.xlabel(s)</code></p>
+<p><code>sns.boxplot(data=,x=,y=)</code></p>
+<p><code>sns.violinplot(data=,x=,y=,hue=)</code></p>
+<p><code>sns.kdeplot(data=,x=)</code></p>
+<h3>KDE</h3>
+<p>f̂(x) = (1/n) Σᵢ Kα(x, xᵢ)</p>
+<p>Boxcar: Kα = 1/α if |x−xᵢ| ≤ α/2, else 0</p>
+<p>↑ bandwidth → smoother · ↓ bandwidth → spikier</p>
+<p>Valid KDE: total area = 1, density can exceed 1</p>
+</div>
+
+<script>
+let t=3000,running=false,iv;
+function toggleTimer(){const b=document.getElementById('timerBtn'),d=document.getElementById('timer');if(!running){running=true;b.textContent='Pause';b.classList.remove('paused');iv=setInterval(()=>{if(t<=0){clearInterval(iv);d.textContent='00:00';d.className='timer-display danger';return}t--;let m=Math.floor(t/60),s=t%60;d.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(t<=300)d.className='timer-display danger';else if(t<=600)d.className='timer-display warning';else d.className='timer-display';},1000)}else{running=false;clearInterval(iv);b.textContent='Resume';b.classList.add('paused')}}
+function toggleRef(){document.getElementById('refPanel').classList.toggle('open')}
+</script>
+</body>
+</html>
