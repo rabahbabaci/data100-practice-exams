@@ -387,10 +387,61 @@
     }
   }
 
-  document.querySelectorAll('.open-link').forEach(btn => {
+  const examButtons = document.querySelectorAll('.open-link');
+  const examLabelMap = {};
+
+  function getExamLabel(src) {
+    return examLabelMap[src] || 'Exam';
+  }
+
+  function openExam(src, label, skipPush = false) {
+    toggleViewer(true, src, label);
+    if (!skipPush) {
+      const url = new URL(window.location);
+      url.searchParams.set('exam', src);
+      history.pushState({ exam: src, label }, '', url);
+    }
+  }
+
+  function requestCloseExam() {
+    if (!viewer.classList.contains('active')) return;
+    if (history.state && history.state.exam) {
+      history.back();
+    } else {
+      toggleViewer(false);
+      const url = new URL(window.location);
+      url.searchParams.delete('exam');
+      history.replaceState(history.state || { exam: null }, '', url);
+    }
+  }
+
+  examButtons.forEach(btn => {
+    examLabelMap[btn.dataset.src] = btn.dataset.label;
     btn.addEventListener('click', () => {
-      toggleViewer(true, btn.dataset.src, btn.dataset.label);
+      openExam(btn.dataset.src, btn.dataset.label);
     });
+  });
+
+  const params = new URLSearchParams(window.location.search);
+  const initialExam = params.get('exam');
+  if (initialExam) {
+    const originalUrl = new URL(window.location);
+    const hubUrl = new URL(window.location);
+    hubUrl.searchParams.delete('exam');
+    history.replaceState({ exam: null }, '', hubUrl);
+    history.pushState({ exam: initialExam, label: getExamLabel(initialExam) }, '', originalUrl);
+    openExam(initialExam, getExamLabel(initialExam), true);
+  } else if (!history.state) {
+    history.replaceState({ exam: null }, '', window.location.href);
+  }
+
+  window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.exam) {
+      const label = event.state.label || getExamLabel(event.state.exam);
+      toggleViewer(true, event.state.exam, label);
+    } else {
+      toggleViewer(false);
+    }
   });
 
   document.querySelectorAll('.coverage-btn').forEach(btn => {
@@ -403,14 +454,14 @@
     if (e.target === overlay) toggleCoverage(false);
   });
   viewer.addEventListener('click', (e) => {
-    if (e.target === viewer) toggleViewer(false);
+    if (e.target === viewer) requestCloseExam();
   });
-  viewerBack.addEventListener('click', () => toggleViewer(false));
+  viewerBack.addEventListener('click', () => requestCloseExam());
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (overlay.classList.contains('active')) toggleCoverage(false);
-      if (viewer.classList.contains('active')) toggleViewer(false);
+      if (viewer.classList.contains('active')) requestCloseExam();
     }
   });
 </script>
