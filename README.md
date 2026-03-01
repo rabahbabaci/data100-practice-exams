@@ -10,7 +10,7 @@ Curated exam-style practice sets for UC Berkeley Data 100. Each HTML exam mirror
 - `midterm2/`, `midterm3/`, `final/` — Placeholders for future waves once the course reaches those topics.
 
 ## Web Hub
-Static landing page lives in `site/index.html` and can be deployed as-is (e.g., GitHub Pages/Netlify). Features:
+Static landing page lives in `docs/index.html` and can be deployed as-is (e.g., GitHub Pages/Netlify). Features:
 - Day-by-day cards (two exams per day) with "Open exam" buttons launching each HTML file in a new tab
 - Coverage modal buttons that pop open the corresponding `coverage.html` inside the site (no tab switching)
 - Instructions for duplicating cards when new days/exams are added
@@ -23,6 +23,6 @@ Static landing page lives in `site/index.html` and can be deployed as-is (e.g., 
 ## Workflow
 1. Generate/upload the Claude set for a given day (`midterm1/dayN/claude-exam.html`).
 2. Create the OpenClaw set (`claw-exam.html`) + `coverage.html` and commit.
-3. Update `site/index.html` with the new day’s cards (pointing to both exams + coverage modal).
+3. Update `docs/index.html` with the new day’s cards (pointing to both exams + coverage modal).
 4. Push to GitHub; redeploy the static site if hosting elsewhere.
 5. Keep a trap journal outside the repo to inform the next day’s question mix.
