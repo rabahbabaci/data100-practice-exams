@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data 100 Practice Midterm Hub</title>
+<style>
+  :root {
+    --bg: #090c12;
+    --surface: #101522;
+    --surface2: #171e2f;
+    --border: #2b3245;
+    --text: #f2f5ff;
+    --dim: #a0a7c2;
+    --accent: #58a6ff;
+    --accent2: #c792ea;
+    --danger: #ff6b81;
+    --success: #3fb950;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, rgba(88,166,255,0.15), transparent 55%), var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    padding: 48px 20px 32px;
+    text-align: center;
+  }
+  header h1 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin: 0 0 12px;
+  }
+  header p {
+    margin: 4px 0;
+    color: var(--dim);
+    font-size: 1rem;
+  }
+  .tagline {
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .day-pill {
+    align-self: flex-start;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: rgba(88,166,255,0.15);
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .set-pill {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  .meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .meta span {
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--dim);
+  }
+  .card p {
+    margin: 0;
+    color: var(--dim);
+    font-size: 0.95rem;
+  }
+  .actions {
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .actions button,
+  .actions a {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  .actions button {
+    background: var(--accent);
+    color: #05060b;
+  }
+  .actions button:hover {
+    transform: translateY(-2px);
+  }
+  .actions a {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--dim);
+  }
+  #viewer {
+    margin-top: 48px;
+    background: var(--surface);
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+  }
+  #viewer-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  #viewer-status {
+    font-weight: 600;
+    color: var(--accent);
+  }
+  #viewer-frame {
+    width: 100%;
+    min-height: 700px;
+    border: none;
+    border-radius: 0 0 18px 18px;
+  }
+  .placeholder {
+    padding: 80px 24px;
+    text-align: center;
+    color: var(--dim);
+  }
+  .placeholder h3 {
+    margin-bottom: 12px;
+  }
+  footer {
+    margin-top: 48px;
+    text-align: center;
+    color: var(--dim);
+    font-size: 0.85rem;
+  }
+  footer a {
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<header>
+  <p class="tagline">DATA 100 · SPRING 2026</p>
+  <h1>Practice Midterm Hub</h1>
+  <p>One destination for every 50-minute paper-style drill. Pick a day, open an exam, and start the timer.</p>
+  <p>Each card links directly to the HTML exam (plus the topic coverage log).</p>
+</header>
+
+<main>
+  <section class="cards" id="examCards">
+    <!-- Cards injected via HTML below -->
+    <article class="card">
+      <div class="day-pill">Day 1</div>
+      <span class="set-pill">OpenClaw Set 1 · Released Feb 27</span>
+      <h3>Airport Ops & Sampling Bits</h3>
+      <p>Pandas indexing with ride data, groupby pivots, regex on annual statements, viz T/F grids, sampling biases, loss intuition, derivative ID.</p>
+      <div class="meta">
+        <span>36 pts</span>
+        <span>7 questions</span>
+        <span>50 min</span>
+      </div>
+      <div class="actions">
+        <button class="open-btn" data-src="../midterm1/day1/claw-exam.html" data-label="Day 1 · OpenClaw Set 1">Open exam</button>
+        <a href="../midterm1/day1/coverage.md" target="_blank" rel="noopener">Coverage</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="day-pill">Day 1</div>
+      <span class="set-pill">Claude Set 1 · Uploaded by Ravah</span>
+      <h3>Staff Alt Version (Day 1)</h3>
+      <p>Use Ravah’s Claude-generated counterpart for extra reps. (Open to compare question styles.)</p>
+      <div class="meta">
+        <span>Partner set</span>
+      </div>
+      <div class="actions">
+        <button class="open-btn" data-src="../midterm1/day1/claude-exam.html" data-label="Day 1 · Claude Set 1">Open exam</button>
+        <a href="../midterm1/day1/coverage.md" target="_blank" rel="noopener">Coverage</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="day-pill">Day 2</div>
+      <span class="set-pill">OpenClaw Set 2 · Feb 28</span>
+      <h3>Security Lines & Survey Revisions</h3>
+      <p>Multi-index lookups, turnstile aggregations, gate regex, snack/battery viz decisions, AirBART sampling tweaks, MAE vs outliers, gradients.</p>
+      <div class="meta">
+        <span>36 pts</span>
+        <span>7 questions</span>
+        <span>50 min</span>
+      </div>
+      <div class="actions">
+        <button class="open-btn" data-src="../midterm1/day2/claw-exam.html" data-label="Day 2 · OpenClaw Set 2">Open exam</button>
+        <a href="../midterm1/day2/coverage.md" target="_blank" rel="noopener">Coverage</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="day-pill">Day 2</div>
+      <span class="set-pill">Claude Set 2</span>
+      <h3>Upload & Link</h3>
+      <p>Once the Claude exam for Day 2 lands in <code>midterm1/day2/</code>, update this card’s button to point at it.</p>
+      <div class="meta">
+        <span>Pending</span>
+      </div>
+      <div class="actions">
+        <button class="open-btn" data-src="../midterm1/day2/claude-exam.html" data-label="Day 2 · Claude Set 2">Open exam</button>
+        <a href="../midterm1/day2/coverage.md" target="_blank" rel="noopener">Coverage</a>
+      </div>
+    </article>
+  </section>
+
+  <section id="viewer">
+    <div id="viewer-header">
+      <div>
+        <strong>Exam Viewer</strong>
+        <div id="viewer-status">Select a practice exam to load it here.</div>
+      </div>
+      <div id="viewer-hint" style="color:var(--dim);font-size:0.85rem;">Timer + reference sheet remain inside each exam.</div>
+    </div>
+    <div class="placeholder" id="viewer-placeholder">
+      <h3>Nothing loaded yet</h3>
+      <p>Pick any card above to open the corresponding HTML exam inside the viewer.</p>
+    </div>
+    <iframe id="viewer-frame" title="Practice Exam" loading="lazy" hidden></iframe>
+  </section>
+
+  <footer>
+    <p>To add a new day: copy an existing card, update its paths (e.g., <code>../midterm1/day3/claw-exam.html</code>) and coverage link. The viewer will load any static HTML in-place.</p>
+    <p>Repo: <a href="https://github.com/rabahbabaci/data100-practice-exams" target="_blank" rel="noopener">data100-practice-exams</a></p>
+  </footer>
+</main>
+
+<script>
+  const buttons = document.querySelectorAll('.open-btn');
+  const frame = document.getElementById('viewer-frame');
+  const status = document.getElementById('viewer-status');
+  const placeholder = document.getElementById('viewer-placeholder');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const src = btn.dataset.src;
+      const label = btn.dataset.label || 'Practice Exam';
+      frame.src = src;
+      status.textContent = label;
+      placeholder.hidden = true;
+      frame.hidden = false;
+      document.getElementById('viewer').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
