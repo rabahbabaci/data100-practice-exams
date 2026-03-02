@@ -9,21 +9,14 @@
 (function () {
   'use strict';
 
-  const CONFIG = {
-    duration: parseInt(document.body.dataset.examDuration, 10) || 50 * 60,
-    totalPoints: parseFloat(document.body.dataset.examTotalPoints, 10) || 36,
-  };
-
-  let state = {
+  var CONFIG = { duration: 50 * 60, totalPoints: 36 };
+  var state = {
     submitted: false,
-    timeRemaining: CONFIG.duration,
+    timeRemaining: 50 * 60,
     running: false,
     intervalId: null,
   };
-
-  const timerEl = document.getElementById('timer');
-  const timerBtn = document.getElementById('timerBtn');
-  const timerBar = document.querySelector('.timer-bar');
+  var timerEl, timerBtn, timerBar;
 
   function pad2(n) {
     return String(n).padStart(2, '0');
@@ -261,6 +254,14 @@
   }
 
   function init() {
+    timerEl = document.getElementById('timer');
+    timerBtn = document.getElementById('timerBtn');
+    timerBar = document.querySelector('.timer-bar');
+    if (document.body) {
+      CONFIG.duration = parseInt(document.body.getAttribute('data-exam-duration'), 10) || 50 * 60;
+      CONFIG.totalPoints = parseFloat(document.body.getAttribute('data-exam-total-points'), 10) || 36;
+    }
+    state.timeRemaining = CONFIG.duration;
     updateTimerDisplay();
     lockDetails(true);
     initDetailsLock();

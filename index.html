@@ -379,9 +379,18 @@
     }
   }
 
+  /** Resolve exam path relative to the hub page (so index.html + midterm1/... works). */
+  function resolveExamUrl(relativePath) {
+    try {
+      return new URL(relativePath, window.location.href).href;
+    } catch (e) {
+      return relativePath;
+    }
+  }
+
   function toggleViewer(show, src = '', label = 'Exam') {
     if (show) {
-      viewerFrame.src = src;
+      viewerFrame.src = resolveExamUrl(src);
       viewerLabel.textContent = label;
       viewer.classList.add('active');
     } else {
