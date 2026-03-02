@@ -74,7 +74,7 @@ summary:hover{background:var(--border)}
 @media(max-width:600px){.container{padding:12px 10px 60px}.question{padding:16px}.ref-panel{width:calc(100vw - 32px);right:16px}}
 </style>
 </head>
-<body>
+<body data-exam-duration="3000" data-exam-total-points="37">
 
 <div class="timer-bar">
   <div>⏱️ <span class="timer-display" id="timer">50:00</span></div>
@@ -637,10 +637,6 @@ plt.__(iii)__</code></pre>
 <p>Valid KDE: total area = 1, density can exceed 1</p>
 </div>
 
-<script>
-let t=3000,running=false,iv;
-function toggleTimer(){const b=document.getElementById('timerBtn'),d=document.getElementById('timer');if(!running){running=true;b.textContent='Pause';b.classList.remove('paused');iv=setInterval(()=>{if(t<=0){clearInterval(iv);d.textContent='00:00';d.className='timer-display danger';return}t--;let m=Math.floor(t/60),s=t%60;d.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(t<=300)d.className='timer-display danger';else if(t<=600)d.className='timer-display warning';else d.className='timer-display';},1000)}else{running=false;clearInterval(iv);b.textContent='Resume';b.classList.add('paused')}}
-function toggleRef(){document.getElementById('refPanel').classList.toggle('open')}
-</script>
+<script src="../../exam-engine.js"></script>
 </body>
 </html>

@@ -93,7 +93,7 @@ summary:hover{background:var(--border)}
 }
 </style>
 </head>
-<body>
+<body data-exam-duration="3000" data-exam-total-points="37">
 
 <!-- Timer Bar -->
 <div class="timer-bar">
@@ -149,7 +149,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(a) <span class="pts-badge">[1.5 pt]</span></div>
   <code>orders['price'][1]</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="na" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: NA</p>
     <p>The index labels are strings ('x','y','z','w','v'), not integers. <code>orders['price'][1]</code> uses <strong>label-based</strong> lookup on the Series, looking for label <code>1</code>. Since no row has label <code>1</code>, this raises a <code>KeyError</code>.</p>
@@ -160,7 +160,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(b) <span class="pts-badge">[1.5 pt]</span></div>
   <code>orders.loc['w', 'price']</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="5" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 5</p>
     <p><code>.loc</code> uses label-based indexing. Row label <code>'w'</code>, column label <code>'price'</code> → returns <code>5</code>.</p>
@@ -170,7 +170,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(c) <span class="pts-badge">[1.5 pt]</span></div>
   <code>orders.iloc[4, 0]</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="na" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: NA</p>
     <p><code>.iloc[4, 0]</code> returns the value at row position 4, column position 0. That's the <code>drink</code> column for row <code>'v'</code>, which is the string <code>"mocha"</code>. Since <code>"mocha"</code> is not a single number, the answer is <strong>NA</strong>.</p>
@@ -181,7 +181,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(d) <span class="pts-badge">[1.5 pt]</span></div>
   <code>orders[orders['drink'] == 'latte']['price'].iloc[0]</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="5" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 5</p>
     <p>Filter to rows where drink is 'latte' → rows 'x' (price 5) and 'z' (price 4). Take the <code>'price'</code> column, then <code>.iloc[0]</code> returns the first value: <code>5</code>.</p>
@@ -191,7 +191,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(e) <span class="pts-badge">[1.5 pt]</span></div>
   <code>orders.groupby('drink')['price'].max().loc['chai']</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="5" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 5</p>
     <p>Group by drink: chai→[5], latte→[5,4], mocha→[6,7]. Take max of price: chai→5, latte→5, mocha→7. Then <code>.loc['chai']</code> returns <code>5</code>.</p>
@@ -241,7 +241,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(b) <span class="pts-badge">[1 pt]</span></div>
   <p>For each column, choose the <strong>best</strong> variable type.</p>
-  <div class="tf-row">
+  <div class="tf-row" data-correct="nom" data-points="0.5">
     <span class="tf-text"><code>genre</code>:</span>
     <div class="tf-options">
       <label><input type="radio" name="q2b1" value="nom"> Qual. Nominal</label>
@@ -249,7 +249,7 @@ summary:hover{background:var(--border)}
       <label><input type="radio" name="q2b1" value="quant"> Quantitative</label>
     </div>
   </div>
-  <div class="tf-row">
+  <div class="tf-row" data-correct="quant" data-points="0.5">
     <span class="tf-text"><code>plays</code>:</span>
     <div class="tf-options">
       <label><input type="radio" name="q2b2" value="nom"> Qual. Nominal</label>
@@ -699,22 +699,6 @@ summary:hover{background:var(--border)}
 <p>Gaussian: Kα(x,xᵢ) = (1/√(2π)) e^(−(x−xᵢ)²/2α²)</p>
 </div>
 
-<script>
-// Timer
-let t=3000,running=false,iv;
-function toggleTimer(){
-  const b=document.getElementById('timerBtn'),d=document.getElementById('timer');
-  if(!running){running=true;b.textContent='Pause';b.classList.remove('paused');
-    iv=setInterval(()=>{if(t<=0){clearInterval(iv);d.textContent='00:00';d.className='timer-display danger';return}
-    t--;let m=Math.floor(t/60),s=t%60;
-    d.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-    if(t<=300)d.className='timer-display danger';
-    else if(t<=600)d.className='timer-display warning';
-    else d.className='timer-display';},1000)}
-  else{running=false;clearInterval(iv);b.textContent='Resume';b.classList.add('paused')}
-}
-// Ref panel
-function toggleRef(){document.getElementById('refPanel').classList.toggle('open')}
-</script>
+<script src="../../exam-engine.js"></script>
 </body>
 </html>

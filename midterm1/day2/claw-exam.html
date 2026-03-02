@@ -76,7 +76,7 @@ summary:hover{background:var(--border)}
 @media(max-width:600px){.container{padding:12px 10px 60px}.question{padding:16px}.ref-panel{width:calc(100vw - 32px);right:16px}.match-grid{grid-template-columns:auto 1fr;gap:4px}}
 </style>
 </head>
-<body>
+<body data-exam-duration="3000" data-exam-total-points="36">
 
 <div class="timer-bar">
   <div>⏱️ <span class="timer-display" id="timer">50:00</span></div>
@@ -126,7 +126,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(a) <span class="pts-badge">[1.5 pt]</span></div>
   <code>security.loc[4, 'gate']</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="b" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: "B"</p>
     <p>Row label 4 corresponds to the last entry whose <code>gate</code> is <code>"B"</code>.</p>
@@ -136,7 +136,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(b) <span class="pts-badge">[1.5 pt]</span></div>
   <code>security.set_index('lane_code').loc['B1', 'wait_min']</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="8" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 8</p>
     <p>After setting <code>lane_code</code> as the index, label <code>'B1'</code> maps to row 2, whose wait is 8 minutes.</p>
@@ -146,7 +146,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(c) <span class="pts-badge">[1.5 pt]</span></div>
   <code>security[security['gate'] == 'B']['lane'].iloc[-1]</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="2" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 2</p>
     <p>Filtering to <code>gate == 'B'</code> keeps rows 2 and 4 (lanes 1 and 2). <code>.iloc[-1]</code> grabs the last value → 2.</p>
@@ -156,7 +156,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(d) <span class="pts-badge">[1.5 pt]</span></div>
   <code>security.query("precheck and wait_min &lt;= 12")['lane_code'].tolist()</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="['a1', 'b1']" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: ['A1', 'B1']</p>
     <p>Only rows 0 and 2 satisfy both conditions, so the resulting list retains their codes in order.</p>
@@ -166,7 +166,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(e) <span class="pts-badge">[1.5 pt]</span></div>
   <code>security.set_index(['gate','lane']).loc[('A', 2), 'wait_min']</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="19" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 19</p>
     <p>Multi-index lookup at label (<code>'A'</code>, <code>2</code>) references row 1, whose wait time is 19 minutes.</p>
@@ -198,7 +198,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(a) <span class="pts-badge">[1.5 pt]</span></div>
   <code>turnstiles.groupby('station')[['riders']].agg('max')</code>
-  <input type="text" placeholder="Row count">
+  <input type="text" placeholder="Row count" data-correct="3" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 3</p>
     <p>Aggregation collapses to one row per station (Powell, Downtown, Berkeley).</p>
@@ -208,7 +208,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(b) <span class="pts-badge">[1.5 pt]</span></div>
   <code>turnstiles.sort_values('riders', ascending=False).groupby('station').head(1)</code>
-  <input type="text" placeholder="Row count">
+  <input type="text" placeholder="Row count" data-correct="3" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 3</p>
     <p><code>groupby(...).head(1)</code> keeps the top rider row inside each station grouping → three rows total.</p>
@@ -218,7 +218,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(c) <span class="pts-badge">[1.5 pt]</span></div>
   <code>turnstiles.groupby(['station','direction']).filter(lambda sf: sf['riders'].mean() &gt;= 400)</code>
-  <input type="text" placeholder="Row count">
+  <input type="text" placeholder="Row count" data-correct="4" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 4</p>
     <p>Eligible groups: Powell-inbound (rows 0,2), Powell-outbound (row 1), Downtown-inbound (row 3). These four rows survive the filter.</p>
@@ -237,10 +237,10 @@ summary:hover{background:var(--border)}
 <p>Sentence: “<em>Gate A12 closes in 18 minutes while Gate B7 boards Zone 3 passengers.</em>” For each regex, list matches in order; write <code>NA</code> if none.</p>
 <div class="match-grid">
   <div class="hdr">Regex</div><div class="hdr">Match 1</div><div class="hdr">Match 2</div><div class="hdr">Match 3</div>
-  <div><code>A\d+</code></div><input type="text" placeholder="Match 1"><input type="text" placeholder="Match 2"><input type="text" placeholder="Match 3">
-  <div><code>Gate\s\w+</code></div><input type="text" placeholder="Match 1"><input type="text" placeholder="Match 2"><input type="text" placeholder="Match 3">
-  <div><code>\d+\sminutes</code></div><input type="text" placeholder="Match 1"><input type="text" placeholder="Match 2"><input type="text" placeholder="Match 3">
-  <div><code>Zone\s\d</code></div><input type="text" placeholder="Match 1"><input type="text" placeholder="Match 2"><input type="text" placeholder="Match 3">
+  <div><code>A\d+</code></div><input type="text" placeholder="Match 1" data-correct="a12" data-points="0.34"><input type="text" placeholder="Match 2" data-correct="na" data-points="0.33"><input type="text" placeholder="Match 3" data-correct="na" data-points="0.33">
+  <div><code>Gate\s\w+</code></div><input type="text" placeholder="Match 1" data-correct="gate a12" data-points="0.34"><input type="text" placeholder="Match 2" data-correct="gate b7" data-points="0.33"><input type="text" placeholder="Match 3" data-correct="na" data-points="0.33">
+  <div><code>\d+\sminutes</code></div><input type="text" placeholder="Match 1" data-correct="18 minutes" data-points="0.34"><input type="text" placeholder="Match 2" data-correct="na" data-points="0.33"><input type="text" placeholder="Match 3" data-correct="na" data-points="0.33">
+  <div><code>Zone\s\d</code></div><input type="text" placeholder="Match 1" data-correct="zone 3" data-points="0.34"><input type="text" placeholder="Match 2" data-correct="na" data-points="0.33"><input type="text" placeholder="Match 3" data-correct="na" data-points="0.33">
 </div>
 </div>
 <details><summary>Show Solution</summary><div class="solution">
@@ -266,18 +266,18 @@ summary:hover{background:var(--border)}
 
 <div class="subq">
   <div class="subq-label">(a) Visualizing the distribution of <code>study_hours</code> alone.<span class="pts-badge">[4 pts]</span></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a1">True</label><label><input type="radio" name="q4a1">False</label></div><div class="tf-text">Histogram</div></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a2">True</label><label><input type="radio" name="q4a2">False</label></div><div class="tf-text">KDE plot</div></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a3">True</label><label><input type="radio" name="q4a3">False</label></div><div class="tf-text">Scatter plot</div></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a4">True</label><label><input type="radio" name="q4a4">False</label></div><div class="tf-text">Pie chart</div></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4a1" value="T">True</label><label><input type="radio" name="q4a1" value="F">False</label></div><div class="tf-text">Histogram</div></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4a2" value="T">True</label><label><input type="radio" name="q4a2" value="F">False</label></div><div class="tf-text">KDE plot</div></div>
+  <div class="tf-row" data-correct="f" data-points="1"><div class="tf-options"><label><input type="radio" name="q4a3" value="T">True</label><label><input type="radio" name="q4a3" value="F">False</label></div><div class="tf-text">Scatter plot</div></div>
+  <div class="tf-row" data-correct="f" data-points="1"><div class="tf-options"><label><input type="radio" name="q4a4" value="T">True</label><label><input type="radio" name="q4a4" value="F">False</label></div><div class="tf-text">Pie chart</div></div>
 </div>
 
 <div class="subq">
   <div class="subq-label">(b) Comparing <code>snack_type</code> (categorical) vs <code>study_hours</code> (numeric).<span class="pts-badge">[4 pts]</span></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b1">True</label><label><input type="radio" name="q4b1">False</label></div><div class="tf-text">Side-by-side boxplots (hours on y-axis, snack type on x-axis)</div></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b2">True</label><label><input type="radio" name="q4b2">False</label></div><div class="tf-text">Stacked bar chart of snack counts colored by binned hours</div></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b3">True</label><label><input type="radio" name="q4b3">False</label></div><div class="tf-text">Hexbin plot (snack_type vs hours)</div></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b4">True</label><label><input type="radio" name="q4b4">False</label></div><div class="tf-text">Violin plot of hours grouped by snack_type</div></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4b1" value="T">True</label><label><input type="radio" name="q4b1" value="F">False</label></div><div class="tf-text">Side-by-side boxplots (hours on y-axis, snack type on x-axis)</div></div>
+  <div class="tf-row" data-correct="f" data-points="1"><div class="tf-options"><label><input type="radio" name="q4b2" value="T">True</label><label><input type="radio" name="q4b2" value="F">False</label></div><div class="tf-text">Stacked bar chart of snack counts colored by binned hours</div></div>
+  <div class="tf-row" data-correct="f" data-points="1"><div class="tf-options"><label><input type="radio" name="q4b3" value="T">True</label><label><input type="radio" name="q4b3" value="F">False</label></div><div class="tf-text">Hexbin plot (snack_type vs hours)</div></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4b4" value="T">True</label><label><input type="radio" name="q4b4" value="F">False</label></div><div class="tf-text">Violin plot of hours grouped by snack_type</div></div>
 </div>
 <details><summary>Show Solution</summary><div class="solution">
   <p><strong>Part (a):</strong> Histogram ✔️, KDE ✔️, Scatter ✖️ (needs two variables), Pie ✖️ (categorical share only).</p>
@@ -296,10 +296,10 @@ summary:hover{background:var(--border)}
 </div>
 
 <div class="subq">
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5a">Larger</label><label><input type="radio" name="q5a">Smaller</label><label><input type="radio" name="q5a">Same</label></div><div class="tf-text">Chance error</div></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5b">Larger</label><label><input type="radio" name="q5b">Smaller</label><label><input type="radio" name="q5b">Same</label></div><div class="tf-text">Response bias</div></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5c">Larger</label><label><input type="radio" name="q5c">Smaller</label><label><input type="radio" name="q5c">Same</label></div><div class="tf-text">Non-response bias</div></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5d">Larger</label><label><input type="radio" name="q5d">Smaller</label><label><input type="radio" name="q5d">Same</label></div><div class="tf-text">Selection bias</div></div>
+  <div class="tf-row" data-correct="smaller" data-points="1"><div class="tf-options"><label><input type="radio" name="q5a" value="Larger">Larger</label><label><input type="radio" name="q5a" value="Smaller">Smaller</label><label><input type="radio" name="q5a" value="Same">Same</label></div><div class="tf-text">Chance error</div></div>
+  <div class="tf-row" data-correct="same" data-points="1"><div class="tf-options"><label><input type="radio" name="q5b" value="Larger">Larger</label><label><input type="radio" name="q5b" value="Smaller">Smaller</label><label><input type="radio" name="q5b" value="Same">Same</label></div><div class="tf-text">Response bias</div></div>
+  <div class="tf-row" data-correct="smaller" data-points="1"><div class="tf-options"><label><input type="radio" name="q5c" value="Larger">Larger</label><label><input type="radio" name="q5c" value="Smaller">Smaller</label><label><input type="radio" name="q5c" value="Same">Same</label></div><div class="tf-text">Non-response bias</div></div>
+  <div class="tf-row" data-correct="smaller" data-points="1"><div class="tf-options"><label><input type="radio" name="q5d" value="Larger">Larger</label><label><input type="radio" name="q5d" value="Smaller">Smaller</label><label><input type="radio" name="q5d" value="Same">Same</label></div><div class="tf-text">Selection bias</div></div>
 <details><summary>Show Solution</summary><div class="solution">
   <ul>
     <li><strong>Chance error:</strong> <span class="correct">Smaller</span> — sample size jumps from 80 to 200.</li>
@@ -323,20 +323,20 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
   For any dataset with numeric responses, the constant that minimizes MAE is always a (possibly non-unique) median of the responses.
-  <div class="radio-group">
-    <label><input type="radio" name="q6a">Always</label>
-    <label><input type="radio" name="q6a">Never</label>
-    <label><input type="radio" name="q6a">Sometimes, but not always</label>
+  <div class="radio-group" data-correct="always" data-points="2">
+    <label><input type="radio" name="q6a" value="Always">Always</label>
+    <label><input type="radio" name="q6a" value="Never">Never</label>
+    <label><input type="radio" name="q6a" value="Sometimes, but not always">Sometimes, but not always</label>
   </div>
 </div>
 
 <div class="subq">
   <div class="subq-label">(b) <span class="pts-badge">[2 pts]</span></div>
   Adding one extreme outlier (very large response) will have a larger impact on the optimal constant under MSE than under MAE.
-  <div class="radio-group">
-    <label><input type="radio" name="q6b">Always</label>
-    <label><input type="radio" name="q6b">Never</label>
-    <label><input type="radio" name="q6b">Sometimes, but not always</label>
+  <div class="radio-group" data-correct="sometimes, but not always" data-points="2">
+    <label><input type="radio" name="q6b" value="Always">Always</label>
+    <label><input type="radio" name="q6b" value="Never">Never</label>
+    <label><input type="radio" name="q6b" value="Sometimes, but not always">Sometimes, but not always</label>
   </div>
 </div>
 
@@ -368,11 +368,11 @@ summary:hover{background:var(--border)}
 <div class="q-body">
 <p>Given
 <code>R(θ) = \frac{1}{n}\sum_{i=1}^n (y_i - θ_0 - θ_1 \log x_i - θ_2 x_i^2)^2</code>, pick \(\frac{\partial R}{\partial θ_2}\).</p>
-<div class="radio-group">
-  <label><input type="radio" name="q7">\(\frac{1}{n}\sum 2 x_i^2\)</label>
-  <label><input type="radio" name="q7">\(\frac{-2}{n}\sum x_i^2 (y_i - θ_0 - θ_1 \log x_i - θ_2 x_i^2)\)</label>
-  <label><input type="radio" name="q7">\(\frac{1}{n}\sum 2 (y_i - θ_0 - θ_1 \log x_i - θ_2 x_i^2)\)</label>
-  <label><input type="radio" name="q7">None of the above</label>
+<div class="radio-group" data-correct="b" data-points="2">
+  <label><input type="radio" name="q7" value="a">\(\frac{1}{n}\sum 2 x_i^2\)</label>
+  <label><input type="radio" name="q7" value="b">\(\frac{-2}{n}\sum x_i^2 (y_i - θ_0 - θ_1 \log x_i - θ_2 x_i^2)\)</label>
+  <label><input type="radio" name="q7" value="c">\(\frac{1}{n}\sum 2 (y_i - θ_0 - θ_1 \log x_i - θ_2 x_i^2)\)</label>
+  <label><input type="radio" name="q7" value="d">None of the above</label>
 </div>
 </div>
 <details><summary>Show Solution</summary><div class="solution">
@@ -383,8 +383,8 @@ summary:hover{background:var(--border)}
 
 </div>
 
-<button class="ref-toggle" onclick="document.querySelector('.ref-panel').classList.toggle('open')">Reference Sheet</button>
-<div class="ref-panel">
+<button class="ref-toggle" onclick="toggleRef()">Reference Sheet</button>
+<div class="ref-panel" id="refPanel">
   <style>
     .ref-table{width:100%;border-collapse:collapse;font-size:.78em;margin-bottom:18px}
     .ref-table th,.ref-table td{border:1px solid var(--border);padding:6px 8px;text-align:left}
@@ -474,15 +474,6 @@ summary:hover{background:var(--border)}
   </div>
 </div>
 
-<script>
-let remaining=3000; // 50 minutes
-let timerId=null;
-const display=document.getElementById('timer');
-const btn=document.getElementById('timerBtn');
-function format(t){const m=Math.floor(t/60);const s=t%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
-function tick(){if(remaining<=0){clearInterval(timerId);display.textContent='00:00';display.classList.add('danger');return;}remaining--;display.textContent=format(remaining);if(remaining<=300)display.classList.add('danger');else if(remaining<=600)display.classList.add('warning');}
-function toggleTimer(){if(timerId){clearInterval(timerId);timerId=null;btn.textContent='Resume';btn.classList.add('paused');}else{timerId=setInterval(tick,1000);btn.textContent='Pause';btn.classList.remove('paused');}}
-</script>
-
+<script src="../../exam-engine.js"></script>
 </body>
 </html>

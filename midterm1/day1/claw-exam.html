@@ -81,7 +81,7 @@ summary:hover{background:var(--border)}
 @media(max-width:600px){.container{padding:12px 10px 60px}.question{padding:16px}.ref-panel{width:calc(100vw - 32px);right:16px}.match-grid{grid-template-columns:auto 1fr;gap:4px}}
 </style>
 </head>
-<body>
+<body data-exam-duration="3000" data-exam-total-points="36">
 
 <div class="timer-bar">
   <div>⏱️ <span class="timer-display" id="timer">50:00</span></div>
@@ -137,7 +137,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(1) <span class="pts-badge">[1.5 pt]</span></div>
   <code>rides.loc[2, 'driver_note']</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="park b" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: "park B"</p>
     <p><code>.loc</code> uses label-based indexing. With a default RangeIndex, label <code>2</code> corresponds to the third row. Column <code>'driver_note'</code> at that row is <code>"park B"</code>.</p>
@@ -147,7 +147,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(2) <span class="pts-badge">[1.5 pt]</span></div>
   <code>rides['eta_min'].iloc[0:3].mean()</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="20.67,62/3" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 20.67 (or equivalently, 62/3)</p>
     <p><code>.iloc[0:3]</code> selects positions 0, 1, 2 → eta_min values 14, 39, 9. Mean = (14 + 39 + 9) / 3 = 62/3 ≈ 20.67.</p>
@@ -158,7 +158,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(3) <span class="pts-badge">[1.5 pt]</span></div>
   <code>rides[rides['route'].str.startswith('S')]['segment'].iloc[-1]</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="dropoff" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: "dropoff"</p>
     <p>Routes starting with 'S': SFO (rows 0,1) and SJC (rows 3,4). Filter keeps rows 0, 1, 3, 4. The <code>'segment'</code> column of these rows is: "pickup", "dropoff", "pickup", "dropoff". <code>.iloc[-1]</code> returns the last value: <code>"dropoff"</code> (from row 4).</p>
@@ -169,7 +169,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(4) <span class="pts-badge">[1.5 pt]</span></div>
   <code>rides.set_index('route').loc['SJC', 'surge']</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="a series containing [0.9, 1.1],series containing [0.9, 1.1]" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: A Series containing [0.9, 1.1]</p>
     <p>After <code>set_index('route')</code>, the index has duplicate labels. <code>.loc['SJC', 'surge']</code> matches both SJC rows and returns a <strong>Series</strong> with values 0.9 and 1.1 — not a single scalar.</p>
@@ -180,7 +180,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(5) <span class="pts-badge">[1.5 pt]</span></div>
   <code>rides.query("segment == 'pickup' and eta_min > 10")["route"].tolist()</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="['sfo', 'sjc'],['sfo','sjc']" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: ['SFO', 'SJC']</p>
     <p>Filter to pickup rows with eta_min > 10:</p>
@@ -207,7 +207,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(1) <span class="pts-badge">[1.5 pt]</span></div>
   <code>rides.groupby('route')[['eta_min']].agg('max').shape[0]</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="3" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 3</p>
     <p>There are 3 unique routes: SFO, OAK, SJC. <code>groupby('route')</code> creates 3 groups. <code>.agg('max')</code> returns one row per group. <code>.shape[0]</code> = number of rows = <strong>3</strong>.</p>
@@ -217,7 +217,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(2) <span class="pts-badge">[1.5 pt]</span></div>
   <code>rides.groupby('segment').filter(lambda df: df['eta_min'].mean() > 20).shape[0]</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="2" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 2</p>
     <p>Group by segment:</p>
@@ -231,7 +231,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(3) <span class="pts-badge">[1.5 pt]</span></div>
   <code>rides.groupby('route').head(1)['eta_min'].sum()</code>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="41" data-points="1.5">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Answer: 41</p>
     <p><code>.head(1)</code> returns the first row of each group:</p>
@@ -261,9 +261,9 @@ summary:hover{background:var(--border)}
   <div class="subq-label">(a) <span class="pts-badge">[1.5 pt]</span></div>
   <p>Pattern: <code>\d+</code></p>
   <div class="match-grid">
-    <span class="hdr">Match 1:</span><input type="text" placeholder="">
-    <span class="hdr">Match 2:</span><input type="text" placeholder="">
-    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="" data-correct="12" data-points="0.5">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="" data-correct="27" data-points="0.5">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="" data-correct="na" data-points="0.5">
     <span></span>
   </div>
   <details><summary>Show Solution</summary><div class="solution">
@@ -276,9 +276,9 @@ summary:hover{background:var(--border)}
   <div class="subq-label">(b) <span class="pts-badge">[1 pt]</span></div>
   <p>Pattern: <code>[A-Z]{2}\d{2}</code></p>
   <div class="match-grid">
-    <span class="hdr">Match 1:</span><input type="text" placeholder="">
-    <span class="hdr">Match 2:</span><input type="text" placeholder="">
-    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="" data-correct="na" data-points="0.33">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="" data-correct="na" data-points="0.33">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="" data-correct="na" data-points="0.34">
     <span></span>
   </div>
   <details><summary>Show Solution</summary><div class="solution">
@@ -294,9 +294,9 @@ summary:hover{background:var(--border)}
   <div class="subq-label">(c) <span class="pts-badge">[1.5 pt]</span></div>
   <p>Pattern: <code>[A-Za-z]{3}</code></p>
   <div class="match-grid">
-    <span class="hdr">Match 1:</span><input type="text" placeholder="">
-    <span class="hdr">Match 2:</span><input type="text" placeholder="">
-    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="" data-correct="gat" data-points="0.5">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="" data-correct="boa" data-points="0.5">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="" data-correct="rds,sfo" data-points="0.5">
     <span></span>
   </div>
   <details><summary>Show Solution</summary><div class="solution">
@@ -328,10 +328,10 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(a) Distribution of <code>wait_min</code> <span class="pts-badge">[4 pts, 1 pt each]</span></div>
   <p>Mark True if the plot type is appropriate for visualizing the <strong>distribution of <code>wait_min</code></strong>, False otherwise.</p>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a1" value="T"> True</label><label><input type="radio" name="q4a1" value="F"> False</label></div><span class="tf-text">Histogram</span></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a2" value="T"> True</label><label><input type="radio" name="q4a2" value="F"> False</label></div><span class="tf-text">KDE Plot</span></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a3" value="T"> True</label><label><input type="radio" name="q4a3" value="F"> False</label></div><span class="tf-text">Scatter Plot</span></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a4" value="T"> True</label><label><input type="radio" name="q4a4" value="F"> False</label></div><span class="tf-text">Box Plot</span></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4a1" value="T"> True</label><label><input type="radio" name="q4a1" value="F"> False</label></div><span class="tf-text">Histogram</span></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4a2" value="T"> True</label><label><input type="radio" name="q4a2" value="F"> False</label></div><span class="tf-text">KDE Plot</span></div>
+  <div class="tf-row" data-correct="f" data-points="1"><div class="tf-options"><label><input type="radio" name="q4a3" value="T"> True</label><label><input type="radio" name="q4a3" value="F"> False</label></div><span class="tf-text">Scatter Plot</span></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4a4" value="T"> True</label><label><input type="radio" name="q4a4" value="F"> False</label></div><span class="tf-text">Box Plot</span></div>
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Histogram: True ✓</p>
     <p class="correct">KDE Plot: True ✓</p>
@@ -344,10 +344,10 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(b) <code>wait_min</code> vs <code>dep_hour</code> <span class="pts-badge">[4 pts, 1 pt each]</span></div>
   <p>Mark True if appropriate for visualizing the <strong>relationship between <code>wait_min</code> and <code>dep_hour</code></strong>, False otherwise.</p>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b1" value="T"> True</label><label><input type="radio" name="q4b1" value="F"> False</label></div><span class="tf-text">Hexbin heatmap</span></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b2" value="T"> True</label><label><input type="radio" name="q4b2" value="F"> False</label></div><span class="tf-text">Side-by-side boxplots (by hour buckets)</span></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b3" value="T"> True</label><label><input type="radio" name="q4b3" value="F"> False</label></div><span class="tf-text">Overlaid histograms per hour</span></div>
-  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b4" value="T"> True</label><label><input type="radio" name="q4b4" value="F"> False</label></div><span class="tf-text">Contour plot</span></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4b1" value="T"> True</label><label><input type="radio" name="q4b1" value="F"> False</label></div><span class="tf-text">Hexbin heatmap</span></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4b2" value="T"> True</label><label><input type="radio" name="q4b2" value="F"> False</label></div><span class="tf-text">Side-by-side boxplots (by hour buckets)</span></div>
+  <div class="tf-row" data-correct="f" data-points="1"><div class="tf-options"><label><input type="radio" name="q4b3" value="T"> True</label><label><input type="radio" name="q4b3" value="F"> False</label></div><span class="tf-text">Overlaid histograms per hour</span></div>
+  <div class="tf-row" data-correct="t" data-points="1"><div class="tf-options"><label><input type="radio" name="q4b4" value="T"> True</label><label><input type="radio" name="q4b4" value="F"> False</label></div><span class="tf-text">Contour plot</span></div>
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Hexbin heatmap: True ✓</p>
     <p>Hex plots work well for showing relationships between two quantitative variables, especially with many data points.</p>
@@ -381,10 +381,10 @@ summary:hover{background:var(--border)}
   <div class="subq-label">Fill in each cell <span class="pts-badge">[1 pt each]</span></div>
   <table class="arrow-table">
     <tr><th>Error Source</th><th>Day 1 → Day 2 Change</th></tr>
-    <tr><td>Chance error</td><td><select name="q5a"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
-    <tr><td>Selection bias</td><td><select name="q5b"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
-    <tr><td>Non-response bias</td><td><select name="q5c"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
-    <tr><td>Response bias</td><td><select name="q5d"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
+    <tr><td>Chance error</td><td><select name="q5a" data-correct="down" data-points="1"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
+    <tr><td>Selection bias</td><td><select name="q5b" data-correct="up" data-points="1"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
+    <tr><td>Non-response bias</td><td><select name="q5c" data-correct="down" data-points="1"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
+    <tr><td>Response bias</td><td><select name="q5d" data-correct="same" data-points="1"><option value="">Select...</option><option value="up">↑ Increases</option><option value="down">↓ Decreases</option><option value="same">↔ Unchanged</option></select></td></tr>
   </table>
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">Chance error: ↓ Decreases</p>
@@ -416,9 +416,9 @@ summary:hover{background:var(--border)}
   <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
   <p>For a <strong>simple random sample</strong> of n = 100 travelers, compute:</p>
   <p>𝔼[p̂] = ?</p>
-  <input type="text" placeholder="E[p̂] = ...">
+  <input type="text" placeholder="E[p̂] = ..." data-correct="0.4,0.40" data-points="1">
   <p>SE(p̂) = ?</p>
-  <input type="text" placeholder="SE(p̂) = ...">
+  <input type="text" placeholder="SE(p̂) = ..." data-correct="0.049" data-points="1">
   <details><summary>Show Solution</summary><div class="solution">
     <p class="correct">𝔼[p̂] = 0.40</p>
     <p>For an SRS, the sample proportion is an unbiased estimator of the population proportion.</p>
@@ -468,7 +468,7 @@ summary:hover{background:var(--border)}
 <div class="subq">
   <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
   <p>What is the probability that <strong>both</strong> sampled travelers plan to use rideshare?</p>
-  <input type="text" placeholder="Your answer...">
+  <input type="text" placeholder="Your answer..." data-correct="0.16" data-points="2">
   <p>Show your work:</p>
   <textarea rows="2" placeholder="Your work..."></textarea>
   <details><summary>Show Solution</summary><div class="solution">
@@ -531,20 +531,6 @@ summary:hover{background:var(--border)}
 <p>Boxcar: Kα = 1/α if |x−xᵢ| ≤ α/2, else 0</p>
 </div>
 
-<script>
-let t=3000,running=false,iv;
-function toggleTimer(){
-  const b=document.getElementById('timerBtn'),d=document.getElementById('timer');
-  if(!running){running=true;b.textContent='Pause';b.classList.remove('paused');
-    iv=setInterval(()=>{if(t<=0){clearInterval(iv);d.textContent='00:00';d.className='timer-display danger';return}
-    t--;let m=Math.floor(t/60),s=t%60;
-    d.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-    if(t<=300)d.className='timer-display danger';
-    else if(t<=600)d.className='timer-display warning';
-    else d.className='timer-display';},1000)}
-  else{running=false;clearInterval(iv);b.textContent='Resume';b.classList.add('paused')}
-}
-function toggleRef(){document.getElementById('refPanel').classList.toggle('open')}
-</script>
+<script src="../../exam-engine.js"></script>
 </body>
 </html>
