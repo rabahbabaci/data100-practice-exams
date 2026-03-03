@@ -341,56 +341,40 @@ summary:hover{background:var(--border)}
 <!-- Q6 -->
 <div class="question" id="q6">
 <div class="q-header">
-  <span class="q-title">Question 6: Loss Landscapes & Line Fits</span>
+  <span class="q-title">Question 6: Gate Audit Probabilities</span>
   <span class="q-pts">7 Pts</span>
 </div>
 <div class="q-body">
-<p>Consider constant and simple linear regression (SLR) models.</p>
+<p>Security randomly selects <strong>3</strong> flights without replacement from a roster of 12 flights: 5 are international (I) and 7 are domestic (D). Every unordered size-3 sample is equally likely.</p>
 </div>
 
 <div class="subq">
   <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
-  For any dataset, the constant that minimizes MSE equals the sample mean of the responses.
-  <div class="radio-group">
-    <label><input type="radio" name="q6a">Always</label>
-    <label><input type="radio" name="q6a">Never</label>
-    <label><input type="radio" name="q6a">Sometimes, but not always</label>
-  </div>
+  Compute the probability that all three selected flights are international. Give an exact fraction and (optionally) a decimal.
+  <input type="text" placeholder="Your answer...">
   <details><summary>Show Solution</summary><div class="solution">
-    <p class="correct">Answer: Always.</p>
-    <p>Differentiating <code>\sum (y_i - c)^2</code> shows the minimizer occurs at <code>c = \bar y</code>.</p>
+    <p>Ways to choose 3 international flights: <code>\binom{5}{3} = 10</code>. Total samples: <code>\binom{12}{3} = 220</code>.</p>
+    <p class="correct">Probability = <code>10/220 = 1/22 ≈ 0.0455</code>.</p>
   </div></details>
 </div>
 
 <div class="subq">
   <div class="subq-label">(b) <span class="pts-badge">[2 pts]</span></div>
-  In any SLR fit with an intercept, the line passes through the point (<code>\bar x</code>, <code>\bar y</code>).
-  <div class="radio-group">
-    <label><input type="radio" name="q6b">Always</label>
-    <label><input type="radio" name="q6b">Never</label>
-    <label><input type="radio" name="q6b">Sometimes, but not always</label>
-  </div>
+  What is the probability that at least one domestic flight is selected?
+  <input type="text" placeholder="Your answer...">
   <details><summary>Show Solution</summary><div class="solution">
-    <p class="correct">Answer: Always.</p>
-    <p>The normal equations enforce mean-centered residuals, forcing the fitted line through the means.</p>
+    <p>Complement = “all international,” already found as <code>1/22</code>.</p>
+    <p class="correct">At least one domestic = <code>1 - 1/22 = 21/22</code>.</p>
   </div></details>
 </div>
 
 <div class="subq">
   <div class="subq-label">(c) <span class="pts-badge">[3 pts]</span></div>
-  A fitted SLR model on five points gives predictions below. Compute the RMSE (round to two decimals).
-  <table class="df-table">
-    <tr><th>i</th><th>y<sub>i</sub></th><th>ŷ<sub>i</sub></th></tr>
-    <tr><td>1</td><td>15</td><td>12</td></tr>
-    <tr><td>2</td><td>9</td><td>11</td></tr>
-    <tr><td>3</td><td>24</td><td>21</td></tr>
-    <tr><td>4</td><td>30</td><td>33</td></tr>
-    <tr><td>5</td><td>18</td><td>19</td></tr>
-  </table>
-  <textarea placeholder="Show absolute/squared errors + RMSE"></textarea>
+  Let random variable <code>X</code> be the number of international flights in the audit. Compute <code>\mathbb{E}[X]</code>. Show your reasoning.
+  <textarea placeholder="Work + final expectation"></textarea>
   <details><summary>Show Solution</summary><div class="solution">
-    <p>Squared errors: 9, 4, 9, 9, 1 → sum = 32.</p>
-    <p>RMSE = <code>√(32/5) = √6.4 ≈</code> <span class="correct">2.53</span>.</p>
+    <p>For sampling without replacement, expected count = sample size × population proportion.</p>
+    <p><code>\mathbb{E}[X] = 3 × (5/12) = 15/12 =</code> <span class="correct">1.25</span> international flights.</p>
   </div></details>
 </div>
 </div>
@@ -398,24 +382,52 @@ summary:hover{background:var(--border)}
 <!-- Q7 -->
 <div class="question" id="q7">
 <div class="q-header">
-  <span class="q-title">Question 7: Logistic Gradient Check</span>
+  <span class="q-title">Question 7: Pivot Sense Check</span>
   <span class="q-pts">5 Pts</span>
 </div>
 <div class="q-body">
-<p>Binary outcomes follow logistic regression with <code>p_i = σ(θ_0 + θ_1 x_i)</code>, where <code>σ(z) = 1 / (1 + e^{-z})</code>. The negative log-likelihood is
-<code>L(θ) = -\frac{1}{n}\sum_{i=1}^n [y_i \log p_i + (1 - y_i) \log(1 - p_i)].</code>
-Choose the correct expression for <code>∂L/∂θ_1</code>.</p>
-<div class="radio-group">
-  <label><input type="radio" name="q7">\(\frac{1}{n}\sum (y_i - p_i)x_i\)</label>
-  <label><input type="radio" name="q7">\(\frac{1}{n}\sum (p_i - y_i)x_i\)</label>
-  <label><input type="radio" name="q7">\(\frac{1}{n}\sum (p_i - y_i)\)</label>
-  <label><input type="radio" name="q7">None of the above</label>
+<p>DataFrame <code>patrols</code> logs quick scans.</p>
+<table class="df-table">
+<tr><th>idx</th><th>zone</th><th>lane</th><th>status</th><th>alerts</th></tr>
+<tr><td>0</td><td>"A"</td><td>1</td><td>"clear"</td><td>2</td></tr>
+<tr><td>1</td><td>"A"</td><td>2</td><td>"delay"</td><td>1</td></tr>
+<tr><td>2</td><td>"B"</td><td>1</td><td>"clear"</td><td>0</td></tr>
+<tr><td>3</td><td>"B"</td><td>3</td><td>"clear"</td><td>4</td></tr>
+<tr><td>4</td><td>"C"</td><td>2</td><td>"delay"</td><td>3</td></tr>
+<tr><td>5</td><td>"C"</td><td>2</td><td>"clear"</td><td>1</td></tr>
+</table>
+<p>Answer the following, giving exact values.</p>
 </div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
+  <code>patrols['status'].value_counts(normalize=True).loc['clear']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p>There are 4 "clear" rows out of 6 total.</p>
+    <p class="correct">Value = <code>4/6 = 2/3 ≈ 0.6667</code>.</p>
+  </div></details>
 </div>
-<details><summary>Show Solution</summary><div class="solution">
-  <p class="correct">Derivative: \(\frac{1}{n}\sum (p_i - y_i)x_i\).</p>
-  <p>The chain rule gives <code>∂p_i/∂θ_1 = p_i(1-p_i) x_i</code>, which collapses into the familiar residual term.</p>
-</div></details>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>patrols.groupby('zone')['lane'].nunique().loc['C']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p>Zone C only uses lane 2 in both rows.</p>
+    <p class="correct">Value = 1.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1.5 pt]</span></div>
+  <code>patrols.pivot_table(values='alerts', index='status', columns='zone', aggfunc='mean', fill_value=0).loc['delay','A']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p>Only row 1 contributes (status delay, zone A, alerts 1).</p>
+    <p class="correct">Entry = 1.</p>
+  </div></details>
+</div>
 </div>
 
 </div>
