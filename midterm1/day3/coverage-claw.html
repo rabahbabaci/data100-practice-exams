@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 3 · Coverage · OpenClaw</title>
+<style>
+  :root { --bg:#f4f6fb; --surface:#ffffff; --border:#dfe4ef; --text:#0f172a; --dim:#5f6783; --accent:#2563eb; --accent2:#16a34a; }
+  body { margin:0; padding:32px 16px 80px; font-family:"Inter","SF Pro Display",-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
+  .container { max-width:940px; margin:0 auto; }
+  h1 { margin:0 0 4px; font-size:clamp(2rem,4vw,2.5rem); }
+  .subtitle { color:var(--dim); margin-bottom:24px; }
+  .tag { display:inline-flex; align-items:center; gap:6px; font-size:0.88rem; padding:6px 14px; border-radius:999px; border:1px solid var(--border); background:rgba(37,99,235,0.08); margin-bottom:24px; }
+  table { width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 18px 40px rgba(15,23,42,0.08); }
+  th,td { border-bottom:1px solid var(--border); padding:16px 18px; text-align:left; vertical-align:top; }
+  th { background:rgba(79,70,229,0.08); color:var(--accent); font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; }
+  tr:last-child td { border-bottom:none; }
+  td strong { color:var(--accent); }
+  .scope { margin-top:28px; padding:18px; border:1px solid var(--border); border-radius:12px; background:rgba(22,163,74,0.08); color:var(--accent2); font-size:0.92rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Wind Windows & Bias Switches</h1>
+  <p class="subtitle">Day 3 · OpenClaw Set · 36 pts · 7 questions · 50 minutes</p>
+  <div class="tag">Focus: fast-pass drills + Fall '25 format fidelity</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:70px">Q#</th>
+        <th style="width:240px">Topic</th>
+        <th>What you drill</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Q1</td>
+        <td><strong>Pandas indexing</strong><br><span class="dim">Bike-share curb counts</span></td>
+        <td>Scalar vs list returns, chained boolean filters, understanding when sorting + slicing changes order, and reading medians inline without a calculator.</td>
+      </tr>
+      <tr>
+        <td>Q2</td>
+        <td><strong>GroupBy shapes</strong><br><span class="dim">Shift workload split</span></td>
+        <td>How <code>.agg</code>, <code>.filter</code>, and <code>.head</code> impact row counts. Mimics Fall ’25 “enter the number of rows” structure.</td>
+      </tr>
+      <tr>
+        <td>Q3</td>
+        <td><strong>Regex table</strong><br><span class="dim">Ferry departure line</span></td>
+        <td>Ordered matches for <code>\d+</code>, capitalized trigrams, and ID formats (<code>[A-Z]+\d{2}</code>). Practises NA handling exactly like PrairieLearn.</td>
+      </tr>
+      <tr>
+        <td>Q4</td>
+        <td><strong>Viz suitability</strong><br><span class="dim">Delay vs wind</span></td>
+        <td>Truth table on univariate vs bivariate plots; explicitly enforces “don’t discretize quantitative variables” constraint from staff guidance.</td>
+      </tr>
+      <tr>
+        <td>Q5</td>
+        <td><strong>Survey bias deltas</strong><br><span class="dim">Premium calls → floor tablets</span></td>
+        <td>Directional reasoning for chance error, selection bias, non-response bias, response bias when moving to a more representative intercept method.</td>
+      </tr>
+      <tr>
+        <td>Q6</td>
+        <td><strong>Chance error math</strong></td>
+        <td>Compute a sample proportion, plug-in SE, and reason about how SE scales with n (exactly the type of midterm question hinted by staff).</td>
+      </tr>
+      <tr>
+        <td>Q7</td>
+        <td><strong>Sampling probability</strong></td>
+        <td>“At least one” computation for draws with replacement from a population with a known proportion (mirrors the quick-probability finisher they like to include).</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="scope">Scope note: Questions stay within Lectures 2–9 material and respect the “short, independent prompt” constraint announced by Josh. Use Q4/Q5 when you want conceptual breathers between heavier pandas questions.</div>
+</div>
+</body>
+</html>

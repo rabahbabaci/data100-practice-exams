@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DATA 100 SP26 — Practice Midterm 1 (OpenClaw Day 3)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f5f7fb;--surface:#ffffff;--surface2:#eef2ff;--border:#dbe2f1;--text:#0f172a;--dim:#616a84;--accent:#2f5bff;--green:#15803d;--red:#d93025;--yellow:#f59e0b;--code-bg:#f9fbff;--input-bg:#ffffff;--input-border:#d5dcec}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:880px;margin:0 auto;padding:20px 16px 80px}
+header{text-align:center;padding:32px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px;background:var(--surface);border-radius:18px;box-shadow:0 12px 30px rgba(15,23,42,.08);}
+header h1{font-size:1.6em;font-weight:700;margin-bottom:4px;color:var(--accent)}
+header h2{font-size:1.05em;font-weight:500;color:var(--dim)}
+.exam-meta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:.85em;color:var(--dim)}
+.exam-meta span{background:var(--surface);padding:4px 12px;border-radius:6px;border:1px solid var(--border)}
+.badge-claw{background:rgba(47,91,255,.08)!important;border-color:var(--accent)!important;color:var(--accent)}
+.timer-bar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;font-size:.9em}
+.timer-display{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:1.3em;font-weight:700;color:var(--green)}
+.timer-display.warning{color:var(--yellow)}
+.timer-display.danger{color:var(--red)}
+.timer-btn{background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:.85em;font-weight:600}
+.timer-btn:hover{opacity:.85}
+.timer-btn.paused{background:var(--yellow);color:#000}
+.question{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;box-shadow:0 12px 28px rgba(15,23,42,.08)}
+.q-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.q-title{font-size:1.15em;font-weight:700;color:var(--accent)}
+.q-pts{font-size:.85em;color:var(--dim);background:var(--surface2);padding:2px 10px;border-radius:12px}
+.q-body{margin-bottom:16px}
+.q-body p{margin-bottom:10px}
+.q-body ul{margin:8px 0 8px 20px;font-size:.92em}
+.subq{margin:16px 0;padding:16px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)}
+.subq-label{font-weight:600;color:var(--accent);font-size:.95em;margin-bottom:8px}
+.pts-badge{font-size:.75em;color:var(--dim);font-weight:400;margin-left:6px}
+code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:.88em;border:1px solid var(--border);color:#f0883e}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:14px;overflow-x:auto;margin:12px 0;font-size:.88em;line-height:1.5}
+.df-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88em}
+.df-table th,.df-table td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.df-table th{background:var(--surface2);color:var(--accent);font-weight:600}
+.df-table td{background:var(--code-bg)}
+input[type="text"],textarea{width:100%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);padding:10px 12px;border-radius:8px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.9em;margin:8px 0;resize:vertical}
+.radio-group label,.check-group label{display:block;padding:8px 12px;margin:4px 0;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:.9em}
+.radio-group input,.check-group input{margin-right:8px;accent-color:var(--accent)}
+.tf-row{display:flex;gap:12px;align-items:center;padding:8px 0;flex-wrap:wrap}
+.tf-row .tf-options{display:flex;gap:8px;min-width:120px}
+.tf-row .tf-text{flex:1;font-size:.9em}
+.match-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px;align-items:center;font-size:.88em;margin:10px 0}
+.match-grid .hdr{font-weight:600;color:var(--accent);padding:4px 8px}
+.arrow-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9em}
+.arrow-table th,.arrow-table td{border:1px solid var(--border);padding:8px 12px;text-align:left}
+.arrow-table th{background:var(--surface2);color:var(--accent);font-weight:600}
+.arrow-table td{background:var(--code-bg)}
+.arrow-table select{background:var(--input-bg);color:var(--text);border:1px solid var(--input-border);padding:4px 8px;border-radius:4px;font-size:.9em}
+details{margin-top:12px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+summary{padding:10px 16px;background:var(--surface2);cursor:pointer;font-weight:600;font-size:.9em;color:var(--green);user-select:none;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'▶ ';font-size:.75em}
+details[open] summary::before{content:'▼ '}
+.solution{padding:16px;font-size:.9em;line-height:1.6;border-top:1px solid var(--border)}
+.note{background:rgba(47,91,255,.08);border-left:3px solid var(--accent);padding:12px 16px;border-radius:10px;margin:16px 0;font-size:.9em}
+.warn{background:rgba(217,48,37,.1);border-left:3px solid var(--red);padding:12px 16px;border-radius:10px;margin:16px 0;font-size:.9em}
+.q-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.q-nav a{display:inline-block;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--accent);text-decoration:none;font-size:.85em;font-weight:600}
+.q-nav a:hover{background:var(--surface2);border-color:var(--accent)}
+.ref-toggle{position:fixed;bottom:16px;right:16px;z-index:99;background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;box-shadow:0 6px 18px rgba(15,23,42,.18)}
+.ref-panel{display:none;position:fixed;top:50px;right:16px;bottom:60px;width:360px;background:#ffffff;border:1px solid var(--border);border-radius:12px;z-index:98;overflow-y:auto;padding:20px;font-size:.82em;box-shadow:0 25px 60px rgba(15,23,42,.2)}
+.ref-panel.open{display:block}
+.ref-panel h3{color:var(--accent);font-size:1em;margin:12px 0 6px;border-bottom:1px solid var(--border);padding-bottom:4px}
+@media(max-width:640px){.container{padding:12px 10px 60px}.question{padding:16px}.ref-panel{width:calc(100vw - 32px)}.match-grid{grid-template-columns:auto 1fr;gap:4px}}
+</style>
+</head>
+<body>
+
+<div class="timer-bar">
+  <div>⏱️ <span class="timer-display" id="timer">50:00</span></div>
+  <div><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start Timer</button></div>
+</div>
+
+<div class="container">
+
+<header>
+  <h1>DATA 100 — Practice Midterm 1</h1>
+  <h2>OpenClaw Day 3 · Spring 2026 · UC Berkeley</h2>
+  <div class="exam-meta">
+    <span>⏱ 50 Minutes</span>
+    <span>📝 36 Points</span>
+    <span>📋 7 Questions</span>
+    <span class="badge-claw">Mirrors Fall '25 PrairieLearn style</span>
+  </div>
+</header>
+
+<div class="note">
+  <strong>Reminder:</strong> Follow Josh's advice — blast through every question once before doubling back. These prompts stay short and independent so you can practice that fast pass.
+</div>
+
+<nav class="q-nav">
+  <a href="#q1">Q1</a><a href="#q2">Q2</a><a href="#q3">Q3</a><a href="#q4">Q4</a><a href="#q5">Q5</a><a href="#q6">Q6</a><a href="#q7">Q7</a>
+</nav>
+
+<!-- QUESTION 1 -->
+<div class="question" id="q1">
+  <div class="q-header">
+    <span class="q-title">Question 1 · Pandas Snapshot Drill</span>
+    <span class="q-pts">7.5 pts</span>
+  </div>
+  <div class="q-body">
+    <p>DataFrame <code>bikes</code> (RangeIndex 0–4):</p>
+    <table class="df-table">
+      <tr><th>idx</th><th>stop</th><th>shift</th><th>trip_ct</th><th>wait_min</th><th>temp_F</th></tr>
+      <tr><td>0</td><td>Downtown</td><td>am</td><td>112</td><td>5</td><td>61</td></tr>
+      <tr><td>1</td><td>Mission</td><td>am</td><td>134</td><td>12</td><td>66</td></tr>
+      <tr><td>2</td><td>Uptown</td><td>pm</td><td>98</td><td>7</td><td>70</td></tr>
+      <tr><td>3</td><td>Campus</td><td>pm</td><td>102</td><td>8</td><td>70</td></tr>
+      <tr><td>4</td><td>Harbor</td><td>am</td><td>156</td><td>14</td><td>58</td></tr>
+    </table>
+    <p>Evaluate each expression. Unless a value is explicitly asked for, answer with the exact output object (scalar, list, or Series). If the code errors, write the exception name.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) <span class="pts-badge">[1.5]</span></div>
+    <code>bikes.loc[2, 'trip_ct']</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 98</p>
+      <p>Row label 2 corresponds to Uptown. <code>trip_ct</code> there is 98.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) <span class="pts-badge">[1.5]</span></div>
+    <code>bikes['wait_min'].iloc[[0,2,4]].mean()</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 26/3 (≈ 8.67)</p>
+      <p>Values pulled: 5, 7, 14. Mean = (5 + 7 + 14)/3 = 26/3.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) <span class="pts-badge">[1.5]</span></div>
+    <code>bikes[bikes['shift'] == 'am'].set_index('stop').loc['Harbor', 'wait_min']</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 14</p>
+      <p>Filtering to am rows keeps indices 0,1,4. After using <code>stop</code> as the index, Harbor's wait is 14.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(d) <span class="pts-badge">[1.5]</span></div>
+    <code>bikes.sort_values('trip_ct', ascending=False).head(2)['stop'].tolist()</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: ['Harbor', 'Mission']</p>
+      <p>Trip counts sorted desc: 156 (Harbor), 134 (Mission), 112, 102, 98. Top-two stop names listed in that order.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(e) <span class="pts-badge">[1.5]</span></div>
+    <code>bikes[bikes['temp_F'] >= bikes['temp_F'].median()]['stop'].iloc[-1]</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: Campus</p>
+      <p>Median temperature is 66. Rows with temp ≥ 66 are Mission (66), Uptown (70), Campus (70). The boolean filter preserves that order; <code>.iloc[-1]</code> grabs Campus.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 2 -->
+<div class="question" id="q2">
+  <div class="q-header">
+    <span class="q-title">Question 2 · GroupBy Shapes</span>
+    <span class="q-pts">4.5 pts</span>
+  </div>
+  <div class="q-body">
+    <p>Still using <code>bikes</code>, give the requested numeric result for each expression.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) <span class="pts-badge">[1.5]</span></div>
+    <code>bikes.groupby('shift')['trip_ct'].mean().shape[0]</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 2</p>
+      <p>Shifts = {am, pm}. Aggregation returns one row per unique shift.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) <span class="pts-badge">[1.5]</span></div>
+    <code>bikes.groupby('shift').filter(lambda sf: sf['wait_min'].max() &lt; 10).shape[0]</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 2</p>
+      <p>am group has waits 5, 12, 14 → max = 14 (fails). pm group has waits 7, 8 → max = 8 (passes). Filter keeps all rows from passing groups, so 2 rows remain.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) <span class="pts-badge">[1.5]</span></div>
+    <code>bikes.groupby('stop').head(1)['wait_min'].sum()</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 46</p>
+      <p>Stops are unique, so <code>head(1)</code> keeps all 5 rows. Sum of waits: 5 + 12 + 7 + 8 + 14 = 46.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 3 -->
+<div class="question" id="q3">
+  <div class="q-header">
+    <span class="q-title">Question 3 · Regex Table</span>
+    <span class="q-pts">4 pts</span>
+  </div>
+  <div class="q-body">
+    <p>String: "Ferry departs Gate G12 at 5:45 pm with 210 seats."</p>
+    <p>List the first three matches for each pattern (NA if fewer than 3). Order matters.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) Pattern: <code>\d+</code> <span class="pts-badge">[1.5]</span></div>
+    <div class="match-grid">
+      <span class="hdr">Match 1</span><input type="text">
+      <span class="hdr">Match 2</span><input type="text">
+      <span class="hdr">Match 3</span><input type="text">
+    </div>
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Matches: 12, 5, 45 (Match 4 would be 210)</p>
+      <p>The engine scans left to right: "G12" → 12, "5" from "5", "45" from "45", then "210". Only first three requested.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) Pattern: <code>[A-Z][a-z]{2}</code> <span class="pts-badge">[1]</span></div>
+    <div class="match-grid">
+      <span class="hdr">Match 1</span><input type="text">
+      <span class="hdr">Match 2</span><input type="text">
+      <span class="hdr">Match 3</span><input type="text">
+    </div>
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Matches: Fer, dep, art</p>
+      <p>Pattern needs one uppercase letter followed by two lowercase letters. "Ferry" supplies Fer, "departs" supplies dep and art. Next match would be "Gat".</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) Pattern: <code>[A-Z]+\d{2}</code> <span class="pts-badge">[1.5]</span></div>
+    <div class="match-grid">
+      <span class="hdr">Match 1</span><input type="text">
+      <span class="hdr">Match 2</span><input type="text">
+      <span class="hdr">Match 3</span><input type="text">
+    </div>
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Match 1: G12 · Match 2: NA · Match 3: NA</p>
+      <p>Only Gate label G12 fits: uppercase letters followed by exactly two digits.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 4 -->
+<div class="question" id="q4">
+  <div class="q-header">
+    <span class="q-title">Question 4 · Visualization Suitability</span>
+    <span class="q-pts">8 pts</span>
+  </div>
+  <div class="q-body">
+    <p>Dataset: 900 flights with <code>delay_min</code> (quantitative, nonnegative) and <code>wind_mph</code> (quantitative). Do <strong>not</strong> discretize variables unless the prompt explicitly says so.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) Distribution of <code>delay_min</code> only <span class="pts-badge">[4 × 1 pt]</span></div>
+    <p>Mark True if the plot is appropriate.</p>
+    <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a1">T</label><label><input type="radio" name="q4a1">F</label></div><span class="tf-text">Histogram</span></div>
+    <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a2">T</label><label><input type="radio" name="q4a2">F</label></div><span class="tf-text">Violin plot</span></div>
+    <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a3">T</label><label><input type="radio" name="q4a3">F</label></div><span class="tf-text">Scatter plot (delay vs index)</span></div>
+    <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4a4">T</label><label><input type="radio" name="q4a4">F</label></div><span class="tf-text">Empirical CDF line</span></div>
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Histogram ✓ · Violin ✓ · Scatter ✗ · Empirical CDF ✓</p>
+      <p>Scatter vs index is not a standard single-variable distribution view and wastes a second axis.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) Relationship between <code>delay_min</code> and <code>wind_mph</code> <span class="pts-badge">[4 × 1 pt]</span></div>
+    <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b1">T</label><label><input type="radio" name="q4b1">F</label></div><span class="tf-text">Scatter plot with transparency</span></div>
+    <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b2">T</label><label><input type="radio" name="q4b2">F</label></div><span class="tf-text">Hexbin heatmap</span></div>
+    <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b3">T</label><label><input type="radio" name="q4b3">F</label></div><span class="tf-text">Side-by-side boxplots by wind buckets</span></div>
+    <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q4b4">T</label><label><input type="radio" name="q4b4">F</label></div><span class="tf-text">Contour (2D density) plot</span></div>
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Scatter ✓ · Hexbin ✓ · Side-by-side boxplots ✗ · Contour ✓</p>
+      <p>Prompt forbids discretizing wind, so making categorical buckets for boxplots violates the instructions.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 5 -->
+<div class="question" id="q5">
+  <div class="q-header">
+    <span class="q-title">Question 5 · Bias Tweaks</span>
+    <span class="q-pts">4 pts</span>
+  </div>
+  <div class="q-body">
+    <p><strong>Method A:</strong> Survey 75 premium loyalty members via phone about on-time arrivals.</p>
+    <p><strong>Method B:</strong> Randomly intercept 220 travelers throughout the day at two terminals using tablets (everyone approached is logged; reminders sent to those who defer answers).</p>
+    <p>Assume honest answers when people respond. Compare B relative to A: ↑ increases, ↓ decreases, ↔ no change.</p>
+  </div>
+  <table class="arrow-table">
+    <tr><th>Error Source</th><th>Change (A → B)</th></tr>
+    <tr><td>Chance error</td><td><select><option></option><option>↑</option><option>↓</option><option>↔</option></select></td></tr>
+    <tr><td>Selection bias</td><td><select><option></option><option>↑</option><option>↓</option><option>↔</option></select></td></tr>
+    <tr><td>Non-response bias</td><td><select><option></option><option>↑</option><option>↓</option><option>↔</option></select></td></tr>
+    <tr><td>Response bias</td><td><select><option></option><option>↑</option><option>↓</option><option>↔</option></select></td></tr>
+  </table>
+  <details><summary>Show solution</summary><div class="solution">
+    <p class="correct">Chance error: ↓</p>
+    <p>B has ~3× the sample size ⇒ lower random variation.</p>
+    <p class="correct">Selection bias: ↓</p>
+    <p>Premium members are not representative; floor intercepts drawn throughout the day are closer to random travelers.</p>
+    <p class="correct">Non-response bias: ↓</p>
+    <p>Tablet logging + reminders shrink the number of people who never respond compared to cold calls.</p>
+    <p class="correct">Response bias: ↔</p>
+    <p>No question wording change, so truthfulness stays the same.</p>
+  </div></details>
+</div>
+
+<!-- QUESTION 6 -->
+<div class="question" id="q6">
+  <div class="q-header">
+    <span class="q-title">Question 6 · Chance Error Check</span>
+    <span class="q-pts">6 pts</span>
+  </div>
+  <div class="q-body">
+    <p>An SFO dashboard samples <strong>n = 120</strong> flights uniformly at random (SRS) and observes <strong>78 on-time departures</strong>.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) <span class="pts-badge">[2]</span></div>
+    <p>Compute the sample proportion p̂ of on-time flights. Report as a decimal to two places.</p>
+    <input type="text" placeholder="p-hat = ?">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">p̂ = 0.65</p>
+      <p>78 / 120 = 0.65. This is the point estimate of the true on-time rate.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) <span class="pts-badge">[2]</span></div>
+    <p>Using the plug-in formula, compute <code>SE(p̂) = sqrt(p̂(1 − p̂)/n)</code>. Round to three decimal places.</p>
+    <input type="text" placeholder="SE = ?">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">SE ≈ 0.043</p>
+      <p>p̂(1 − p̂) = 0.65 × 0.35 = 0.2275. Divide by 120 → 0.0018958. Square root ≈ 0.0435.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) <span class="pts-badge">[2]</span></div>
+    <p>If we quadruple the sample size to n = 480 (same population proportion), what happens to SE? Choose one.</p>
+    <div class="radio-group">
+      <label><input type="radio" name="q6c">Cuts in half</label>
+      <label><input type="radio" name="q6c">Stays the same</label>
+      <label><input type="radio" name="q6c">Doubles</label>
+    </div>
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: Cuts in half.</p>
+      <p>SE ∝ 1/√n. Increasing n by factor 4 multiplies the denominator by √4 = 2, so SE halves.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 7 -->
+<div class="question" id="q7">
+  <div class="q-header">
+    <span class="q-title">Question 7 · Sampling Flash</span>
+    <span class="q-pts">2 pts</span>
+  </div>
+  <div class="q-body">
+    <p>A ride-hailing lot has 40% electric vehicles. You sample 3 cars uniformly at random <strong>with replacement</strong>.</p>
+    <p>What is the probability <strong>at least one</strong> of the sampled cars is electric?</p>
+    <div class="radio-group">
+      <label><input type="radio" name="q7">(A) 0.064</label>
+      <label><input type="radio" name="q7">(B) 0.216</label>
+      <label><input type="radio" name="q7">(C) 0.784</label>
+      <label><input type="radio" name="q7">(D) 0.936</label>
+    </div>
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: (C) 0.784</p>
+      <p>“At least one” = 1 − P(no EV). P(no EV in one draw) = 0.6. With replacement, P(no EV in three draws) = 0.6³ = 0.216. So 1 − 0.216 = 0.784.</p>
+    </div></details>
+  </div>
+</div>
+
+<button class="ref-toggle" onclick="toggleRef()">Reference Sheet</button>
+<div class="ref-panel" id="refPanel">
+  <h3>Quick Formulas</h3>
+  <p>• Sample mean: x̄ = (1/n) Σ x_i<br>• Sample variance: s² = (1/(n−1)) Σ (x_i − x̄)²<br>• SE for sample proportion p̂ from SRS: SE = sqrt(p̂(1 − p̂)/n)</p>
+  <h3>Pandas Reminders</h3>
+  <p>• <code>.loc[label]</code> is label-based; <code>.iloc[pos]</code> is position-based.<br>• <code>groupby().agg('max')</code> collapses to one row per group.<br>• <code>filter</code> keeps original rows for groups whose boolean expression is True.</p>
+</div>
+
+</div>
+
+<script>
+let remaining=3000; let timerId=null; const display=document.getElementById('timer'); const btn=document.getElementById('timerBtn');
+function render(){const m=Math.floor(remaining/60);const s=String(remaining%60).padStart(2,'0');display.textContent=`${m}:${s}`;if(remaining<=600)display.classList.add('warning');if(remaining<=180)display.classList.add('danger');}
+function tick(){if(remaining<=0){clearInterval(timerId);btn.textContent='Time!';btn.disabled=true;return;}remaining--;render();}
+function toggleTimer(){if(timerId){clearInterval(timerId);timerId=null;btn.textContent='Resume';btn.classList.add('paused');}else{timerId=setInterval(tick,1000);btn.textContent='Pause';btn.classList.remove('paused');}}
+render();
+function toggleRef(){const panel=document.getElementById('refPanel');panel.classList.toggle('open');}
+</script>
+</body>
+</html>
