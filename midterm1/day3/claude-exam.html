@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DATA 100 SP26 — Practice Midterm 1, Day 3 (Claude)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f5f7fb;--surface:#ffffff;--surface2:#eef2ff;--border:#dbe2f1;--text:#0f172a;--dim:#616a84;--accent:#2f5bff;--green:#15803d;--red:#d93025;--yellow:#f59e0b;--code-bg:#f9fbff;--input-bg:#ffffff;--input-border:#d5dcec}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:880px;margin:0 auto;padding:20px 16px 80px}
+header{text-align:center;padding:32px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px;background:var(--surface);border-radius:18px;box-shadow:0 12px 30px rgba(15,23,42,.08);}
+header h1{font-size:1.6em;font-weight:700;margin-bottom:4px;color:var(--accent)}
+header h2{font-size:1.1em;font-weight:400;color:var(--dim)}
+.exam-meta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:.85em;color:var(--dim)}
+.exam-meta span{background:var(--surface);padding:4px 12px;border-radius:6px;border:1px solid var(--border)}
+.timer-bar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;font-size:.9em}
+.timer-display{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:1.3em;font-weight:700;color:var(--green)}
+.timer-display.warning{color:var(--yellow)}
+.timer-display.danger{color:var(--red)}
+.timer-btn{background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:.85em;font-weight:600}
+.timer-btn:hover{opacity:.85}
+.timer-btn.paused{background:var(--yellow);color:#000}
+.question{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;box-shadow:0 12px 28px rgba(15,23,42,.08)}
+.q-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.q-title{font-size:1.15em;font-weight:700;color:var(--accent)}
+.q-pts{font-size:.85em;color:var(--dim);background:var(--surface2);padding:2px 10px;border-radius:12px}
+.q-body{margin-bottom:16px}
+.q-body p{margin-bottom:10px}
+.subq{margin:16px 0;padding:16px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)}
+.subq-label{font-weight:600;color:var(--accent);font-size:.95em;margin-bottom:8px}
+.pts-badge{font-size:.75em;color:var(--dim);font-weight:400;margin-left:6px}
+code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:.88em;border:1px solid var(--border);color:#f0883e}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:14px;overflow-x:auto;margin:12px 0;font-size:.88em;line-height:1.5}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+.df-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.85em}
+.df-table th,.df-table td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.df-table th{background:var(--surface2);color:var(--accent);font-weight:600}
+.df-table td{background:var(--code-bg)}
+.df-table tr:hover td{background:var(--surface2)}
+input[type="text"],textarea{width:100%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);padding:12px 14px;border-radius:8px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.9em;margin:8px 0;resize:vertical}
+input[type="text"]:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,91,255,.15)}
+textarea{min-height:48px}
+.radio-group,.check-group{margin:8px 0}
+.radio-group label,.check-group label{display:block;padding:8px 12px;margin:4px 0;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:.9em;transition:border-color .15s}
+.radio-group label:hover,.check-group label:hover{border-color:var(--accent)}
+.radio-group input,.check-group input{margin-right:8px;accent-color:var(--accent)}
+.tf-row{display:flex;gap:12px;align-items:center;padding:8px 0;flex-wrap:wrap}
+.tf-row .tf-options{display:flex;gap:8px;min-width:120px}
+.tf-row .tf-text{flex:1;font-size:.9em}
+.match-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px;align-items:center;font-size:.88em;margin:10px 0}
+.match-grid .hdr{font-weight:600;color:var(--accent);padding:4px 8px}
+details{margin-top:16px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+summary{padding:10px 16px;background:var(--surface2);cursor:pointer;font-weight:600;font-size:.9em;color:var(--green);user-select:none;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'▶ ';font-size:.75em}
+details[open] summary::before{content:'▼ '}
+summary:hover{background:var(--border)}
+.solution{padding:16px;font-size:.9em;line-height:1.7;border-top:1px solid var(--border)}
+.solution .correct{color:var(--green);font-weight:600}
+.solution .trap{color:var(--yellow);font-style:italic}
+.note{background:rgba(47,91,255,.08);border-left:3px solid var(--accent);padding:12px 16px;border-radius:10px;margin:16px 0;font-size:.9em}
+.warn{background:rgba(217,48,37,.1);border-left:3px solid var(--red);padding:12px 16px;border-radius:10px;margin:16px 0;font-size:.9em}
+.q-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.q-nav a{display:inline-block;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--accent);text-decoration:none;font-size:.85em;font-weight:600}
+.q-nav a:hover{background:var(--surface2);border-color:var(--accent)}
+.ref-toggle{position:fixed;bottom:16px;right:16px;z-index:99;background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;box-shadow:0 6px 18px rgba(15,23,42,.18)}
+.ref-toggle:hover{opacity:.85}
+.ref-panel{display:none;position:fixed;top:50px;right:16px;bottom:60px;width:380px;background:#ffffff;border:1px solid var(--border);border-radius:12px;z-index:98;overflow-y:auto;padding:20px;font-size:.82em;box-shadow:0 25px 60px rgba(15,23,42,.2)}
+.ref-panel.open{display:block}
+.ref-panel h3{color:var(--accent);font-size:1em;margin:12px 0 6px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.ref-panel h3:first-child{margin-top:0}
+.ref-panel code{font-size:.82em}
+@media(max-width:600px){.container{padding:12px 10px 60px}.question{padding:16px}.ref-panel{width:calc(100vw - 32px);right:16px}}
+</style>
+</head>
+<body>
+
+<div class="timer-bar">
+  <div>⏱️ <span class="timer-display" id="timer">50:00</span></div>
+  <div><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start Timer</button></div>
+</div>
+
+<div class="container">
+
+<header>
+  <h1>DATA 100 — Practice Midterm 1, Day 3</h1>
+  <h2>Spring 2026 · UC Berkeley</h2>
+  <div class="exam-meta">
+    <span>⏱ 50 Minutes</span>
+    <span>📝 36 Points</span>
+    <span>📋 7 Questions</span>
+    <span>📖 Reference Sheet Provided</span>
+  </div>
+</header>
+
+<div class="note" style="margin-bottom:20px">
+  <strong>Instructions:</strong> This exam consists of 36 points spread out over 7 questions. You have 50 minutes. For all Python questions, assume Pandas is imported as <code>pd</code>, NumPy as <code>np</code>, the Python RegEx library as <code>re</code>, <code>matplotlib.pyplot</code> as <code>plt</code>, and <code>seaborn</code> as <code>sns</code>. Blank and incorrect answers are graded identically — answer every question.
+</div>
+
+<nav class="q-nav">
+  <a href="#q1">Q1</a><a href="#q2">Q2</a><a href="#q3">Q3</a><a href="#q4">Q4</a><a href="#q5">Q5</a><a href="#q6">Q6</a><a href="#q7">Q7</a>
+</nav>
+
+<!-- ═══════════════════════════════ Q1 ═══════════════════════════════ -->
+<div class="question" id="q1">
+<div class="q-header">
+  <span class="q-title">Question 1: Pandas Indexing Blitz</span>
+  <span class="q-pts">6 Pts</span>
+</div>
+<div class="q-body">
+<p>The DataFrame <code>dogs</code> records adoptable dogs at a Berkeley shelter. The index is the default <code>RangeIndex</code> (0, 1, 2, …).</p>
+<table class="df-table">
+<tr><th></th><th>name</th><th>breed</th><th>age</th><th>weight</th></tr>
+<tr><td>0</td><td>"Luna"</td><td>"poodle"</td><td>3</td><td>15</td></tr>
+<tr><td>1</td><td>"Bear"</td><td>"lab"</td><td>5</td><td>65</td></tr>
+<tr><td>2</td><td>"Mochi"</td><td>"corgi"</td><td>2</td><td>28</td></tr>
+<tr><td>3</td><td>"Koda"</td><td>"lab"</td><td>7</td><td>70</td></tr>
+<tr><td>4</td><td>"Daisy"</td><td>"poodle"</td><td>1</td><td>12</td></tr>
+</table>
+<p class="note">If a snippet returns a <strong>single integer</strong>, write that integer. If it returns something else (including a float, string, Series, DataFrame, or Error), write <strong>NA</strong>.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[1 pt]</span></div>
+  <code>dogs.loc[2, 'weight']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 28</p>
+    <p><code>.loc[2, 'weight']</code> uses label-based indexing. With a default RangeIndex, integer labels match row positions. Row label 2 is "Mochi", weight = 28. This is a single integer. ✓</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1 pt]</span></div>
+  <code>dogs.iloc[1:3].shape[0]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 2</p>
+    <p><code>.iloc[1:3]</code> selects rows at positions 1 and 2 (exclusive of 3). That's 2 rows. <code>.shape[0]</code> = 2.</p>
+    <p class="trap">🪤 Trap: <code>.iloc</code> slicing is exclusive on the right end (like standard Python). <code>.loc</code> slicing is inclusive on both ends. If this had been <code>.loc[1:3]</code>, the answer would be 3 (rows 1, 2, 3).</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1 pt]</span></div>
+  <code>dogs['age'].iloc[0]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 3</p>
+    <p><code>dogs['age']</code> returns the age Series. <code>.iloc[0]</code> returns the first value = 3. This is a single integer. ✓</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(d) <span class="pts-badge">[1 pt]</span></div>
+  <code>dogs[dogs['breed'] == 'lab']['weight'].max()</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 70</p>
+    <p>Filter to labs: rows 1 ("Bear", 65) and 3 ("Koda", 70). Take the max of the <code>weight</code> column = 70. This is a single integer. ✓</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(e) <span class="pts-badge">[1 pt]</span></div>
+  <code>dogs.sort_values('age', ascending=True).index[0]</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 4</p>
+    <p>Sort by age ascending: Daisy (1), Mochi (2), Luna (3), Bear (5), Koda (7). The first row after sorting is Daisy, whose original index label is 4. <code>.index[0]</code> returns 4. This is a single integer. ✓</p>
+    <p class="trap">🪤 Trap: <code>.index[0]</code> returns the index <em>label</em> of the first row, not the position. After sorting, Daisy moves to the top but keeps her original index label 4. Students who confuse this with the new position would write 0.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(f) <span class="pts-badge">[1 pt]</span></div>
+  <code>dogs.groupby('breed')['age'].mean().loc['corgi']</code>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: NA</p>
+    <p>Groupby breed and take mean age: corgi → 2.0, lab → 6.0, poodle → 2.0. <code>.loc['corgi']</code> returns <code>2.0</code>. But 2.0 is a <strong>float</strong>, not an integer (because <code>.mean()</code> always returns a float). Since the question asks for a single integer, write NA.</p>
+    <p class="trap">🪤 Trap: The numeric value looks like the integer 2, but <code>.mean()</code> returns a float64 in Pandas. This is exactly the kind of type-awareness the Fa25 exam tested — always check the return type!</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q2 ═══════════════════════════════ -->
+<div class="question" id="q2">
+<div class="q-header">
+  <span class="q-title">Question 2: Wrangling Concert Data</span>
+  <span class="q-pts">8.5 Pts</span>
+</div>
+<div class="q-body">
+<p>The Greek Theatre keeps a DataFrame <code>shows</code> with one row per ticket sold:</p>
+<ul style="margin:8px 0 8px 20px;font-size:.9em">
+  <li><code>ticket_id</code>: Unique ticket identifier (type = <code>str</code>)</li>
+  <li><code>artist</code>: Performing artist name (type = <code>str</code>)</li>
+  <li><code>date</code>: Show date in <code>"YYYY-MM-DD"</code> format (type = <code>str</code>)</li>
+  <li><code>section</code>: Seating section — one of <code>"pit"</code>, <code>"floor"</code>, <code>"balcony"</code> (type = <code>str</code>)</li>
+  <li><code>price</code>: Ticket price in dollars (type = <code>np.float64</code>)</li>
+</ul>
+<p>There are 50,000 rows. The first 5 rows:</p>
+<table class="df-table">
+<tr><th></th><th>ticket_id</th><th>artist</th><th>date</th><th>section</th><th>price</th></tr>
+<tr><td>0</td><td>"TK-0001"</td><td>"Mitski"</td><td>"2025-09-12"</td><td>"pit"</td><td>125.00</td></tr>
+<tr><td>1</td><td>"TK-0002"</td><td>"Mitski"</td><td>"2025-09-12"</td><td>"balcony"</td><td>55.00</td></tr>
+<tr><td>2</td><td>"TK-0003"</td><td>"LCD Soundsystem"</td><td>"2025-09-19"</td><td>"floor"</td><td>90.00</td></tr>
+<tr><td>3</td><td>"TK-0004"</td><td>"LCD Soundsystem"</td><td>"2025-09-19"</td><td>"pit"</td><td>150.00</td></tr>
+<tr><td>4</td><td>"TK-0005"</td><td>"Mitski"</td><td>"2025-09-12"</td><td>"floor"</td><td>85.00</td></tr>
+</table>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[0.5 pt]</span></div>
+  <p>What is the granularity of <code>shows</code>? Answer in one phrase.</p>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: Each row represents one ticket sold (one ticket per row).</p>
+    <p>The primary key is <code>ticket_id</code> since each ticket is unique. Note that <code>artist</code> and <code>date</code> are not unique per row (many tickets for the same show).</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1 pt]</span></div>
+  <p>For each column, choose the best variable type:</p>
+  <div class="tf-row">
+    <span class="tf-text"><code>ticket_id</code>:</span>
+    <div class="tf-options">
+      <label><input type="radio" name="q2b1" value="nom"> Qual. Nominal</label>
+      <label><input type="radio" name="q2b1" value="ord"> Qual. Ordinal</label>
+      <label><input type="radio" name="q2b1" value="quant"> Quantitative</label>
+    </div>
+  </div>
+  <div class="tf-row">
+    <span class="tf-text"><code>section</code>:</span>
+    <div class="tf-options">
+      <label><input type="radio" name="q2b2" value="nom"> Qual. Nominal</label>
+      <label><input type="radio" name="q2b2" value="ord"> Qual. Ordinal</label>
+      <label><input type="radio" name="q2b2" value="quant"> Quantitative</label>
+    </div>
+  </div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct"><code>ticket_id</code>: Qualitative Nominal</p>
+    <p>Ticket IDs are identifiers — they label categories (individual tickets) with no inherent ordering. Even though they contain numbers, arithmetic on them is meaningless.</p>
+    <p class="correct"><code>section</code>: Qualitative Ordinal</p>
+    <p>Seating sections have a natural ordering based on proximity to the stage: pit → floor → balcony. This makes them ordinal. Compare to how the Fa25 exam tested "ranking" (1=Great, 2=Good, 3=Mediocre) as ordinal.</p>
+    <p class="trap">🪤 Trap: Students might argue section is nominal because "pit," "floor," and "balcony" are just names. But any variable with a natural, meaningful ordering is ordinal. The key question: does the order convey information? Here, yes — sections go from closest to farthest from the stage.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>Fill in the blanks to create <code>revenue</code>: a DataFrame with one row per artist, showing the <strong>total</strong> ticket revenue and the <strong>number of tickets sold</strong>.</p>
+  <pre><code>revenue = shows.groupby(__(i)__).agg(__(ii)__)</code></pre>
+  <p>(i):</p><input type="text" placeholder="Blank (i)...">
+  <p>(ii):</p><input type="text" placeholder="Blank (ii)...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">(i): <code>"artist"</code></p>
+    <p class="correct">(ii): <code>{"price": "sum", "ticket_id": "count"}</code></p>
+    <p>The dict-style <code>.agg()</code> applies different functions to different columns. <code>"sum"</code> on price gives total revenue; <code>"count"</code> on ticket_id gives number of tickets. You could also use <code>"size"</code> instead of count, but <code>"size"</code> is a method on the GroupBy object, not a column-level aggregation function.</p>
+    <p>Also accepted: <code>{"price": sum, "ticket_id": "count"}</code> or <code>{"price": np.sum, "ticket_id": len}</code>.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(d) <span class="pts-badge">[2 pts]</span></div>
+  <p>Management wants to keep only rows from artists who sold tickets in <strong>all three sections</strong> (pit, floor, and balcony). Fill in the blanks:</p>
+  <pre><code>popular = shows.groupby(__(i)__).__(ii)__(__(iii)__)</code></pre>
+  <p>(i):</p><input type="text" placeholder="Blank (i)...">
+  <p>(ii):</p><input type="text" placeholder="Blank (ii)...">
+  <p>(iii):</p><input type="text" placeholder="Blank (iii)...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">(i): <code>"artist"</code></p>
+    <p class="correct">(ii): <code>filter</code></p>
+    <p class="correct">(iii): <code>lambda sf: sf["section"].nunique() == 3</code></p>
+    <p>Also accepted: <code>lambda sf: len(sf["section"].unique()) == 3</code> or <code>lambda sf: set(sf["section"]) == {"pit","floor","balcony"}</code>.</p>
+    <p><code>.filter()</code> keeps the <strong>original rows</strong> from groups where the condition is True. <code>.nunique()</code> counts the number of unique values. If an artist sold tickets in all 3 sections, <code>nunique() == 3</code>.</p>
+    <p class="trap">🪤 Trap: Using <code>.agg()</code> here would return a summary table, not the original rows. The keyword "keep only rows" signals <code>.filter()</code>. This distinction is tested on nearly every Data 100 midterm.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(e) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>A separate DataFrame <code>venues</code> has columns <code>artist</code> (str), <code>date</code> (str), and <code>capacity</code> (int) — one row per show. Write <strong>one line</strong> to add the <code>capacity</code> column to <code>shows</code>, matching on both <code>artist</code> and <code>date</code>.</p>
+  <textarea rows="2" placeholder="Your code..."></textarea>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: <code>shows = shows.merge(venues, on=["artist", "date"])</code></p>
+    <p>Also accepted: <code>shows.merge(venues, left_on=["artist","date"], right_on=["artist","date"])</code>.</p>
+    <p>This is a many-to-one merge: each ticket (shows) maps to one show (venues) via the composite key [artist, date]. Compare to SU25 Q1f and SP25 Q1 where merges on shared column names are tested.</p>
+    <p class="trap">🪤 Trap: Merging on just <code>"artist"</code> would be wrong — an artist might perform on multiple dates. You need both columns to uniquely identify a show.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(f) <span class="pts-badge">[2 pts]</span></div>
+  <p>Fill in the blanks to create <code>avg_price</code>: a DataFrame showing the average ticket price for each combination of <code>artist</code> and <code>section</code>. If a combination doesn't exist, the value should be <code>0</code>.</p>
+  <pre><code>avg_price = shows.pivot_table(
+    values=__(i)__,
+    index=__(ii)__,
+    columns=__(iii)__,
+    aggfunc=__(iv)__,
+    fill_value=__(v)__
+)</code></pre>
+  <p>(i):</p><input type="text" placeholder="Blank (i)...">
+  <p>(ii):</p><input type="text" placeholder="Blank (ii)...">
+  <p>(iii):</p><input type="text" placeholder="Blank (iii)...">
+  <p>(iv):</p><input type="text" placeholder="Blank (iv)...">
+  <p>(v):</p><input type="text" placeholder="Blank (v)...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">(i): <code>"price"</code></p>
+    <p class="correct">(ii): <code>"artist"</code></p>
+    <p class="correct">(iii): <code>"section"</code></p>
+    <p class="correct">(iv): <code>"mean"</code></p>
+    <p class="correct">(v): <code>0</code></p>
+    <p>This is the standard <code>pivot_table</code> pattern tested on every past exam. <code>fill_value=0</code> replaces NaN for missing combinations. Note that <code>aggfunc="mean"</code> is actually the default, but writing it explicitly is always safer.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q3 ═══════════════════════════════ -->
+<div class="question" id="q3">
+<div class="q-header">
+  <span class="q-title">Question 3: String Manipulation</span>
+  <span class="q-pts">3 Pts</span>
+</div>
+<div class="q-body">
+<p>Using the <code>shows</code> DataFrame from Q2.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[1 pt]</span></div>
+  <p>Extract the <strong>month</strong> (the two characters between the hyphens) from each <code>date</code> value into a new column called <code>month</code>. For example, <code>"2025-09-12"</code> → <code>"09"</code>. Fill in the blank:</p>
+  <pre><code>shows["month"] = shows["date"].str.__(i)__</code></pre>
+  <p>(i):</p><input type="text" placeholder="Blank (i)...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">(i): <code>split("-").str[1]</code> &nbsp; or &nbsp; <code>[5:7]</code></p>
+    <p>Approach 1: Split "2025-09-12" by "-" → ["2025", "09", "12"], then <code>.str[1]</code> grabs "09".</p>
+    <p>Approach 2: Slice characters at positions 5 and 6 → "09". Both are valid.</p>
+    <p class="trap">🪤 Trap: Writing <code>.str.split("-")[1]</code> without the second <code>.str</code> would try to index the entire Series, not each individual list. You need <code>.str.split("-").str[1]</code> with the chained <code>.str</code> accessor.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1 pt]</span></div>
+  <p>Write one line of code to return a <strong>Series</strong> of boolean values indicating which rows have an <code>artist</code> name that starts with <code>"LCD"</code>.</p>
+  <input type="text" placeholder="Your code...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: <code>shows["artist"].str.startswith("LCD")</code></p>
+    <p>Also accepted: <code>shows["artist"].str[:3] == "LCD"</code> or <code>shows["artist"].str.contains(r"^LCD")</code>.</p>
+    <p>Note: <code>.str.contains("LCD")</code> without the <code>^</code> anchor would also match artists with "LCD" anywhere in the name, not just at the start. For this dataset it works, but <code>.startswith()</code> is more precise.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1 pt]</span></div>
+  <p>The <code>ticket_id</code> column has the format <code>"TK-NNNN"</code> where NNNN is a 4-digit number. Write one line to create a new column <code>ticket_num</code> containing just the numeric part as an integer. For example, <code>"TK-0003"</code> → <code>3</code>.</p>
+  <textarea rows="2" placeholder="Your code..."></textarea>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: <code>shows["ticket_num"] = shows["ticket_id"].str.split("-").str[1].astype(int)</code></p>
+    <p>Also accepted: <code>shows["ticket_id"].str[3:].astype(int)</code> (slicing from position 3 onward skips "TK-").</p>
+    <p>The <code>.astype(int)</code> is necessary to convert the string "0003" to the integer 3. Without it, you'd have a string column.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q4 ═══════════════════════════════ -->
+<div class="question" id="q4">
+<div class="q-header">
+  <span class="q-title">Question 4: Regex Roundup</span>
+  <span class="q-pts">5 Pts</span>
+</div>
+<div class="q-body">
+<p>Consider the following string:</p>
+<pre><code>"Ticket TK-0042 sold for $125.00 on 09/12/2025 at 3:45pm"</code></pre>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2.5 pts]</span></div>
+  <p>For each regex pattern, write the matches returned by <code>re.findall(pattern, text)</code>. If no match, write <strong>NA</strong>.</p>
+
+  <p style="margin-top:12px;font-weight:600">Pattern 1: <code>\d{2,4}</code></p>
+  <div class="match-grid">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+  </div>
+
+  <p style="margin-top:12px;font-weight:600">Pattern 2: <code>[A-Z][A-Z\-]+</code></p>
+  <div class="match-grid">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+  </div>
+
+  <p style="margin-top:12px;font-weight:600">Pattern 3: <code>\d+:\d+</code></p>
+  <div class="match-grid">
+    <span class="hdr">Match 1:</span><input type="text" placeholder="">
+    <span class="hdr">Match 2:</span><input type="text" placeholder="">
+    <span class="hdr">Match 3:</span><input type="text" placeholder="">
+  </div>
+
+  <details><summary>Show Solution</summary><div class="solution">
+    <p><strong>Pattern 1: <code>\d{2,4}</code></strong> — Matches 2 to 4 consecutive digits.</p>
+    <p>Scanning left to right: "TK-" then <code>0042</code> (4 digits ✓), "$" then <code>125</code> (3 digits ✓), "." then <code>00</code> (2 digits ✓), then <code>09</code> ✓, <code>12</code> ✓, <code>2025</code> ✓, then <code>45</code> ✓. But <code>re.findall</code> returns non-overlapping matches left to right, and <code>{2,4}</code> is greedy.</p>
+    <p class="correct">Match 1: <code>0042</code> &nbsp; Match 2: <code>125</code> &nbsp; Match 3: <code>00</code></p>
+    <p>(Full list: <code>['0042', '125', '00', '09', '12', '2025', '45']</code> — but only 3 boxes are provided, so write the first 3.)</p>
+
+    <p style="margin-top:12px"><strong>Pattern 2: <code>[A-Z][A-Z\-]+</code></strong> — One uppercase letter followed by one or more uppercase letters or hyphens.</p>
+    <p>"Ticket" → "T" then "i" is lowercase, no match for <code>+</code>. "TK-" → "T" + "K-" = <code>TK-</code> (3 chars ✓). But wait — the <code>+</code> means 1 or more, so "T" needs at least one more [A-Z\-] character. "T" alone won't match. "TK-" → "T" then "K" then "-" → <code>TK-</code> ✓. Continuing: no other sequences of uppercase start + uppercase/hyphen continuation.</p>
+    <p class="correct">Match 1: <code>TK-</code> &nbsp; Match 2: NA &nbsp; Match 3: NA</p>
+    <p class="trap">🪤 Trap: "Ticket" starts with "T" but the second character "i" is lowercase, so it doesn't satisfy <code>[A-Z\-]+</code>. Only "TK-" qualifies because "K" and "-" are both in the character class.</p>
+
+    <p style="margin-top:12px"><strong>Pattern 3: <code>\d+:\d+</code></strong> — One or more digits, a literal colon, one or more digits.</p>
+    <p>Scanning: "3:45" → <code>3:45</code> ✓. No other colons flanked by digits.</p>
+    <p class="correct">Match 1: <code>3:45</code> &nbsp; Match 2: NA &nbsp; Match 3: NA</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[2.5 pts]</span></div>
+  <p>Staff want to extract ticket IDs from a log file. Each ticket ID has the format <code>"TK-"</code> followed by exactly 4 digits. Given:</p>
+  <pre><code>log = "Sold TK-0042 and TK-1399, refunded TK-0007. Invalid: TK-55, TKX-9999"
+re.findall(pattern, log)</code></pre>
+  <p>The desired output is <code>['0042', '1399', '0007']</code>. Which patterns produce this output? <strong>Select all that apply.</strong></p>
+  <div class="check-group">
+    <label><input type="checkbox" name="q4b" value="A"> A. <code>r"TK-(\d{4})"</code></label>
+    <label><input type="checkbox" name="q4b" value="B"> B. <code>r"TK-\d{4}"</code></label>
+    <label><input type="checkbox" name="q4b" value="C"> C. <code>r"TK-(\d{4})\b"</code></label>
+    <label><input type="checkbox" name="q4b" value="D"> D. <code>r"TK-([0-9][0-9][0-9][0-9])"</code></label>
+  </div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: A, C, D</p>
+    <p><strong>A</strong> ✓: The capture group <code>(\d{4})</code> grabs exactly 4 digits after "TK-". <code>re.findall</code> returns only the group content → <code>['0042', '1399', '0007']</code>. "TK-55" has only 2 digits so no match. "TKX-9999" doesn't start with "TK-".</p>
+    <p><strong>B</strong> ✗: No capture group, so <code>re.findall</code> returns the full match including "TK-": <code>['TK-0042', 'TK-1399', 'TK-0007']</code>. Not the desired output.</p>
+    <p><strong>C</strong> ✓: Same as A with a word boundary <code>\b</code> after the digits. This still matches since each ticket ID is followed by a non-word character (space, comma, period). The group returns just the digits.</p>
+    <p><strong>D</strong> ✓: <code>[0-9][0-9][0-9][0-9]</code> is equivalent to <code>\d{4}</code>. The capture group returns the 4-digit strings.</p>
+    <p class="trap">🪤 Trap: The capture group <code>()</code> behavior of <code>re.findall</code> is the most commonly tested regex concept. With groups → returns group content only. Without groups → returns full match.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q5 ═══════════════════════════════ -->
+<div class="question" id="q5">
+<div class="q-header">
+  <span class="q-title">Question 5: Visualizing Ticket Data</span>
+  <span class="q-pts">5 Pts</span>
+</div>
+<div class="q-body">
+<p>Using the <code>shows</code> DataFrame from Q2 (columns: <code>ticket_id</code>, <code>artist</code>, <code>date</code>, <code>section</code>, <code>price</code>).</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2 pts]</span></div>
+  <p>Staff want to visualize the <strong>distribution of <code>price</code></strong> (a single quantitative variable). Mark True if appropriate, False otherwise:</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5a1" value="T"> True</label><label><input type="radio" name="q5a1" value="F"> False</label></div><span class="tf-text">Scatter plot</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5a2" value="T"> True</label><label><input type="radio" name="q5a2" value="F"> False</label></div><span class="tf-text">Box plot</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5a3" value="T"> True</label><label><input type="radio" name="q5a3" value="F"> False</label></div><span class="tf-text">KDE plot</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5a4" value="T"> True</label><label><input type="radio" name="q5a4" value="F"> False</label></div><span class="tf-text">Bar chart</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Scatter plot: False ✗</p>
+    <p>Scatter plots require two quantitative variables (x and y). A single variable's distribution cannot be shown on a scatter plot.</p>
+    <p class="correct">Box plot: True ✓</p>
+    <p>Box plots display quartiles, median, and outliers — perfect for a single quantitative variable's distribution.</p>
+    <p class="correct">KDE plot: True ✓</p>
+    <p>KDE plots estimate the probability density function of a single continuous variable.</p>
+    <p class="correct">Bar chart: False ✗</p>
+    <p>Bar charts display counts or values for categorical variables. Price is continuous/quantitative — use a histogram, not a bar chart.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>Staff want to visualize the <strong>relationship between <code>section</code> and <code>price</code></strong>. Mark True if appropriate, False otherwise:</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5b1" value="T"> True</label><label><input type="radio" name="q5b1" value="F"> False</label></div><span class="tf-text">Side-by-side box plots</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5b2" value="T"> True</label><label><input type="radio" name="q5b2" value="F"> False</label></div><span class="tf-text">Overlaid histograms</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q5b3" value="T"> True</label><label><input type="radio" name="q5b3" value="F"> False</label></div><span class="tf-text">Contour plot</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Side-by-side box plots: True ✓</p>
+    <p>One categorical variable (section) on one axis, one quantitative variable (price) on the other — side-by-side boxplots are designed for exactly this.</p>
+    <p class="correct">Overlaid histograms: True ✓</p>
+    <p>You can overlay histograms of price, one per section, using different colors. This shows the distribution of price for each section.</p>
+    <p class="correct">Contour plot: False ✗</p>
+    <p>Contour plots visualize the joint distribution of <strong>two quantitative</strong> variables. Section is categorical, so a contour plot is not appropriate. Same reasoning as Fa25 Q4b.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>Fill in the blanks to produce a side-by-side violin plot of <code>price</code> across <code>section</code>, colored by <code>artist</code>:</p>
+  <pre><code>sns.violinplot(data=shows, x=__(i)__, y=__(ii)__, hue=__(iii)__)</code></pre>
+  <p>(i):</p><input type="text" placeholder="Blank (i)...">
+  <p>(ii):</p><input type="text" placeholder="Blank (ii)...">
+  <p>(iii):</p><input type="text" placeholder="Blank (iii)...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">(i): <code>"section"</code></p>
+    <p class="correct">(ii): <code>"price"</code></p>
+    <p class="correct">(iii): <code>"artist"</code></p>
+    <p>In seaborn violin plots, <code>x</code> is typically the categorical variable, <code>y</code> is the quantitative variable, and <code>hue</code> adds a color-based grouping. This matches the SP25 Q1f pattern exactly.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q6 ═══════════════════════════════ -->
+<div class="question" id="q6">
+<div class="q-header">
+  <span class="q-title">Question 6: KDE Computation</span>
+  <span class="q-pts">4 Pts</span>
+</div>
+<div class="q-body">
+<p>A music reviewer rates 5 albums on a scale of 0–100. The scores are: <strong>{25, 40, 40, 60, 85}</strong>. She uses a <strong>boxcar (uniform) kernel</strong> with bandwidth <code>α = 30</code>:</p>
+<pre><code>K_α(x, x_i) = 1/α,  if |x - x_i| ≤ α/2
+              0,      otherwise</code></pre>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[2.5 pts]</span></div>
+  <p>Compute the KDE density estimate at <code>x = 45</code>. Show your work.</p>
+  <textarea rows="6" placeholder="Your work and answer..."></textarea>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p>For each data point, check if <code>|45 − x_i| ≤ α/2 = 15</code>:</p>
+    <p>• x₁ = 25: |45 − 25| = 20 > 15 → K = 0</p>
+    <p>• x₂ = 40: |45 − 40| = 5 ≤ 15 → K = 1/30</p>
+    <p>• x₃ = 40: |45 − 40| = 5 ≤ 15 → K = 1/30</p>
+    <p>• x₄ = 60: |45 − 60| = 15 ≤ 15 → K = 1/30</p>
+    <p>• x₅ = 85: |45 − 85| = 40 > 15 → K = 0</p>
+    <p>KDE = (1/n) × Σ K = (1/5)(0 + 1/30 + 1/30 + 1/30 + 0) = (1/5)(3/30) = (1/5)(1/10) = <strong>1/50 = 0.02</strong></p>
+    <p class="correct">Answer: 1/50 = 0.02</p>
+    <p class="trap">🪤 Trap 1: x₄ = 60 is exactly at the boundary (|45 − 60| = 15 = α/2). The condition is ≤ (less than or equal), so it IS included. Missing this gives 2/150 = 1/75 instead of 1/50.</p>
+    <p class="trap">🪤 Trap 2: The two data points at x = 40 each contribute their own kernel. Treating them as one point gives 1/75 instead of 1/50.</p>
+    <p class="trap">🪤 Trap 3: Don't forget to divide by n = 5! The raw kernel sum is 3/30 = 1/10, but the KDE formula includes the (1/n) factor.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>Select True or False for each statement about KDE:</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q6b1" value="T"> True</label><label><input type="radio" name="q6b1" value="F"> False</label></div><span class="tf-text">Increasing the bandwidth α produces a smoother KDE curve.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q6b2" value="T"> True</label><label><input type="radio" name="q6b2" value="F"> False</label></div><span class="tf-text">A valid KDE curve must have density values between 0 and 1 everywhere.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q6b3" value="T"> True</label><label><input type="radio" name="q6b3" value="F"> False</label></div><span class="tf-text">If we double n (the number of data points) while keeping α fixed, the height of each individual kernel contribution <em>decreases</em>.</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Larger α → smoother: True ✓</p>
+    <p>A wider bandwidth spreads each kernel over a larger range, smoothing out local bumps. This is the fundamental bandwidth tradeoff: large α = oversmoothing, small α = undersmoothing. Tested on Fa24 Q3e.</p>
+    <p class="correct">Density must be between 0 and 1: False ✗</p>
+    <p>A KDE is a probability density function. The <em>total area</em> under the curve must equal 1, but individual density values CAN exceed 1. Think of a very narrow kernel centered on clustered data — the peak can be tall as long as the total area is 1.</p>
+    <p class="correct">Doubling n decreases individual kernel height: True ✓</p>
+    <p>The KDE formula is f̂(x) = (1/n) Σ K_α(x, xᵢ). Each kernel has height 1/α, but the (1/n) factor means each kernel's contribution to the final estimate is (1/n)(1/α). Doubling n halves each kernel's contribution. The curve stays normalized (area = 1) because there are now twice as many kernels, each contributing half as much.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ Q7 ═══════════════════════════════ -->
+<div class="question" id="q7">
+<div class="q-header">
+  <span class="q-title">Question 7: Sampling &amp; Bias</span>
+  <span class="q-pts">4.5 Pts</span>
+</div>
+<div class="q-body">
+<p>The Greek Theatre wants to estimate what proportion of all concert-goers would attend a jazz festival. There are 50,000 ticket holders in their database. They consider three approaches:</p>
+<p><strong>Approach A:</strong> Survey every 10th person entering the venue during a rock concert.</p>
+<p><strong>Approach B:</strong> Select 500 ticket holders uniformly at random from the full database and email them the survey. 210 respond.</p>
+<p><strong>Approach C:</strong> Divide all 50,000 ticket holders into 5 strata by the genre they most recently attended (rock, pop, jazz, hip-hop, classical). Randomly sample 100 from each stratum.</p>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(a) <span class="pts-badge">[1 pt]</span></div>
+  <p>Name the type of sample for each approach:</p>
+  <p>Approach A:</p>
+  <div class="radio-group">
+    <label><input type="radio" name="q7a1" value="conv"> Convenience sample</label>
+    <label><input type="radio" name="q7a1" value="srs"> Simple random sample</label>
+    <label><input type="radio" name="q7a1" value="strat"> Stratified random sample</label>
+  </div>
+  <p>Approach C:</p>
+  <div class="radio-group">
+    <label><input type="radio" name="q7a2" value="conv"> Convenience sample</label>
+    <label><input type="radio" name="q7a2" value="srs"> Simple random sample</label>
+    <label><input type="radio" name="q7a2" value="strat"> Stratified random sample</label>
+  </div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Approach A: Convenience sample</p>
+    <p>There is no randomization — they're sampling whoever happens to walk in during a specific event. This is a textbook convenience sample.</p>
+    <p class="correct">Approach C: Stratified random sample</p>
+    <p>The population is divided into non-overlapping strata (genre preference), and a random sample is drawn from each. This matches the definition exactly, as tested in SP25 Q3c.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(b) <span class="pts-badge">[2 pts]</span></div>
+  <p>For each statement about <strong>Approach B</strong>, select True or False:</p>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q7b1" value="T"> True</label><label><input type="radio" name="q7b1" value="F"> False</label></div><span class="tf-text">This approach has zero selection bias because the 500 people were chosen at random.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q7b2" value="T"> True</label><label><input type="radio" name="q7b2" value="F"> False</label></div><span class="tf-text">The fact that only 210 of 500 responded could introduce non-response bias.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q7b3" value="T"> True</label><label><input type="radio" name="q7b3" value="F"> False</label></div><span class="tf-text">If the sample size were increased from 500 to 5,000 (same random method, same response rate), the non-response bias would decrease.</span></div>
+  <div class="tf-row"><div class="tf-options"><label><input type="radio" name="q7b4" value="T"> True</label><label><input type="radio" name="q7b4" value="F"> False</label></div><span class="tf-text">Chance error would likely be smaller for Approach B if the sample size were increased from 500 to 5,000.</span></div>
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Zero selection bias: True ✓</p>
+    <p>The 500 people were selected uniformly at random from the full population (all 50,000 ticket holders). The sampling frame matches the population, so there is no selection bias in who was <em>selected</em>. The bias issues arise from who <em>responds</em>, not who is selected.</p>
+    <p class="correct">Non-response bias possible: True ✓</p>
+    <p>Only 210/500 = 42% responded. If the people who respond differ systematically from those who don't (e.g., jazz fans might be more likely to respond to a survey about a jazz festival), this introduces non-response bias. Same principle as Fa25 Q5.</p>
+    <p class="correct">Larger sample fixes non-response bias: False ✗</p>
+    <p>Non-response bias is a <em>systematic</em> issue — it depends on <em>who</em> responds, not <em>how many</em> respond. If the same 42% response rate holds, the same type of people are responding, and the bias persists. Increasing sample size reduces <strong>chance error</strong>, not systematic bias.</p>
+    <p class="correct">Larger sample reduces chance error: True ✓</p>
+    <p>Chance error (random variation) decreases with larger samples. This is the fundamental distinction: sample size reduces random error but does NOT fix systematic biases (selection, response, non-response).</p>
+    <p class="trap">🪤 Trap: The "bigger sample fixes bias" misconception is tested on almost every Data 100 exam. Sample size reduces chance error ONLY. Systematic biases require methodological changes, not more data.</p>
+  </div></details>
+</div>
+
+<div class="subq">
+  <div class="subq-label">(c) <span class="pts-badge">[1.5 pts]</span></div>
+  <p>For Approach C, the strata have the following sizes:</p>
+  <table class="df-table">
+    <tr><th>Genre stratum</th><th>Ticket holders</th></tr>
+    <tr><td>Rock</td><td>20,000</td></tr>
+    <tr><td>Pop</td><td>12,500</td></tr>
+    <tr><td>Jazz</td><td>7,500</td></tr>
+    <tr><td>Hip-hop</td><td>5,000</td></tr>
+    <tr><td>Classical</td><td>5,000</td></tr>
+  </table>
+  <p>Approach C samples 100 from each stratum (equal allocation). A colleague suggests switching to <strong>proportional allocation</strong> with a total sample size of 500. Under proportional allocation, how many rock fans would be sampled?</p>
+  <input type="text" placeholder="Your answer...">
+  <details><summary>Show Solution</summary><div class="solution">
+    <p class="correct">Answer: 200</p>
+    <p>Rock proportion = 20,000 / 50,000 = 2/5 = 0.40. Proportional sample = 0.40 × 500 = <strong>200</strong>.</p>
+    <p>Under equal allocation (100 per stratum), rock fans are underrepresented relative to their population share (100/500 = 20% of sample vs. 40% of population). Proportional allocation corrects this.</p>
+  </div></details>
+</div>
+</div>
+
+<!-- End of Exam -->
+<div style="text-align:center;margin-top:40px;padding:32px;background:var(--surface);border-radius:10px;border:1px solid var(--border)">
+  <h2 style="color:var(--green);margin-bottom:8px">🎉 End of Practice Exam — Day 3</h2>
+  <p style="color:var(--dim);font-size:.95em">Total: 36 Points · 7 Questions · 50 Minutes</p>
+  <p style="color:var(--dim);font-size:.85em;margin-top:8px">Compare your answers to solutions. Focus on traps you fell for — those are your weak spots.</p>
+</div>
+
+</div>
+
+<button class="ref-toggle" onclick="toggleRef()">📖 Reference Sheet</button>
+<div class="ref-panel" id="refPanel">
+<h3>Pandas (import pandas as pd)</h3>
+<p><code>df[col]</code> — Column as Series</p>
+<p><code>df[[c1,c2]]</code> — DataFrame with columns</p>
+<p><code>df.loc[row,col]</code> — Label-based</p>
+<p><code>df.iloc[row,col]</code> — Position-based</p>
+<p><code>df.loc['a':'c']</code> — inclusive both ends</p>
+<p><code>df.iloc[0:3]</code> — exclusive end</p>
+<p><code>df[bool_series]</code> — Boolean filter</p>
+<p><code>df.sort_values(col)</code> · <code>df.value_counts()</code></p>
+<p><code>df.dropna()</code> · <code>df.fillna(v)</code> · <code>df.isna()</code> · <code>s.notna()</code></p>
+<p><code>df.merge(other, on=, how=)</code></p>
+<p><code>df.pivot_table(values=, index=, columns=, aggfunc=, fill_value=)</code></p>
+<h3>Groupby</h3>
+<p><code>df.groupby(col)</code></p>
+<p><code>.agg(func)</code> · <code>.agg({"c":"f"})</code></p>
+<p><code>.filter(lambda sf: ...)</code> — original rows where True</p>
+<p><code>.head(n)</code> · <code>.size()</code> · <code>.count()</code></p>
+<h3>String (s.str.___)</h3>
+<p><code>.str[a:b]</code> · <code>.str.split(pat).str[i]</code></p>
+<p><code>.str.contains(pat)</code> · <code>.str.startswith(s)</code></p>
+<p><code>.str.extract(pat)</code> · <code>.str.replace(pat,repl)</code></p>
+<p><code>.str.len()</code> · <code>.str.lower()</code> · <code>.str.upper()</code></p>
+<h3>Regex</h3>
+<p><code>[abc]</code> class · <code>[^abc]</code> negated · <code>\d \w \s</code></p>
+<p><code>.</code> any · <code>*</code> 0+ · <code>+</code> 1+ · <code>?</code> 0|1</p>
+<p><code>{n}</code> exact · <code>{n,m}</code> range · <code>^</code> start · <code>$</code> end</p>
+<p><code>(grp)</code> capture · <code>a|b</code> alternation · <code>\$</code> literal $</p>
+<p><code>re.findall(pat,s)</code> — list (groups if present)</p>
+<p><code>re.search(pat,s)</code> — first match object</p>
+<h3>Visualization</h3>
+<p><code>plt.hist(data, bins=)</code> · <code>plt.scatter(x,y)</code></p>
+<p><code>plt.title(s)</code> · <code>plt.xlabel(s)</code></p>
+<p><code>sns.boxplot(data=,x=,y=)</code></p>
+<p><code>sns.violinplot(data=,x=,y=,hue=)</code></p>
+<p><code>sns.kdeplot(data=,x=)</code></p>
+<h3>KDE</h3>
+<p>f̂(x) = (1/n) Σᵢ Kα(x, xᵢ)</p>
+<p>Boxcar: Kα = 1/α if |x−xᵢ| ≤ α/2, else 0</p>
+<p>↑ bandwidth → smoother · ↓ bandwidth → spikier</p>
+<p>Valid KDE: total area = 1, density can exceed 1</p>
+</div>
+
+<script>
+let t=3000,running=false,iv;
+function toggleTimer(){const b=document.getElementById('timerBtn'),d=document.getElementById('timer');if(!running){running=true;b.textContent='Pause';b.classList.remove('paused');iv=setInterval(()=>{if(t<=0){clearInterval(iv);d.textContent='00:00';d.className='timer-display danger';return}t--;let m=Math.floor(t/60),s=t%60;d.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(t<=300)d.className='timer-display danger';else if(t<=600)d.className='timer-display warning';else d.className='timer-display';},1000)}else{running=false;clearInterval(iv);b.textContent='Resume';b.classList.add('paused')}}
+function toggleRef(){document.getElementById('refPanel').classList.toggle('open')}
+</script>
+</body>
+</html>
