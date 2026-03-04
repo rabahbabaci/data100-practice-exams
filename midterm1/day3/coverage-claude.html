@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 3 · Claude Set · Coverage</title>
+<style>
+  :root { --bg:#f4f6fb; --surface:#ffffff; --border:#dfe4ef; --text:#0f172a; --dim:#5f6783; --accent:#9333ea; --accent2:#16a34a; }
+  body { margin:0; padding:32px 16px 80px; font-family:"Inter","SF Pro Display",-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
+  .container { max-width:940px; margin:0 auto; }
+  h1 { margin:0 0 4px; font-size:clamp(2rem,4vw,2.5rem); }
+  .subtitle { color:var(--dim); margin-bottom:24px; }
+  .tag { display:inline-flex; align-items:center; gap:6px; font-size:0.88rem; padding:6px 14px; border-radius:999px; border:1px solid var(--border); background:rgba(147,51,234,0.08); margin-bottom:24px; }
+  table { width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 18px 40px rgba(15,23,42,0.08); }
+  th,td { border-bottom:1px solid var(--border); padding:16px 18px; text-align:left; vertical-align:top; }
+  th { background:rgba(147,51,234,0.12); color:var(--accent); font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; }
+  tr:last-child td { border-bottom:none; }
+  td strong { color:var(--accent); }
+  .scope { margin-top:28px; padding:18px; border:1px solid var(--border); border-radius:12px; background:rgba(22,163,74,0.08); color:var(--accent2); font-size:0.92rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Greek Theatre & Shelter Shuffle</h1>
+  <p class="subtitle">Day 3 · Claude Set 3 · 36 pts · 7 questions · 50 minutes</p>
+  <div class="tag">Focus: ticketing data wrangling + regex + sampling reasoning</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:70px">Q#</th>
+        <th style="width:240px">Topic</th>
+        <th>What you drill</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Q1</td>
+        <td><strong>Pandas indexing</strong><br><span class="dim">Berkeley shelter dogs</span></td>
+        <td>Return-type awareness: scalar vs Series, chained boolean filters, <code>.sort_values()</code> retaining original index labels, and <code>groupby().mean()</code> output types.</td>
+      </tr>
+      <tr>
+        <td>Q2</td>
+        <td><strong>Wrangling concert tickets</strong><br><span class="dim">Greek Theatre 50k-row table</span></td>
+        <td>Granularity questions, variable typing, dict-style <code>.agg()</code>, <code>groupby().filter()</code> for “all sections” constraint, composite-key merges, and <code>pivot_table</code> with <code>fill_value</code>.</td>
+      </tr>
+      <tr>
+        <td>Q3</td>
+        <td><strong>String ops</strong></td>
+        <td><code>.str.split()</code> vs slicing, <code>.str.startswith()</code>, chaining <code>.str</code> accessors, and awareness of per-row operations.</td>
+      </tr>
+      <tr>
+        <td>Q4</td>
+        <td><strong>Regex roundup</strong></td>
+        <td>Patterns over artist bios + venue blurbs: escaping currency symbols, lazy vs greedy matches, alternation, and explicit capture ordering.</td>
+      </tr>
+      <tr>
+        <td>Q5</td>
+        <td><strong>Viz selection</strong><br><span class="dim">Ticket price comparisons</span></td>
+        <td>Truth table on when to use histograms, boxplots, heatmaps, and faceted KDEs for single-variable vs paired quantitative data.</td>
+      </tr>
+      <tr>
+        <td>Q6</td>
+        <td><strong>KDE computation</strong></td>
+        <td>Manual kernel-density arithmetic: bandwidth choice, evaluating Gaussian contributions at a query point, and interpreting KDE vs histogram.</td>
+      </tr>
+      <tr>
+        <td>Q7</td>
+        <td><strong>Sampling & bias</strong></td>
+        <td>Compare on-site merch surveys vs emailed fan club polls—chance error, selection bias, non-response, and what changes when incentives/reminders are added.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="scope">Scope note: Every prompt stays within Lectures 2–9 (pandas, wrangling, regex, visualization, sampling). Loss/gradient content is intentionally absent to match the current semester’s coverage.</div>
+</div>
+</body>
+</html>
