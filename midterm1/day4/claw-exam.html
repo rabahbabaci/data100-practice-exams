@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DATA 100 SP26 — Practice Midterm 1 (OpenClaw Day 4)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f5f7fb;--surface:#ffffff;--surface2:#eef2ff;--border:#dbe2f1;--text:#0f172a;--dim:#616a84;--accent:#2f5bff;--green:#15803d;--red:#d93025;--yellow:#f59e0b;--code-bg:#f9fbff;--input-bg:#ffffff;--input-border:#d5dcec}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:880px;margin:0 auto;padding:20px 16px 80px}
+header{text-align:center;padding:32px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px;background:var(--surface);border-radius:18px;box-shadow:0 12px 30px rgba(15,23,42,.08);}
+header h1{font-size:1.6em;font-weight:700;margin-bottom:4px;color:var(--accent)}
+header h2{font-size:1.05em;font-weight:500;color:var(--dim)}
+.exam-meta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:.85em;color:var(--dim)}
+.exam-meta span{background:var(--surface);padding:4px 12px;border-radius:6px;border:1px solid var(--border)}
+.badge-claw{background:rgba(47,91,255,.08)!important;border-color:var(--accent)!important;color:var(--accent)}
+.timer-bar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;font-size:.9em}
+.timer-display{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:1.3em;font-weight:700;color:var(--green)}
+.timer-display.warning{color:var(--yellow)}
+.timer-display.danger{color:var(--red)}
+.timer-btn{background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:.85em;font-weight:600}
+.timer-btn:hover{opacity:.85}
+.timer-btn.paused{background:var(--yellow);color:#000}
+.question{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;box-shadow:0 12px 28px rgba(15,23,42,.08)}
+.q-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.q-title{font-size:1.15em;font-weight:700;color:var(--accent)}
+.q-pts{font-size:.85em;color:var(--dim);background:var(--surface2);padding:2px 10px;border-radius:12px}
+.q-body{margin-bottom:16px}
+.q-body p{margin-bottom:10px}
+.q-body ul{margin:8px 0 8px 20px;font-size:.92em}
+.subq{margin:16px 0;padding:16px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)}
+.subq-label{font-weight:600;color:var(--accent);font-size:.95em;margin-bottom:8px}
+.pts-badge{font-size:.75em;color:var(--dim);font-weight:400;margin-left:6px}
+code{font-family:'SF Mono',SFMono-Regular,Consolas,monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:.88em;border:1px solid var(--border);color:#f0883e}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:14px;overflow-x:auto;margin:12px 0;font-size:.88em;line-height:1.5}
+.df-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88em}
+.df-table th,.df-table td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.df-table th{background:var(--surface2);color:var(--accent);font-weight:600}
+.df-table td{background:var(--code-bg)}
+input[type="text"],textarea{width:100%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);padding:10px 12px;border-radius:8px;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;font-size:.9em;margin:8px 0;resize:vertical}
+.radio-group label,.check-group label{display:block;padding:8px 12px;margin:4px 0;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:.9em}
+.radio-group input,.check-group input{margin-right:8px;accent-color:var(--accent)}
+.tf-row{display:flex;gap:12px;align-items:center;padding:8px 0;flex-wrap:wrap}
+.tf-row .tf-options{display:flex;gap:8px;min-width:120px}
+.tf-row .tf-text{flex:1;font-size:.9em}
+.match-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px;align-items:center;font-size:.88em;margin:10px 0}
+.match-grid .hdr{font-weight:600;color:var(--accent);padding:4px 8px}
+.arrow-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9em}
+.arrow-table th,.arrow-table td{border:1px solid var(--border);padding:8px 12px;text-align:left}
+.arrow-table th{background:var(--surface2);color:var(--accent);font-weight:600}
+.arrow-table td{background:var(--code-bg)}
+.arrow-table select{background:var(--input-bg);color:var(--text);border:1px solid var(--input-border);padding:4px 8px;border-radius:4px;font-size:.9em}
+details{margin-top:12px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+summary{padding:10px 16px;background:var(--surface2);cursor:pointer;font-weight:600;font-size:.9em;color:var(--green);user-select:none;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'▶ ';font-size:.75em}
+details[open] summary::before{content:'▼ '}
+.solution{padding:16px;font-size:.9em;line-height:1.6;border-top:1px solid var(--border)}
+.note{background:rgba(47,91,255,.08);border-left:3px solid var(--accent);padding:12px 16px;border-radius:10px;margin:16px 0;font-size:.9em}
+.warn{background:rgba(217,48,37,.1);border-left:3px solid var(--red);padding:12px 16px;border-radius:10px;margin:16px 0;font-size:.9em}
+.q-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.q-nav a{display:inline-block;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--accent);text-decoration:none;font-size:.85em;font-weight:600}
+.q-nav a:hover{background:var(--surface2);border-color:var(--accent)}
+.ref-toggle{position:fixed;bottom:16px;right:16px;z-index:99;background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85em;box-shadow:0 6px 18px rgba(15,23,42,.18)}
+.ref-panel{display:none;position:fixed;top:50px;right:16px;bottom:60px;width:360px;background:#ffffff;border:1px solid var(--border);border-radius:12px;z-index:98;overflow-y:auto;padding:20px;font-size:.82em;box-shadow:0 25px 60px rgba(15,23,42,.2)}
+.ref-panel.open{display:block}
+.ref-panel h3{color:var(--accent);font-size:1em;margin:12px 0 6px;border-bottom:1px solid var(--border);padding-bottom:4px}
+@media(max-width:640px){.container{padding:12px 10px 60px}.question{padding:16px}.ref-panel{width:calc(100vw - 32px)}.match-grid{grid-template-columns:auto 1fr;gap:4px}}
+</style>
+</head>
+<body>
+
+<div class="timer-bar">
+  <div>⏱️ <span class="timer-display" id="timer">50:00</span></div>
+  <div><button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Start Timer</button></div>
+</div>
+
+<div class="container">
+
+<header>
+  <h1>DATA 100 — Practice Midterm 1</h1>
+  <h2>OpenClaw Day 4 · Spring 2026 · UC Berkeley</h2>
+  <div class="exam-meta">
+    <span>⏱ 50 Minutes</span>
+    <span>📝 34 Points</span>
+    <span>📋 7 Questions</span>
+    <span class="badge-claw">Mirrors Fall '25 PrairieLearn style</span>
+  </div>
+</header>
+
+<div class="note">
+  <strong>Scope reminder:</strong> Lectures 1–9 only — Pandas, wrangling/EDA, regex, visualization (incl. KDE), sampling. No modeling, loss, or gradient descent. Every prompt is short and independent just like Josh asked.
+</div>
+
+<nav class="q-nav">
+  <a href="#q1">Q1</a><a href="#q2">Q2</a><a href="#q3">Q3</a><a href="#q4">Q4</a><a href="#q5">Q5</a><a href="#q6">Q6</a><a href="#q7">Q7</a>
+</nav>
+
+<!-- QUESTION 1 -->
+<div class="question" id="q1">
+  <div class="q-header">
+    <span class="q-title">Question 1 · Gate Ops Snapshot Drill</span>
+    <span class="q-pts">7.5 pts</span>
+  </div>
+  <div class="q-body">
+    <p>DataFrame <code>gate_ops</code> (RangeIndex 0–4):</p>
+    <table class="df-table">
+      <tr><th>idx</th><th>gate</th><th>window</th><th>region</th><th>bags_scanned</th><th>delay_min</th><th>shift_len</th></tr>
+      <tr><td>0</td><td>A2</td><td>am</td><td>domestic</td><td>128</td><td>4</td><td>5</td></tr>
+      <tr><td>1</td><td>C7</td><td>am</td><td>intl</td><td>152</td><td>7</td><td>5</td></tr>
+      <tr><td>2</td><td>G4</td><td>pm</td><td>intl</td><td>141</td><td>11</td><td>6</td></tr>
+      <tr><td>3</td><td>B1</td><td>pm</td><td>domestic</td><td>118</td><td>6</td><td>6</td></tr>
+      <tr><td>4</td><td>D5</td><td>am</td><td>domestic</td><td>134</td><td>5</td><td>4</td></tr>
+    </table>
+    <p>Evaluate each expression. Respond with the scalar/list shown. If the code errors, write the exception name.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) <span class="pts-badge">[1.5]</span></div>
+    <code>gate_ops.loc[2, 'bags_scanned']</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 141</p>
+      <p>Row label 2 corresponds to gate G4, so selecting column <code>'bags_scanned'</code> returns its count of 141.</p>
+      <p class="trap">Trap: <code>.loc</code> is label-based; mixing in <code>.iloc</code> after reindexing could pull the wrong gate.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) <span class="pts-badge">[1.5]</span></div>
+    <code>gate_ops[gate_ops['window']== 'pm'].set_index('gate').loc['G4', 'delay_min']</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 11</p>
+      <p>Filtering to the pm window leaves gates G4 and B1. Setting <code>gate</code> as the index lets <code>.loc['G4','delay_min']</code> read the 11-minute delay.</p>
+      <p class="trap">Trap: forgetting to set the index first would raise a <code>KeyError</code> because the default RangeIndex has no label 'G4'.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) <span class="pts-badge">[1.5]</span></div>
+    <code>gate_ops.sort_values('bags_scanned', ascending=False)['gate'].iloc[0]</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: C7</p>
+      <p>After sorting by <code>bags_scanned</code> in descending order, the first row is C7 with 152 bags.</p>
+      <p class="trap">Trap: the default <code>ascending=True</code> would return the smallest value (B1) instead.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(d) <span class="pts-badge">[1.5]</span></div>
+    <code>gate_ops[gate_ops['region']=='intl']['delay_min'].mean()</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 9</p>
+      <p>The intl filter keeps only rows 1 (delay 7) and 2 (delay 11), so the mean is (7 + 11)/2 = 9.</p>
+      <p class="trap">Trap: dividing by all five rows would undercount the true average because non-intl rows shouldn't contribute.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(e) <span class="pts-badge">[1.5]</span></div>
+    <code>gate_ops.set_index('gate').loc[['A2','D5'], 'shift_len'].sum()</code>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 9</p>
+      <p>After setting <code>gate</code> as the index, <code>.loc[['A2','D5'], 'shift_len']</code> returns [5, 4]; summing them gives 9.</p>
+      <p class="trap">Trap: forgetting <code>.set_index('gate')</code> makes the label lookup fail because the default index is numeric.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 2 -->
+<div class="question" id="q2">
+  <div class="q-header">
+    <span class="q-title">Question 2 · Wrangling Fixes (Common Mistakes)</span>
+    <span class="q-pts">4.5 pts</span>
+  </div>
+  <div class="q-body">
+    <p>Fill every blank with the exact argument or expression requested. Answers should be short (no extra prose) so you practice the precise syntax Josh dinged by during review.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) Drop the helper columns <code>'alias'</code> and <code>'duplicate_flag'</code> from DataFrame <code>screenings</code> without touching NaNs. <span class="pts-badge">[1.5]</span></div>
+    <pre>screenings = screenings.drop(_______________)</pre>
+    <input type="text" placeholder="Fill the blank">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: <code>columns=['alias', 'duplicate_flag']</code></p>
+      <p><code>.drop(columns=...)</code> removes columns by name without touching rows or NaNs.</p>
+      <p class="trap">Trap: <code>.dropna()</code> would delete every row that contains a null in either helper column — exactly the 1f mistake.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) Merge <code>roster</code> with <code>manifests</code> on gate code names that differ. Finish the argument list. <span class="pts-badge">[1.5]</span></div>
+    <pre>merged = roster.merge(manifests, how='left', _________________________)</pre>
+    <p><small>Goal: match <code>roster['gate']</code> with <code>manifests['gate_code']</code> while also lining up the <code>'window'</code> column.</small></p>
+    <input type="text" placeholder="Fill the blank">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: <code>left_on=['gate', 'window'], right_on=['gate_code', 'window']</code></p>
+      <p>Matching both the gate identifier and window keeps the records aligned even though the column names differ.</p>
+      <p class="trap">Trap: writing <code>on='gate'</code> (or omitting <code>right_on</code>) merges on the wrong columns and scrambles the counts.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) Remove the columns <code>'temp_id'</code> and <code>'helper_id'</code> from <code>ids</code> using axis notation (so you do not accidentally call <code>.dropna()</code>). <span class="pts-badge">[1.5]</span></div>
+    <pre>ids = ids.drop(['temp_id', 'helper_id'], ______________)</pre>
+    <input type="text" placeholder="Fill the blank">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: <code>axis=1</code></p>
+      <p>Setting <code>axis=1</code> tells pandas you are dropping columns rather than rows.</p>
+      <p class="trap">Trap: leaving axis at 0 makes pandas look for rows literally named 'temp_id' and throws a <code>KeyError</code>.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 3 -->
+<div class="question" id="q3">
+  <div class="q-header">
+    <span class="q-title">Question 3 · Aggregation Counts vs Sums</span>
+    <span class="q-pts">4.5 pts</span>
+  </div>
+  <div class="q-body">
+    <p>DataFrame <code>quiz</code>:</p>
+    <table class="df-table">
+      <tr><th>idx</th><th>section</th><th>Guess</th><th>Correct</th></tr>
+      <tr><td>0</td><td>North</td><td>'A'</td><td>1</td></tr>
+      <tr><td>1</td><td>North</td><td>'B'</td><td>0</td></tr>
+      <tr><td>2</td><td>Central</td><td>'A'</td><td>1</td></tr>
+      <tr><td>3</td><td>Central</td><td>'C'</td><td>1</td></tr>
+      <tr><td>4</td><td>Central</td><td>'A'</td><td>0</td></tr>
+      <tr><td>5</td><td>South</td><td>'B'</td><td>1</td></tr>
+      <tr><td>6</td><td>South</td><td>'B'</td><td>0</td></tr>
+      <tr><td>7</td><td>South</td><td>'A'</td><td>1</td></tr>
+      <tr><td>8</td><td>West</td><td>'C'</td><td>0</td></tr>
+      <tr><td>9</td><td>West</td><td>'D'</td><td>1</td></tr>
+    </table>
+    <p>You run:</p>
+    <pre>summary = quiz.groupby('section').agg(
+    guess_count=('Guess', 'count'),
+    correct_total=('Correct', 'sum')
+)</pre>
+    <p>Answer the prompts using <code>summary</code>.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) List <code>summary.index.tolist()</code>. <span class="pts-badge">[1.5]</span></div>
+    <input type="text" placeholder="Example: ['A','B']">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: ['Central', 'North', 'South', 'West']</p>
+      <p><code>groupby</code> sorts the string keys alphabetically by default, so the index shows C → W.</p>
+      <p class="trap">Trap: expecting the original appearance order (North first) would be graded wrong.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) What is <code>summary.loc['South', 'correct_total']</code>? <span class="pts-badge">[1.5]</span></div>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 2</p>
+      <p>South has <code>Correct</code> values 1, 0, 1; summing them gives 2.</p>
+      <p class="trap">Trap: using <code>('Correct','count')</code> would return 3 instead of the requested sum.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) What is <code>summary.loc['Central', 'guess_count']</code>? <span class="pts-badge">[1.5]</span></div>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 3</p>
+      <p>Central contributes three rows overall, so <code>('Guess','count')</code> evaluates to 3.</p>
+      <p class="trap">Trap: counting unique guesses (A, C) would give 2, but that's not what the agg tuple asked for.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 4 -->
+<div class="question" id="q4">
+  <div class="q-header">
+    <span class="q-title">Question 4 · Regex Boarding Log</span>
+    <span class="q-pts">5 pts</span>
+  </div>
+  <div class="q-body">
+    <p>String <code>log_line = "Gate C7 – TSA 3219 OK | Gate D5 – TSA 4087 FAIL | Gate G4 – TSA 4021 OK"</code></p>
+    <p>Answer using regex matches.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) Pattern <code>r"TSA (\d{4})"</code> applied with <code>re.findall</code>. List the matches. <span class="pts-badge">[1.5]</span></div>
+    <input type="text" placeholder="Example: ['1111']">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: ['3219', '4087', '4021']</p>
+      <p>The capturing group grabs the four digits immediately following each 'TSA'.</p>
+      <p class="trap">Trap: leaving off the parentheses would return the whole 'TSA 3219' chunk instead of just the digits.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) Pattern <code>r"Gate ([A-Z]\d)"</code>. List matches. <span class="pts-badge">[1.5]</span></div>
+    <input type="text">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: ['C7', 'D5', 'G4']</p>
+      <p>The pattern matches one capital letter plus one digit directly after the word &quot;Gate&quot;.</p>
+      <p class="trap">Trap: using <code>\w</code> would pull the dash/space too, breaking the two-character gate format.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) Provide a regex that captures the status token (<code>OK</code> or <code>FAIL</code>) case-insensitively. (Just write the pattern.) <span class="pts-badge">[2.0]</span></div>
+    <input type="text" placeholder="Example: pattern">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">One option: <code>r"(OK|FAIL)"</code> with <code>re.IGNORECASE</code></p>
+      <p>The group captures either status token and the flag handles case differences.</p>
+      <p class="trap">Trap: writing <code>ok|fail</code> without parentheses still matches but doesn't capture the substring cleanly.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 5 -->
+<div class="question" id="q5">
+  <div class="q-header">
+    <span class="q-title">Question 5 · Boxplot Quantities</span>
+    <span class="q-pts">4.5 pts</span>
+  </div>
+  <div class="q-body">
+    <p>A boxplot of taxi-out times has: Q1 = 500 seconds, Median = 700 seconds, Q3 = 800 seconds. IQR = 300 seconds. Use those numbers directly.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) Write the mathematical expression (not just the number) for the IQR. <span class="pts-badge">[1.5]</span></div>
+    <input type="text" placeholder="Example: 8 - 3">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 800 − 500</p>
+      <p>IQR is defined as Q3 − Q1, so show both quartiles rather than only the numeric difference.</p>
+      <p class="trap">Trap: plugging in the median here recreates the 4ei mistake staff called out.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) Compute the lower fence correctly. <span class="pts-badge">[1.5]</span></div>
+    <input type="text" placeholder="Answer">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: 500 − 1.5 × 300 = 50</p>
+      <p>Lower fence subtracts 1.5·IQR from Q1, so 500 − 450 = 50.</p>
+      <p class="trap">Trap: substituting the median for Q1 (the 4eii error) moves the fence to the wrong place.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) Suppose a data point at 1,200 seconds exists. Is it flagged as an outlier using the upper fence? Show the expression. <span class="pts-badge">[1.5]</span></div>
+    <input type="text" placeholder="Example: 800 + ...">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Upper fence = 800 + 1.5 × 300 = 1,250 → 1,200 is not an outlier.</p>
+      <p>Because 1,200 sits below the upper fence, it remains inside the whisker.</p>
+      <p class="trap">Trap: using Q3 − 1.5·IQR for the upper fence flips the inequality and flags the wrong points.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 6 -->
+<div class="question" id="q6">
+  <div class="q-header">
+    <span class="q-title">Question 6 · KDE Bandwidth Logic</span>
+    <span class="q-pts">4 pts</span>
+  </div>
+  <div class="q-body">
+    <p>Three KDE plots (no figures shown) are described:</p>
+    <ul>
+      <li><strong>Plot Alpha:</strong> Very wiggly with three sharp peaks sitting directly on data clusters.</li>
+      <li><strong>Plot Bravo:</strong> Smooth but still shows two gentle bumps.</li>
+      <li><strong>Plot Charlie:</strong> Almost flat, one broad hump covering the range.</li>
+    </ul>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) Order the plots from <em>highest</em> bandwidth to <em>lowest</em>. <span class="pts-badge">[2]</span></div>
+    <input type="text" placeholder="Example: Bravo &gt; Alpha &gt; Charlie">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: Charlie &gt; Bravo &gt; Alpha</p>
+      <p>Higher bandwidth ⇒ smoother KDE, so the flattest curve (Charlie) must come first.</p>
+      <p class="trap">Trap: writing the order low→high was the 4g mistake the memo warned about.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) Which plot best highlights tri-modality and why (one clause)? <span class="pts-badge">[2]</span></div>
+    <textarea rows="2" placeholder="Explain in one clause"></textarea>
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Plot Alpha — the small bandwidth keeps three distinct peaks visible.</p>
+      <p>Bravo/Charlie smear the modes together, so only Alpha preserves tri-modality.</p>
+    </div></details>
+  </div>
+</div>
+
+<!-- QUESTION 7 -->
+<div class="question" id="q7">
+  <div class="q-header">
+    <span class="q-title">Question 7 · Sampling Mode Switch</span>
+    <span class="q-pts">4 pts</span>
+  </div>
+  <div class="q-body">
+    <p>You ditch a premium-call survey (only loyalty members pick up) and instead station tablets randomly across three terminals to intercept passengers. For each effect, answer <strong>Increase / Decrease / Same</strong>.</p>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(a) Selection bias (relative to the population of all departing passengers). <span class="pts-badge">[1.33]</span></div>
+    <input type="text" placeholder="Increase / Decrease / Same">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: Decrease</p>
+      <p>Intercepting across terminals reaches passengers beyond the loyalty program, reducing selection bias.</p>
+      <p class="trap">Trap: "more people approached" ≠ "more bias" — it actually goes down.</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(b) Non-response bias. <span class="pts-badge">[1.33]</span></div>
+    <input type="text" placeholder="Increase / Decrease / Same">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: Decrease</p>
+      <p>Face-to-face taps have a lower refusal rate than cold phone calls, so non-response bias shrinks.</p>
+      <p class="trap">Trap: it's smaller, not zero — still label it "Decrease".</p>
+    </div></details>
+  </div>
+
+  <div class="subq">
+    <div class="subq-label">(c) Chance error of the estimated proportion (holding n fixed at 200 intercepts). <span class="pts-badge">[1.34]</span></div>
+    <input type="text" placeholder="Increase / Decrease / Same">
+    <details><summary>Show solution</summary><div class="solution">
+      <p class="correct">Answer: Same</p>
+      <p>Chance error (SE) depends only on sample size and the underlying proportion. Keeping n = 200 holds SE constant.</p>
+      <p class="trap">Trap: changing survey mode can fix bias but it does nothing to SE unless n changes.</p>
+    </div></details>
+  </div>
+</div>
+
+</div>
+
+<button class="ref-toggle" onclick="togglePanel()">Show formulas</button>
+<div class="ref-panel" id="refPanel">
+  <h3>Pandas Reminders</h3>
+  <p><code>.drop(columns=[...])</code> drops by name, <code>.drop(..., axis=1)</code> is equivalent.</p>
+  <p><code>.agg</code> with dict-of-tuples lets you mix counts and sums.</p>
+  <h3>Visualization</h3>
+  <p>Lower fence = Q1 − 1.5·IQR. Upper fence = Q3 + 1.5·IQR.</p>
+  <p>KDE bandwidth ↑ ⇒ smoother curve.</p>
+  <h3>Sampling</h3>
+  <p>Chance error (SE) depends on sample size and population proportion only.</p>
+</div>
+
+<script>
+let timerInterval=null;
+let seconds=50*60;
+const timerEl=document.getElementById('timer');
+const timerBtn=document.getElementById('timerBtn');
+function format(sec){const m=Math.floor(sec/60).toString().padStart(2,'0');const s=(sec%60).toString().padStart(2,'0');return `${m}:${s}`;}
+function toggleTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;timerBtn.textContent='Resume';timerBtn.classList.add('paused');return;}timerBtn.classList.remove('paused');timerBtn.textContent='Pause';timerInterval=setInterval(()=>{if(seconds<=0){clearInterval(timerInterval);timerInterval=null;timerEl.textContent='00:00';timerEl.classList.add('danger');return;}seconds--;timerEl.textContent=format(seconds);if(seconds<=5*60){timerEl.classList.add('danger');}else if(seconds<=15*60){timerEl.classList.add('warning');}},1000);} 
+function togglePanel(){document.getElementById('refPanel').classList.toggle('open');}
+</script>
+</body>
+</html>

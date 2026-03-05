@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 4 · Coverage · OpenClaw</title>
+<style>
+  :root { --bg:#f4f6fb; --surface:#ffffff; --border:#dfe4ef; --text:#0f172a; --dim:#5f6783; --accent:#2563eb; --accent2:#16a34a; }
+  body { margin:0; padding:32px 16px 80px; font-family:"Inter","SF Pro Display",-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
+  .container { max-width:940px; margin:0 auto; }
+  h1 { margin:0 0 4px; font-size:clamp(2rem,4vw,2.5rem); }
+  .subtitle { color:var(--dim); margin-bottom:24px; }
+  .tag { display:inline-flex; align-items:center; gap:6px; font-size:0.88rem; padding:6px 14px; border-radius:999px; border:1px solid var(--border); background:rgba(37,99,235,0.08); margin-bottom:24px; }
+  table { width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 18px 40px rgba(15,23,42,0.08); }
+  th,td { border-bottom:1px solid var(--border); padding:16px 18px; text-align:left; vertical-align:top; }
+  th { background:rgba(37,99,235,0.08); color:var(--accent); font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; }
+  tr:last-child td { border-bottom:none; }
+  td strong { color:var(--accent); }
+  .scope { margin-top:28px; padding:18px; border:1px solid var(--border); border-radius:12px; background:rgba(22,163,74,0.08); color:var(--accent2); font-size:0.92rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Checkpoint Carousel</h1>
+  <p class="subtitle">Day 4 · OpenClaw Set · 34 pts · 7 questions · 50 minutes</p>
+  <div class="tag">Focus: staff "common mistakes" + FA25 PrairieLearn pacing</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:70px">Q#</th>
+        <th style="width:240px">Topic</th>
+        <th>What you drill</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Q1</td>
+        <td><strong>Pandas indexing</strong><br><span class="dim">Gate ops mini table</span></td>
+        <td>Lookups with <code>.loc</code>/<code>.iloc</code>, boolean filters, sum-of-selection. Reminds you to read medians directly, no calculator.</td>
+      </tr>
+      <tr>
+        <td>Q2</td>
+        <td><strong>Wrangling syntax traps</strong></td>
+        <td>The exact <code>.drop(columns=...)</code>, <code>axis=1</code>, and <code>left_on/right_on</code> spellings that graders flagged in 1f. Zero ambiguity.</td>
+      </tr>
+      <tr>
+        <td>Q3</td>
+        <td><strong>GroupBy agg design</strong></td>
+        <td>No pivot tables allowed — you mix <code>('Guess','count')</code> and <code>('Correct','sum')</code> the way 2c wanted, then read the resulting index order.</td>
+      </tr>
+      <tr>
+        <td>Q4</td>
+        <td><strong>Regex extraction</strong></td>
+        <td>Digits, gate IDs, and status tokens from one line. Emphasizes listing ordered matches like PrairieLearn auto-graders expect.</td>
+      </tr>
+      <tr>
+        <td>Q5</td>
+        <td><strong>Boxplot fences</strong></td>
+        <td>forces “Q3 − Q1” style expressions plus correct fence math so you don't repeat mistakes 4ei/4eii.</td>
+      </tr>
+      <tr>
+        <td>Q6</td>
+        <td><strong>KDE bandwidth intuition</strong></td>
+        <td>Rank high → low bandwidth (fixing 4g errors) and explain which curve preserves tri-modality.</td>
+      </tr>
+      <tr>
+        <td>Q7</td>
+        <td><strong>Sampling & bias shifts</strong></td>
+        <td>Direction-only answers for selection, non-response, and chance error when moving from loyalty calls to intercept tablets.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="scope">Everything is within Lectures 1–9 and copies the short, independent PrairieLearn vibe. Use Q2/Q3 if you want to rehearse the exact syntax errors staff highlighted in the “common mistakes” memo.</div>
+</div>
+</body>
+</html>
