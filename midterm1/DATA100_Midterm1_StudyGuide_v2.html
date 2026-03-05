@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DATA 100 SP26 — Midterm 1 Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #232736;
+  --border: #2e3348;
+  --text: #e2e4ed;
+  --text-dim: #8b8fa8;
+  --accent: #6c8cff;
+  --accent2: #ff6c8c;
+  --accent3: #4ecdc4;
+  --accent4: #ffd166;
+  --green: #4ecdc4;
+  --red: #ff6b6b;
+  --orange: #ffa654;
+  --purple: #b68cff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; line-height: 1.7; font-size: 16px; }
+.container { max-width: 900px; margin: 0 auto; padding: 40px 24px 100px; }
+.header { text-align: center; padding: 60px 0 50px; position: relative; }
+.header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; }
+.header h1 { font-family: 'Source Serif 4', serif; font-size: 2.8em; font-weight: 700; letter-spacing: -1px; background: linear-gradient(135deg, var(--text), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; }
+.header .subtitle { font-size: 1.1em; color: var(--text-dim); }
+.header .badge { display: inline-block; margin-top: 16px; padding: 6px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 0.8em; color: var(--accent); }
+.scope-note { background: linear-gradient(135deg, rgba(108,140,255,0.1), rgba(255,108,140,0.08)); border: 1px solid var(--accent); border-radius: 12px; padding: 20px 24px; margin: 30px 0; }
+.scope-note strong { color: var(--accent); }
+.josh-note { background: var(--surface); border: 1px solid var(--accent4); border-radius: 12px; padding: 22px 26px; margin: 20px 0; }
+.josh-note .josh-title { font-weight: 700; color: var(--accent4); font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.section { margin: 50px 0; padding: 36px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; position: relative; }
+.section-number { position: absolute; top: -18px; left: 28px; background: var(--bg); padding: 4px 14px; border: 1px solid var(--border); border-radius: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 0.8em; color: var(--accent); }
+.section h2 { font-family: 'Source Serif 4', serif; font-size: 1.6em; margin-bottom: 6px; }
+.section .topic-tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.75em; font-weight: 600; margin-bottom: 20px; margin-right: 6px; background: var(--accent); color: var(--bg); }
+.topic-tag.red { background: var(--accent2); } .topic-tag.green { background: var(--green); } .topic-tag.orange { background: var(--orange); } .topic-tag.purple { background: var(--purple); } .topic-tag.yellow { background: var(--accent4); color: var(--bg); }
+h3 { font-size: 1.15em; font-weight: 700; margin: 24px 0 10px; }
+h4 { font-size: 1em; font-weight: 600; margin: 18px 0 8px; color: var(--accent3); }
+p { margin-bottom: 14px; }
+code { font-family: 'IBM Plex Mono', monospace; background: var(--surface2); padding: 2px 7px; border-radius: 5px; font-size: 0.88em; color: var(--accent3); }
+pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; overflow-x: auto; margin: 14px 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.85em; line-height: 1.6; color: var(--text); }
+.cm { color: var(--text-dim); }
+.kw { color: var(--accent); }
+.st { color: var(--accent3); }
+.op { color: var(--accent4); }
+.concept { background: var(--bg); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 18px 0; }
+.concept.warn { border-left-color: var(--accent2); }
+.concept.tip { border-left-color: var(--green); }
+.concept strong { color: var(--accent); }
+.concept.warn strong { color: var(--accent2); }
+.concept.tip strong { color: var(--green); }
+table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.92em; }
+th { background: var(--surface2); padding: 12px 14px; text-align: left; font-weight: 600; color: var(--accent); border-bottom: 2px solid var(--border); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+tr:hover td { background: rgba(108, 140, 255, 0.04); }
+.mm { background: linear-gradient(135deg, rgba(108,140,255,0.08), rgba(255,108,140,0.06)); border: 1px solid var(--border); border-radius: 12px; padding: 22px 26px; margin: 20px 0; }
+.mm .mm-title { font-weight: 700; color: var(--accent4); font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.es { background: rgba(78, 205, 196, 0.08); border: 1px solid rgba(78, 205, 196, 0.2); border-radius: 12px; padding: 20px 24px; margin: 20px 0; }
+.es .es-title { font-weight: 700; color: var(--green); font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.flow { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 18px 0; }
+.flow-step { background: var(--surface2); border: 1px solid var(--border); padding: 10px 18px; border-radius: 8px; font-size: 0.88em; font-weight: 500; text-align: center; }
+.flow-arrow { color: var(--accent); font-size: 1.2em; }
+.toc { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px; margin: 30px 0; }
+.toc h2 { font-family: 'Source Serif 4', serif; font-size: 1.3em; margin-bottom: 14px; }
+.toc-list { list-style: none; }
+.toc-list li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+.toc-list li:last-child { border-bottom: none; }
+.toc-list a { color: var(--text); text-decoration: none; display: flex; justify-content: space-between; transition: color 0.2s; }
+.toc-list a:hover { color: var(--accent); }
+.toc-list .toc-dim { font-family: 'IBM Plex Mono', monospace; font-size: 0.8em; color: var(--text-dim); }
+@media (max-width: 640px) { .header h1 { font-size: 2em; } .section { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>DATA 100 Midterm 1</h1>
+  <div class="subtitle">Study Guide — Spring 2026, UC Berkeley</div>
+  <div class="badge">Scope: Lectures 2–9 · 50 minutes · CBTF</div>
+</div>
+
+<div class="scope-note">
+  <strong>SP26 Midterm 1 Scope: Lectures 2 through 9.</strong> Pandas, Data Cleaning &amp; EDA, Regex, Visualization, KDEs, and Sampling. Modeling, SLR, Loss functions, OLS, and Gradient Descent are <strong>NOT</strong> on this exam.
+</div>
+
+<div class="josh-note">
+  <div class="josh-title">📣 From Josh (Instructor)</div>
+  <p><strong>The FA25 practice midterm is your #1 study priority.</strong></p>
+  <p>SP26 is 50 minutes — shorter questions, "to the point," no long data descriptions, no heavy interdependencies between parts. Think SAT/ACT style: quick and focused.</p>
+  <p>Prior exams (110 min) are the 2nd best resource — especially SU25, SP25, FA24. Study by deeply understanding <strong>all</strong> questions across as many past exams as possible.</p>
+  <p><strong>Don't sink time into any one question.</strong> Quick pass through all questions first, then go back to harder ones.</p>
+</div>
+
+<div class="toc">
+  <h2>Contents</h2>
+  <ul class="toc-list">
+    <li><a href="#format"><span>Exam Format &amp; Question Types</span><span class="toc-dim">what to expect</span></a></li>
+    <li><a href="#pandas"><span>1. Pandas Indexing &amp; Operations</span><span class="toc-dim">Lec 2–4</span></a></li>
+    <li><a href="#groupby"><span>2. GroupBy &amp; Pivot Tables</span><span class="toc-dim">Lec 3–4</span></a></li>
+    <li><a href="#eda"><span>3. Data Cleaning &amp; EDA</span><span class="toc-dim">Lec 5</span></a></li>
+    <li><a href="#regex"><span>4. Regular Expressions</span><span class="toc-dim">Lec 6</span></a></li>
+    <li><a href="#viz"><span>5. Visualization &amp; Plot Selection</span><span class="toc-dim">Lec 7–8</span></a></li>
+    <li><a href="#kde"><span>6. KDE &amp; Bandwidth</span><span class="toc-dim">Lec 8</span></a></li>
+    <li><a href="#sampling"><span>7. Sampling, Bias &amp; Errors</span><span class="toc-dim">Lec 9</span></a></li>
+    <li><a href="#checklist"><span>Exam Day Checklist</span><span class="toc-dim">strategy</span></a></li>
+  </ul>
+</div>
+
+<!-- ===== EXAM FORMAT ===== -->
+<div class="section" id="format">
+  <div class="section-number">FORMAT</div>
+  <h2>What the Exam Looks Like</h2>
+  <span class="topic-tag yellow">Based on FA25 + recent exams</span>
+
+  <p>The FA25 practice midterm (50 min, 37 pts, 7 questions) is the closest model. Here are the question types you'll see, based on FA25 and patterns from SP25/SU25/FA24:</p>
+
+  <h3>Question Types You'll See</h3>
+  <table>
+    <tr><th>Type</th><th>What it asks</th><th>Seen in</th></tr>
+    <tr><td><strong>"What does this code return?"</strong></td><td>Trace Pandas code, give the output or NA if error</td><td>FA25 Q1, Q2</td></tr>
+    <tr><td><strong>"How many rows?"</strong></td><td>Predict row count after groupby/merge/filter</td><td>FA25 Q2, SP25 Q1</td></tr>
+    <tr><td><strong>"Fill in the blank"</strong></td><td>Complete Pandas/seaborn code to achieve a goal</td><td>SP25 Q1, SU25 Q1</td></tr>
+    <tr><td><strong>"List the regex matches"</strong></td><td>Apply a pattern to a string, list all matches in order</td><td>FA25 Q3, SP25 Q2</td></tr>
+    <tr><td><strong>"Write a regex pattern"</strong></td><td>Create a pattern that extracts specific info</td><td>SP25 Q2, SU25 Q2</td></tr>
+    <tr><td><strong>True/False: plot types</strong></td><td>Is this plot appropriate for this visualization task?</td><td>FA25 Q4, SP25 Q1</td></tr>
+    <tr><td><strong>True/False: reading plots</strong></td><td>Interpret box plots, KDEs, histograms correctly</td><td>SP25 Q1, Q3</td></tr>
+    <tr><td><strong>Multiple choice: sampling</strong></td><td>Which bias changes? What's the population? Sampling method?</td><td>FA25 Q5, SP25 Q3, SU25 Q1</td></tr>
+    <tr><td><strong>Granularity / variable types</strong></td><td>"What does each row represent?" "Is this ordinal or nominal?"</td><td>SU25 Q1, SP25 Q1</td></tr>
+  </table>
+
+  <div class="es">
+    <div class="es-title">🎯 50-Minute Strategy</div>
+    <p><strong>Pass 1 (25 min):</strong> Fly through every question. Answer anything you're confident about immediately. Flag anything that needs more thought.</p>
+    <p><strong>Pass 2 (20 min):</strong> Go back to flagged questions. Work through the harder Pandas traces and regex patterns carefully.</p>
+    <p><strong>Pass 3 (5 min):</strong> Double-check your NA answers — did you actually trace the code, or did you just guess? Check regex match order.</p>
+  </div>
+</div>
+
+<!-- ===== PANDAS ===== -->
+<div class="section" id="pandas">
+  <div class="section-number">TOPIC 1</div>
+  <h2>Pandas — Indexing &amp; Operations</h2>
+  <span class="topic-tag">Lectures 2–4</span>
+  <span class="topic-tag yellow">Heaviest topic on exam</span>
+
+  <p>This is the most tested topic. You need to be able to trace code and predict outputs quickly.</p>
+
+  <h3>The Core Indexing Rules</h3>
+  <table>
+    <tr><th>Method</th><th>Selects By</th><th>End Inclusive?</th></tr>
+    <tr><td><code>df['col']</code></td><td>Column by name → Series</td><td>—</td></tr>
+    <tr><td><code>df[['a','b']]</code></td><td>Multiple columns → DataFrame</td><td>—</td></tr>
+    <tr><td><code>.loc[row, col]</code></td><td><strong>Labels</strong> (names)</td><td>Both endpoints ✓</td></tr>
+    <tr><td><code>.iloc[row, col]</code></td><td><strong>Integer positions</strong> (0-based)</td><td>Excludes end ✗</td></tr>
+  </table>
+
+  <div class="mm">
+    <div class="mm-title">🧠 Mental Model</div>
+    <code>.loc</code> = looking up by <strong>name tag</strong>. <code>.iloc</code> = pointing with your <strong>finger</strong> counting 0, 1, 2…<br>
+    If index labels are integers, <code>.loc[1]</code> finds label "1" while <code>.iloc[1]</code> finds position 1 — these can be different rows!
+  </div>
+
+  <h3>Exam Traps from FA25 Q1</h3>
+
+  <div class="concept warn">
+    <strong><code>df['a'][1]</code></strong> — This works! First gets column 'a' as a Series, then uses <code>[1]</code> which does label-based lookup on the Series index. If the index has label 1, returns that value. <strong>Answer: 6</strong>
+  </div>
+
+  <div class="concept warn">
+    <strong><code>df.loc['b', :][1]</code></strong> — Gets row with label 'b' as a Series (index = column names). Then <code>[1]</code> looks for label 1 in column names. If columns are strings like 'a','b','c', there's no label 1 → <strong>NA (error)</strong>
+  </div>
+
+  <div class="concept warn">
+    <strong><code>df.iloc[1, 2]</code></strong> — Row at position 1, column at position 2. If there are only 2 columns (positions 0 and 1), position 2 is out of bounds → <strong>NA (error)</strong>
+  </div>
+
+  <h3>Filtering &amp; Chaining</h3>
+  <pre><span class="cm"># Boolean filtering</span>
+df[df[<span class="st">'b'</span>] == 7]                 <span class="cm"># rows where b = 7</span>
+df[df[<span class="st">'b'</span>] == 7][<span class="st">'a'</span>].iloc[0]  <span class="cm"># get first 'a' value from those rows</span>
+
+<span class="cm"># Multiple conditions — MUST use & | ~ with parentheses</span>
+df[(df[<span class="st">'a'</span>] > 3) & (df[<span class="st">'b'</span>] < 8)]
+df[(condition1) | (condition2)]    <span class="cm"># OR</span>
+df[~(condition)]                   <span class="cm"># NOT</span>
+
+<span class="cm"># Sorting + extracting</span>
+df.sort_values(<span class="st">'a'</span>, ascending=<span class="kw">False</span>).head(1)[<span class="st">'b'</span>].iloc[0]</pre>
+
+  <div class="concept warn">
+    <strong>NaN trap (from SP25, SU25):</strong> <code>df['col'] == np.nan</code> does <strong>NOT</strong> work for finding NaN! NaN ≠ NaN in Python. Use <code>df['col'].isna()</code> or <code>pd.isnull(df['col'])</code> instead.
+  </div>
+
+  <h3>Merging</h3>
+  <pre>pd.merge(left, right, left_on=<span class="st">'col1'</span>, right_on=<span class="st">'col2'</span>)
+<span class="cm"># how='inner' (default) — only matching rows from both sides</span>
+<span class="cm"># how='left'  — all from left + matching from right (NaN if no match)</span>
+<span class="cm"># how='outer' — everything from both (NaN where missing)</span></pre>
+
+  <div class="concept">
+    <strong>Merge row count:</strong> For inner join, if key "Apple" appears 2× in left and 3× in right → 2 × 3 = 6 rows for that key. Total = sum across all keys.
+  </div>
+
+  <h3>Key Series/DataFrame Methods</h3>
+  <table>
+    <tr><th>Method</th><th>Returns</th></tr>
+    <tr><td><code>s.unique()</code></td><td>Array of unique values</td></tr>
+    <tr><td><code>s.value_counts()</code></td><td>Each unique value → count (descending)</td></tr>
+    <tr><td><code>s.idxmax()</code></td><td>Index label of the max value</td></tr>
+    <tr><td><code>s.isnull()</code> / <code>s.isna()</code></td><td>Boolean: True where NaN</td></tr>
+    <tr><td><code>s.fillna(val)</code></td><td>Replace NaN with val</td></tr>
+    <tr><td><code>df.dropna()</code></td><td>Remove rows with any NaN</td></tr>
+    <tr><td><code>s.isin([a, b])</code></td><td>Boolean: True if in list</td></tr>
+    <tr><td><code>s.str.contains(pat)</code></td><td>Boolean: string contains pattern</td></tr>
+    <tr><td><code>s.str.startswith(x)</code></td><td>Boolean: string starts with x</td></tr>
+    <tr><td><code>s.str[:3]</code></td><td>First 3 characters of each string</td></tr>
+    <tr><td><code>s.astype(int)</code></td><td>Convert type</td></tr>
+  </table>
+
+  <div class="es">
+    <div class="es-title">🎯 Exam Strategy</div>
+    <strong>Trace every chain step by step.</strong> Write what each intermediate result looks like (Series? DataFrame? scalar?). If ANY step causes an error → NA. The most common tricks: wrong index type, out-of-bounds iloc, NaN comparisons, and chaining after sort (index doesn't reset).
+  </div>
+</div>
+
+<!-- ===== GROUPBY ===== -->
+<div class="section" id="groupby">
+  <div class="section-number">TOPIC 2</div>
+  <h2>GroupBy &amp; Pivot Tables</h2>
+  <span class="topic-tag red">Lectures 3–4</span>
+
+  <div class="flow">
+    <div class="flow-step"><strong>Split</strong><br>by group key</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><strong>Apply</strong><br>function per group</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><strong>Combine</strong><br>into result</div>
+  </div>
+
+  <h3>GroupBy Methods &amp; Row Counts</h3>
+  <table>
+    <tr><th>Method</th><th>What it does</th><th># Rows out</th></tr>
+    <tr><td><code>.agg(func)</code></td><td>One summary per group</td><td>= # unique groups</td></tr>
+    <tr><td><code>.agg({col: func})</code></td><td>Different func per column</td><td>= # unique groups</td></tr>
+    <tr><td><code>.head(k)</code></td><td>First k rows from each group</td><td>Σ min(k, group_size)</td></tr>
+    <tr><td><code>.filter(func)</code></td><td>Keep entire groups if func returns True</td><td>All rows from passing groups</td></tr>
+    <tr><td><code>.transform(func)</code></td><td>Apply func, keep original shape</td><td>= original # rows</td></tr>
+    <tr><td><code>.size()</code></td><td>Count per group</td><td>Series, # groups entries</td></tr>
+  </table>
+
+  <div class="concept warn">
+    <strong>filter returns ORIGINAL rows</strong> — not a summary. If 2 groups (sizes 3 and 2) pass the filter, you get 3 + 2 = 5 rows of the original data back, not 2 summary rows.
+  </div>
+
+  <h3>Pivot Tables (from SP25 Q1k, SU25 Q1g)</h3>
+  <pre>df.pivot_table(
+    values=<span class="st">'score'</span>,       <span class="cm"># what to aggregate</span>
+    index=<span class="st">'category'</span>,     <span class="cm"># rows</span>
+    columns=<span class="st">'year'</span>,      <span class="cm"># columns</span>
+    aggfunc=<span class="st">'mean'</span>,      <span class="cm"># how to aggregate (default='mean')</span>
+    fill_value=0         <span class="cm"># replace NaN cells</span>
+)</pre>
+
+  <div class="concept">
+    <strong>Pivot table = groupby + reshape.</strong> It groups by the index and columns combinations, applies aggfunc to values, and spreads the result into a grid. <code>fill_value</code> fills cells where no data exists for that combination.
+  </div>
+
+  <h3>agg with dictionaries (SP25 Q1h)</h3>
+  <pre><span class="cm"># Different aggregation per column</span>
+df.groupby(<span class="st">'role'</span>).agg({
+    <span class="st">'oh_tickets'</span>: <span class="st">'min'</span>,
+    <span class="st">'ed_hours'</span>: <span class="st">'max'</span>
+})</pre>
+</div>
+
+<!-- ===== EDA ===== -->
+<div class="section" id="eda">
+  <div class="section-number">TOPIC 3</div>
+  <h2>Data Cleaning &amp; EDA</h2>
+  <span class="topic-tag orange">Lecture 5</span>
+
+  <h3>Granularity (tested in SU25 Q1a, SP25 Q1b)</h3>
+  <p><strong>"What does each row represent?"</strong> Read the data description carefully. Example: if each row records a fruit's price at a specific store location, the granularity is "each unique combination of item and store address."</p>
+
+  <h3>Variable Types (tested in SU25 Q1b)</h3>
+  <table>
+    <tr><th>Type</th><th>Description</th><th>Examples</th></tr>
+    <tr><td><strong>Quantitative</strong></td><td>Numbers you can do math on</td><td>Height, price, temperature, count</td></tr>
+    <tr><td><strong>Qualitative nominal</strong></td><td>Categories with no order</td><td>Color, fruit name, city, chain name</td></tr>
+    <tr><td><strong>Qualitative ordinal</strong></td><td>Categories with meaningful order</td><td>Star rating (1-5), ranking, education level</td></tr>
+  </table>
+
+  <div class="concept warn">
+    <strong>Tricky cases:</strong> Zip codes, phone numbers, jersey numbers → look like numbers but are <strong>nominal</strong> (you can't average them meaningfully). Rankings (1st, 2nd, 3rd) → <strong>ordinal</strong> (order matters but gaps between ranks aren't necessarily equal).
+  </div>
+
+  <h3>Data Quality Checks</h3>
+  <p>• Impossible values (negative ages, 999°F temperatures)<br>
+  • Missing data — NaN. Ask: is it missing randomly, or is there a pattern?<br>
+  • Duplicates — <code>df.duplicated()</code><br>
+  • Inconsistent formats — "CA" vs "California"<br>
+  • Outliers — genuinely extreme or data errors?</p>
+</div>
+
+<!-- ===== REGEX ===== -->
+<div class="section" id="regex">
+  <div class="section-number">TOPIC 4</div>
+  <h2>Regular Expressions</h2>
+  <span class="topic-tag green">Lecture 6</span>
+
+  <p>Two question types: (1) <strong>Given a pattern, list the matches</strong> (FA25 Q3). (2) <strong>Write a pattern</strong> that extracts specific info (SP25 Q2, SU25 Q2).</p>
+
+  <h3>Pattern Reference</h3>
+  <table>
+    <tr><th>Pattern</th><th>Matches</th></tr>
+    <tr><td><code>\d</code> / <code>\D</code></td><td>Digit / Non-digit</td></tr>
+    <tr><td><code>\w</code> / <code>\W</code></td><td>Word char (letter, digit, _) / Non-word</td></tr>
+    <tr><td><code>\s</code> / <code>\S</code></td><td>Whitespace / Non-whitespace</td></tr>
+    <tr><td><code>.</code></td><td>Any char except newline</td></tr>
+    <tr><td><code>*</code> / <code>+</code> / <code>?</code></td><td>0+ / 1+ / 0 or 1 of previous</td></tr>
+    <tr><td><code>{m}</code> / <code>{m,n}</code></td><td>Exactly m / between m and n</td></tr>
+    <tr><td><code>[abc]</code></td><td>ONE char: a, b, or c</td></tr>
+    <tr><td><code>[a-z]</code> / <code>[A-Z]</code></td><td>Any lowercase / uppercase letter</td></tr>
+    <tr><td><code>[^abc]</code></td><td>Any char NOT a, b, c</td></tr>
+    <tr><td><code>(x|y)</code></td><td>String "x" OR string "y"</td></tr>
+    <tr><td><code>( )</code></td><td>Capture group — findall returns group content only</td></tr>
+    <tr><td><code>^</code> / <code>$</code></td><td>Start / end of string</td></tr>
+  </table>
+
+  <div class="concept warn">
+    <strong>The #1 regex trap on DATA 100 exams:</strong><br>
+    <code>[Homework|Lab]</code> ≠ "Homework or Lab"<br>
+    <code>[ ]</code> is a <strong>character class</strong> — matches ONE character from the set. This matches: H, o, m, e, w, r, k, |, L, a, or b.<br>
+    For alternation: <code>(Homework|Lab)</code>
+  </div>
+
+  <div class="concept warn">
+    <strong>Capture group trap:</strong> When <code>re.findall()</code> encounters <code>( )</code>, it returns <strong>only the captured group content</strong>, not the full match. If you have <code>r"Data(\d+)"</code> applied to "Data100", findall returns <code>['100']</code>, not <code>['Data100']</code>.
+  </div>
+
+  <h3>Writing Regex Patterns (SP25 Q2, SU25 Q2 style)</h3>
+  <p>Example: Match course IDs after "Data" — either 3 digits, or 1-2 digits optionally followed by a letter from [c, s, x].</p>
+  <pre><span class="cm"># Target: from "Data8, Data100, CS61A, Data88s" → ['8', '100', '88s']</span>
+pattern = r<span class="st">"Data(\d{3}|\d{1,2}[csx]?)"</span>
+<span class="cm"># \d{3} → exactly 3 digits (matches "100")</span>
+<span class="cm"># \d{1,2}[csx]? → 1-2 digits + optional letter (matches "8", "88s")</span>
+<span class="cm"># Parentheses capture only the ID part, not "Data"</span></pre>
+
+  <h3>Python Regex Functions</h3>
+  <table>
+    <tr><th>Function</th><th>Returns</th></tr>
+    <tr><td><code>re.findall(pat, s)</code></td><td>List of all matches (or group contents if groups exist)</td></tr>
+    <tr><td><code>re.sub(pat, repl, s)</code></td><td>String with all matches replaced</td></tr>
+    <tr><td><code>s.str.contains(pat)</code></td><td>Boolean Series (for Pandas filtering)</td></tr>
+    <tr><td><code>s.str.extract(pat)</code></td><td>DataFrame of captured groups (needs parentheses)</td></tr>
+  </table>
+
+  <div class="es">
+    <div class="es-title">🎯 Exam Strategy</div>
+    <strong>For "list the matches":</strong> Walk left to right through the string, character by character. At each position, try to match the pattern. When a match is found, note it and start the next search AFTER the match ends (no overlapping).<br><br>
+    <strong>For "write a pattern":</strong> Break the problem into cases. Use <code>|</code> for alternation between cases. Use <code>( )</code> to capture only the part you want returned. Test mentally against each example string.
+  </div>
+</div>
+
+<!-- ===== VISUALIZATION ===== -->
+<div class="section" id="viz">
+  <div class="section-number">TOPIC 5</div>
+  <h2>Visualization &amp; Plot Selection</h2>
+  <span class="topic-tag purple">Lectures 7–8</span>
+
+  <p>Two sub-types: (1) <strong>True/False: is this plot appropriate?</strong> (2) <strong>Fill in seaborn/matplotlib code.</strong></p>
+
+  <h3>Decision Rule: 2 Questions to Ask</h3>
+  <div class="mm">
+    <div class="mm-title">🧠 The Plot Selection Algorithm</div>
+    <p><strong>Step 1:</strong> How many variables? "Distribution of X" = 1 variable. "Relationship between X and Y" = 2 variables.</p>
+    <p><strong>Step 2:</strong> What are the types? Quantitative or categorical?</p>
+    <p><strong>Step 3:</strong> Match to the table below.</p>
+  </div>
+
+  <h4>One Variable (Distribution)</h4>
+  <table>
+    <tr><th>Plot</th><th>Quant?</th><th>Cat?</th></tr>
+    <tr><td>Histogram</td><td style="color:var(--green)">✓</td><td style="color:var(--red)">✗</td></tr>
+    <tr><td>KDE</td><td style="color:var(--green)">✓</td><td style="color:var(--red)">✗</td></tr>
+    <tr><td>Box plot</td><td style="color:var(--green)">✓</td><td style="color:var(--red)">✗</td></tr>
+    <tr><td>Rug plot</td><td style="color:var(--green)">✓</td><td style="color:var(--red)">✗</td></tr>
+    <tr><td>Bar chart / countplot</td><td style="color:var(--red)">✗</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>Scatter plot</td><td colspan="2" style="color:var(--red)">✗ — needs 2 variables</td></tr>
+    <tr><td>Contour plot</td><td colspan="2" style="color:var(--red)">✗ — needs 2 quant variables</td></tr>
+  </table>
+
+  <h4>Two Variables (Relationship)</h4>
+  <table>
+    <tr><th>Plot</th><th>Quant × Quant</th><th>Quant × Cat</th></tr>
+    <tr><td>Scatter plot</td><td style="color:var(--green)">✓</td><td style="color:var(--red)">✗</td></tr>
+    <tr><td>Hex plot</td><td style="color:var(--green)">✓</td><td style="color:var(--red)">✗</td></tr>
+    <tr><td>Contour plot</td><td style="color:var(--green)">✓</td><td style="color:var(--red)">✗</td></tr>
+    <tr><td>Line plot</td><td style="color:var(--green)">✓ (ordered x)</td><td style="color:var(--red)">✗</td></tr>
+    <tr><td>Side-by-side box plots</td><td style="color:var(--red)">✗</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>Overlaid histograms</td><td style="color:var(--red)">✗</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>Violin plot</td><td style="color:var(--red)">✗</td><td style="color:var(--green)">✓</td></tr>
+  </table>
+
+  <div class="concept warn">
+    <strong>FA25 Q4 trap:</strong> "Relationship between temperature and workout_time" — both quantitative. Hex ✓ Contour ✓ but Overlaid histograms ✗ and Side-by-side boxplots ✗ because those need a categorical grouping variable.
+  </div>
+
+  <h3>Reading Box Plots (SP25 Q1e)</h3>
+  <p>A box plot shows 5 numbers: min, Q1 (25th percentile), median (50th), Q3 (75th), max. The "box" spans Q1 to Q3, the line inside is the median. Dots beyond the whiskers are outliers.</p>
+
+  <div class="concept">
+    <strong>SP25 trap:</strong> "About 75% of TAs resolved more tickets than about 75% of Tutors" — this means the Q1 of TAs ≈ Q3 of Tutors. Read carefully: "75% of TAs did MORE than X" means X is the Q1 (25th percentile) of TAs.
+  </div>
+
+  <h3>Seaborn Code Fill-in (SP25 Q1f style)</h3>
+  <pre><span class="cm"># Violin plot split by category and colored by another</span>
+sns.violinplot(
+    data=df[df[<span class="st">"role"</span>].isin([<span class="st">"TA"</span>, <span class="st">"Tutor"</span>])],
+    x=<span class="st">"is_graduating"</span>,   <span class="cm"># categorical on x-axis</span>
+    y=<span class="st">"ed_hours"</span>,         <span class="cm"># quantitative on y-axis</span>
+    hue=<span class="st">"role"</span>            <span class="cm"># color split</span>
+)</pre>
+</div>
+
+<!-- ===== KDE ===== -->
+<div class="section" id="kde">
+  <div class="section-number">TOPIC 6</div>
+  <h2>KDE &amp; Bandwidth</h2>
+  <span class="topic-tag purple">Lecture 8</span>
+
+  <p>KDE questions appear on almost every exam. They test whether you understand how bandwidth affects the curve.</p>
+
+  <h3>How KDE Works</h3>
+  <div class="flow">
+    <div class="flow-step">Place a <strong>kernel</strong><br>(bump) at each point</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><strong>Add</strong> all<br>bumps together</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><strong>Normalize</strong><br>so total area = 1</div>
+  </div>
+
+  <h3>Bandwidth (α)</h3>
+  <table>
+    <tr><th>α</th><th>Effect</th><th>Visual</th></tr>
+    <tr><td><strong>Too small</strong></td><td>Spiky, noisy — each point is a sharp peak</td><td>Over-fit to individual points</td></tr>
+    <tr><td><strong>Just right</strong></td><td>Captures true distribution shape</td><td>Smooth but preserves real features</td></tr>
+    <tr><td><strong>Too large</strong></td><td>Over-smoothed — washes out features</td><td>Density "leaks" into empty regions, hides bimodality</td></tr>
+  </table>
+
+  <div class="concept warn">
+    <strong>SP25 Q3d:</strong> "Given α = 0.5, which plot is correct?" — α represents the <strong>total width</strong> of each kernel. Larger α = wider kernels = smoother. Compare kernel widths visually to pick the right option.
+  </div>
+
+  <div class="concept warn">
+    <strong>FA24 trap:</strong> "The distribution is unimodal" — if the histogram shows two clear peaks, it's <strong>bimodal</strong>. An over-smoothed KDE can hide the second peak, but the histogram tells the truth.
+  </div>
+
+  <h3>KDE Properties</h3>
+  <p>• Total area under curve = 1 (it's a density)<br>
+  • Each kernel has area 1/n<br>
+  • Y-axis = density (CAN be > 1 — that's fine)<br>
+  • Always ≥ 0 everywhere<br>
+  • A valid kernel must itself integrate to 1 (if not, you need to multiply by a constant — SU25 Q3f)</p>
+
+  <div class="mm">
+    <div class="mm-title">🧠 Mental Model</div>
+    Bandwidth is the <strong>"blur slider"</strong> on a photo. Too sharp = noisy details. Too blurry = lose important features. The KDE with the right bandwidth shows the true shape without the noise.
+  </div>
+</div>
+
+<!-- ===== SAMPLING ===== -->
+<div class="section" id="sampling">
+  <div class="section-number">TOPIC 7</div>
+  <h2>Sampling, Bias &amp; Errors</h2>
+  <span class="topic-tag yellow">Lecture 9</span>
+
+  <h3>The Four Things That Can Go Wrong</h3>
+  <table>
+    <tr><th>Type</th><th>What it means</th><th>Reduced by</th></tr>
+    <tr><td><strong>Chance error</strong></td><td>Random variability — different samples give different results</td><td>Larger sample size</td></tr>
+    <tr><td><strong>Selection bias</strong></td><td>Sampling method excludes part of the population</td><td>Random sampling (SRS)</td></tr>
+    <tr><td><strong>Response bias</strong></td><td>People answer dishonestly / influenced by wording</td><td>Better question design, anonymity</td></tr>
+    <tr><td><strong>Non-response bias</strong></td><td>Non-responders are systematically different from responders</td><td>Follow-ups, reminders</td></tr>
+  </table>
+
+  <div class="concept">
+    <strong>Bigger sample ≠ less bias.</strong> A larger sample reduces <strong>chance error</strong> (random variability) but does NOT fix selection, response, or non-response bias. Surveying 10,000 CS majors about campus food is still biased, no matter how big the sample.
+  </div>
+
+  <h3>Key Terms (tested in SP25 Q3, SU25 Q1h)</h3>
+  <table>
+    <tr><th>Term</th><th>Meaning</th></tr>
+    <tr><td><strong>Population</strong></td><td>The entire group you want to learn about</td></tr>
+    <tr><td><strong>Sampling frame</strong></td><td>The list you actually draw names from</td></tr>
+    <tr><td><strong>Sample</strong></td><td>The people who actually end up in your study</td></tr>
+    <tr><td><strong>SRS</strong></td><td>Simple Random Sample — every individual has equal chance</td></tr>
+    <tr><td><strong>Convenience sample</strong></td><td>Sample whoever is easy → high selection bias</td></tr>
+    <tr><td><strong>Stratified sample</strong></td><td>Divide into groups (strata), SRS within each</td></tr>
+    <tr><td><strong>Cluster sample</strong></td><td>Randomly pick clusters, survey everyone in them</td></tr>
+  </table>
+
+  <div class="mm">
+    <div class="mm-title">🧠 FA25 Q5 Walkthrough</div>
+    <p>Josh emails 100 SRS students, 62 respond. Jake suggests: email 200 SRS + send reminders.</p>
+    <p>For each change, ask: <strong>which category does this affect?</strong></p>
+    <p>• 200 instead of 100 → more data → <strong>chance error: smaller</strong></p>
+    <p>• Reminders → more people respond → <strong>non-response bias: smaller</strong></p>
+    <p>• Both still use SRS from same list → <strong>selection bias: same</strong></p>
+    <p>• Everyone answers truthfully → <strong>response bias: same</strong></p>
+  </div>
+
+  <div class="concept warn">
+    <strong>SP25 Q3b trap:</strong> "If Rachel gives BayPass to students who signed up voluntarily, can she avoid selection bias?" — <strong>No!</strong> Voluntary sign-up = convenience sample. Students who sign up may be systematically different (e.g., already use transit more). Only random selection avoids selection bias.
+  </div>
+
+  <div class="concept warn">
+    <strong>SU25 Q1h trap:</strong> "Does dropping corrupted data introduce selection bias?" — Only if the corruption was <strong>non-random</strong> (e.g., only affecting certain groups). If corruption was random, dropping those rows doesn't introduce bias.
+  </div>
+
+  <div class="es">
+    <div class="es-title">🎯 Exam Strategy</div>
+    For each proposed change: <strong>"Does this change WHO is sampled, HOW MANY, WHETHER people respond, or HOW they answer?"</strong> Only that category changes. Everything else stays the same. Don't overthink it — the answer is usually straightforward once you identify which category.
+  </div>
+</div>
+
+<!-- ===== CHECKLIST ===== -->
+<div class="section" id="checklist">
+  <div class="section-number">✓</div>
+  <h2>Exam Day Checklist</h2>
+  <span class="topic-tag yellow">Strategy</span>
+
+  <div class="josh-note">
+    <div class="josh-title">📋 Study Plan (Priority Order)</div>
+    <p><strong>1.</strong> Complete FA25 practice midterm under timed conditions (50 min)</p>
+    <p><strong>2.</strong> Deep-dive every question you got wrong or were unsure about</p>
+    <p><strong>3.</strong> Work through SU25, SP25, FA24 exams (Pandas, Regex, Viz, Sampling questions — skip modeling/OLS/loss)</p>
+    <p><strong>4.</strong> Use lectures, homework, and discussion worksheets to fill gaps on specific topics</p>
+    <p><strong>5.</strong> Review your reference sheet — know what's on it so you don't waste time searching</p>
+  </div>
+
+  <div class="mm">
+    <div class="mm-title">🧠 Quick-Fire Recall</div>
+    <p><strong>Pandas:</strong> <code>.loc</code> = labels (inclusive), <code>.iloc</code> = positions (exclusive end). <code>NaN == NaN</code> is False — use <code>.isna()</code>. Single <code>[]</code> = Series, double <code>[[]]</code> = DataFrame.</p>
+    <p><strong>GroupBy:</strong> <code>.agg()</code> reduces to 1 row/group. <code>.filter()</code> returns original full rows. <code>.transform()</code> = same shape. Pivot table = groupby + reshape.</p>
+    <p><strong>Regex:</strong> <code>[abc]</code> = one char from set. <code>(a|b)</code> = alternation. <code>( )</code> with findall → returns group only. <code>+</code> = 1+, <code>*</code> = 0+, <code>?</code> = optional.</p>
+    <p><strong>Viz:</strong> 1 var distribution → histogram/KDE/box. 2 quant vars → scatter/hex/contour. Quant×Cat → side-by-side box/overlaid hist.</p>
+    <p><strong>KDE:</strong> High α → over-smoothed, density leaks. Low α → spiky. Total area = 1.</p>
+    <p><strong>Sampling:</strong> Bigger n → less chance error, NOT less bias. SRS minimizes selection bias. Reminders reduce non-response bias.</p>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
